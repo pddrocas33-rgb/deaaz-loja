@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeAaZ - Catálogo de Produtos</title>
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* RESET & VARIÁVEIS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #f97316;
+      --bg-light: #f8fafc;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --card-bg: #ffffff;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    body {
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    /* HEADER */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .top-bar {
+      background: var(--text-dark);
+      color: #fff;
+      font-size: 0.8rem;
+      text-align: center;
+      padding: 6px 16px;
+      font-weight: 500;
+    }
+
+    .main-header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      color: var(--primary);
+    }
+
+    .search-box {
+      flex: 1;
+      max-width: 600px;
+      display: flex;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 20px;
+      padding-right: 50px;
+      border: 2px solid var(--border);
+      border-radius: 30px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .search-box button {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      bottom: 5px;
+      width: 40px;
+      background: var(--primary);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .user-actions {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-dark);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .cart-btn {
+      position: relative;
+      background: var(--bg-light);
+      padding: 10px 16px;
+      border-radius: 20px;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--accent);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* BARRA ALFABÉTICA (A a Z) */
+    .alphabet-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .alphabet-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+      display: flex;
+      gap: 6px;
+      justify-content: space-between;
+    }
+
+    .alphabet-link {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .alphabet-link:hover, .alphabet-link.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* LAYOUT CATÁLOGO */
+    .catalog-container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 30px;
+    }
+
+    .filters-sidebar {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      height: fit-content;
+    }
+
+    .filter-group {
+      margin-bottom: 24px;
+    }
+
+    .filter-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-dark);
+      text-transform: uppercase;
+    }
+
+    .filter-list {
+      list-style: none;
+    }
+
+    .filter-item {
+      margin-bottom: 8px;
+    }
+
+    .filter-item a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .filter-item a:hover {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .catalog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .catalog-title h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .catalog-title p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* GRELHA DE PRODUTOS DINÂMICA */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .product-card:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
+    .product-img {
+      width: 100%;
+      height: 180px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 2rem;
+      position: relative;
+    }
+
+    .letter-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--text-dark);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .product-info {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .product-category {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .product-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-dark);
+      text-decoration: none;
+    }
+
+    .product-price {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-top: auto;
+      margin-bottom: 12px;
+    }
+
+    .btn-add-cart {
+      width: 100%;
+      background: var(--bg-light);
+      border: 1px solid var(--border);
+      padding: 8px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-add-cart:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* FOOTER */
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+      padding: 40px 16px 20px;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .footer-col h4 {
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col ul li {
+      margin-bottom: 8px;
+    }
+
+    .footer-col ul li a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 850px) {
+      .catalog-container {
+        grid-template-columns: 1fr;
+      }
+      .filters-sidebar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA SUPERIOR -->
+  <div class="top-bar">
+    ⚡ Envio Grátis em encomendas superiores a 30€ | De A a Z, encontra tudo aqui!
+  </div>
+
+  <!-- CABEÇALHO -->
+  <header>
+    <div class="main-header">
+      <a href="index.html" class="logo">De<span>AaZ</span></a>
+      
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="O que procuras hoje? Pesquisa de A a Z...">
+        <button><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+
+      <div class="user-actions">
+        <a href="#" class="action-btn">
+          <i class="fa-regular fa-user"></i>
+          <span>Conta</span>
+        </a>
+        <a href="carrinho.html" class="action-btn cart-btn">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span>Carrinho</span>
+          <div class="cart-badge">0</div>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- BARRA ALFABÉTICA DE A A Z -->
+  <nav class="alphabet-bar">
+    <div class="alphabet-container">
+      <a href="produtos.html" class="alphabet-link">Todos</a>
+      <a href="produtos.html?letra=A" class="alphabet-link">A</a>
+      <a href="produtos.html?letra=B" class="alphabet-link">B</a>
+      <a href="produtos.html?letra=C" class="alphabet-link">C</a>
+      <a href="produtos.html?letra=D" class="alphabet-link">D</a>
+      <a href="produtos.html?letra=E" class="alphabet-link">E</a>
+      <a href="produtos.html?letra=F" class="alphabet-link">F</a>
+      <a href="produtos.html?letra=G" class="alphabet-link">G</a>
+      <a href="produtos.html?letra=H" class="alphabet-link">H</a>
+      <a href="produtos.html?letra=I" class="alphabet-link">I</a>
+      <a href="produtos.html?letra=J" class="alphabet-link">J</a>
+      <a href="produtos.html?letra=K" class="alphabet-link">K</a>
+      <a href="produtos.html?letra=L" class="alphabet-link">L</a>
+      <a href="produtos.html?letra=M" class="alphabet-link">M</a>
+      <a href="produtos.html?letra=N" class="alphabet-link">N</a>
+      <a href="produtos.html?letra=O" class="alphabet-link">O</a>
+      <a href="produtos.html?letra=P" class="alphabet-link">P</a>
+      <a href="produtos.html?letra=Q" class="alphabet-link">Q</a>
+      <a href="produtos.html?letra=R" class="alphabet-link">R</a>
+      <a href="produtos.html?letra=S" class="alphabet-link">S</a>
+      <a href="produtos.html?letra=T" class="alphabet-link">T</a>
+      <a href="produtos.html?letra=U" class="alphabet-link">U</a>
+      <a href="produtos.html?letra=V" class="alphabet-link">V</a>
+      <a href="produtos.html?letra=W" class="alphabet-link">W</a>
+      <a href="produtos.html?letra=X" class="alphabet-link">X</a>
+      <a href="produtos.html?letra=Y" class="alphabet-link">Y</a>
+      <a href="produtos.html?letra=Z" class="alphabet-link">Z</a>
+    </div>
+  </nav>
+
+  <!-- CATÁLOGO -->
+  <div class="catalog-container">
+
+    <!-- FILTROS LATERAIS -->
+    <aside class="filters-sidebar">
+      <div class="filter-group">
+        <h3 class="filter-title">Categorias</h3>
+        <ul class="filter-list">
+          <li class="filter-item"><a href="produtos.html"><span>Todas</span></a></li>
+          <li class="filter-item"><a href="produtos.html?cat=tecnologia"><span>Tecnologia</span></a></li>
+          <li class="filter-item"><a href="produtos.html?cat=casa"><span>Casa & Lar</span></a></li>
+          <li class="filter-item"><a href="produtos.html?cat=desporto"><span>Desporto</span></a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO DOS PRODUTOS -->
+    <main>
+      <div class="catalog-header">
+        <div class="catalog-title">
+          <h1 id="page-title">Todos os Produtos</h1>
+          <p id="product-count">A carregar...</p>
+        </div>
+      </div>
+
+      <!-- A GRELHA AGORA ESTÁ VAZIA E É PREENCHIDA DINAMICAMENTE PELO APP.JS -->
+      <div class="products-grid" id="products-grid"></div>
+    </main>
+
+  </div>
+
+  <!-- RODAPÉ -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <h4>Sobre a DeAaZ</h4>
+        <ul>
+          <li><a href="#">Quem Somos</a></li>
+          <li><a href="#">Carreiras</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Apoio ao Cliente</h4>
+        <ul>
+          <li><a href="#">Centro de Ajuda</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 DeAaZ Marketplace. Todos os direitos reservados.
+    </div>
+  </footer>
+
+  <!-- LIGAÇÃO OBRIGATÓRIA AO APP.JS -->
+  <script src="app.js"></script>
+</body>
+</html>

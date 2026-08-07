@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeAaZ - Detalhes do Produto</title>
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* RESET & VARIÁVEIS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #f97316;
+      --bg-light: #f8fafc;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --card-bg: #ffffff;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    body {
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    /* HEADER */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .top-bar {
+      background: var(--text-dark);
+      color: #fff;
+      font-size: 0.8rem;
+      text-align: center;
+      padding: 6px 16px;
+      font-weight: 500;
+    }
+
+    .main-header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      color: var(--primary);
+    }
+
+    .search-box {
+      flex: 1;
+      max-width: 600px;
+      display: flex;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 20px;
+      padding-right: 50px;
+      border: 2px solid var(--border);
+      border-radius: 30px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .search-box button {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      bottom: 5px;
+      width: 40px;
+      background: var(--primary);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .user-actions {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-dark);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .cart-btn {
+      position: relative;
+      background: var(--bg-light);
+      padding: 10px 16px;
+      border-radius: 20px;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--accent);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* BREADCRUMB (Caminho de navegação) */
+    .breadcrumb {
+      max-width: 1200px;
+      margin: 20px auto 0;
+      padding: 0 16px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .breadcrumb a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--primary);
+    }
+
+    /* LAYOUT DO PRODUTO */
+    .product-detail-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    /* GALERIA DE IMAGENS */
+    .product-gallery {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .main-image {
+      font-size: 10rem;
+      color: var(--text-muted);
+      margin: 40px 0;
+    }
+
+    .letter-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: var(--text-dark);
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+
+    /* INFORMAÇÕES DO PRODUTO */
+    .product-details {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .category-tag {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .product-title-main {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .product-rating {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .stars {
+      color: #f59e0b;
+    }
+
+    .product-price-large {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+    }
+
+    .stock-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #16a34a;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .quantity-selector label {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .quantity-selector select {
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-buy-now {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.2s;
+    }
+
+    .btn-buy-now:hover {
+      background: var(--primary-dark);
+    }
+
+    /* SECÇÃO DE DESCRIÇÃO */
+    .product-description-section {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+
+    .description-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+
+    .description-card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+    }
+
+    .description-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+      padding: 40px 16px 20px;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .footer-col h4 {
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col ul li {
+      margin-bottom: 8px;
+    }
+
+    .footer-col ul li a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 768px) {
+      .product-detail-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA SUPERIOR -->
+  <div class="top-bar">
+    ⚡ Envio Grátis em encomendas superiores a 30€ | De A a Z, encontra tudo aqui!
+  </div>
+
+  <!-- CABEÇALHO -->
+  <header>
+    <div class="main-header">
+      <a href="index.html" class="logo">De<span>AaZ</span></a>
+      
+      <div class="search-box">
+        <input type="text" placeholder="O que procuras hoje? Pesquisa de A a Z...">
+        <button><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+
+      <div class="user-actions">
+        <a href="#" class="action-btn">
+          <i class="fa-regular fa-user"></i>
+          <span>Conta</span>
+        </a>
+        <a href="carrinho.html" class="action-btn cart-btn">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span>Carrinho</span>
+          <div class="cart-badge">0</div>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- CAMINHO DE NAVEGAÇÃO -->
+  <div class="breadcrumb">
+    <a href="index.html">Início</a> &gt; <a href="produtos.html">Tecnologia</a> &gt; <span>Auscultadores Bluetooth Sem Fios</span>
+  </div>
+
+  <!-- CONTAINER DE DETALHES -->
+  <div class="product-detail-container">
+
+    <!-- IMAGEM DO PRODUTO -->
+    <div class="product-gallery">
+      <span class="letter-badge">A</span>
+      <i class="fa-solid fa-headphones main-image"></i>
+    </div>
+
+    <!-- INFORMAÇÃO DO PRODUTO -->
+    <div class="product-details">
+      <span class="category-tag">Tecnologia</span>
+      <h1 class="product-title-main">Auscultadores Bluetooth Sem Fios Pro</h1>
+      
+      <div class="product-rating">
+        <div class="stars">
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star-half-stroke"></i>
+        </div>
+        <span>(4.8 de 5 avaliações)</span>
+      </div>
+
+      <div class="product-price-large">49,99€</div>
+
+      <div class="stock-status">
+        <i class="fa-solid fa-circle-check"></i> Em Stock (Pronto a enviar)
+      </div>
+
+      <div class="quantity-selector">
+        <label for="quantity">Quantidade:</label>
+        <select id="quantity">
+          <option value="1">1 unidade</option>
+          <option value="2">2 unidades</option>
+          <option value="3">3 unidades</option>
+        </select>
+      </div>
+
+      <button class="btn-buy-now">
+        <i class="fa-solid fa-cart-plus"></i> Adicionar ao Carrinho
+      </button>
+    </div>
+
+  </div>
+
+  <!-- DESCRIÇÃO COMPLETA -->
+  <div class="product-description-section">
+    <div class="description-card">
+      <h2>Descrição do Produto</h2>
+      <p>
+        Desfruta de uma experiência de som imersiva com os Auscultadores Bluetooth Sem Fios Pro. 
+        Com cancelamento ativo de ruído, bateria de longa duração até 30 horas e um design ergonómico, 
+        são perfeitos para o teu dia a dia, trabalho ou treinos.
+      </p>
+    </div>
+  </div>
+
+  <!-- RODAPÉ -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <h4>Sobre a DeAaZ</h4>
+        <ul>
+          <li><a href="#">Quem Somos</a></li>
+          <li><a href="#">Carreiras</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Apoio ao Cliente</h4>
+        <ul>
+          <li><a href="#">Centro de Ajuda</a></li>
+          <li><a href="#">Devoluções</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 DeAaZ Marketplace. Todos os direitos reservados.
+    </div>
+  </footer>
+
+</body>
+</html>
