@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeAaZ - Painel de Administração</title>
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      line-height: 1.5;
+      padding: 40px 16px;
+    }
+
+    .admin-container {
+      max-width: 650px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 36px;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-admin {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #0f172a;
+      text-decoration: none;
+    }
+
+    .logo span {
+      color: #2563eb;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      color: #475569;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: #2563eb;
+    }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover {
+      background: #1d4ed8;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    /* PREVISÃO DA FOTO */
+    .preview-box {
+      width: 100%;
+      height: 160px;
+      background: #f1f5f9;
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #94a3b8;
+    }
+
+    .preview-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-container">
+    <div class="header-admin">
+      <a href="index.html" class="logo">De<span>AaZ</span></a>
+      <span style="font-size: 0.8rem; background: #e0e7ff; color: #4338ca; padding: 4px 10px; border-radius: 20px; font-weight: 700;">Painel Gestor</span>
+    </div>
+
+    <h1><i class="fa-solid fa-box-open" style="color: #2563eb;"></i> Adicionar Novo Produto</h1>
+    
+    <form id="add-product-form">
+      <div class="form-group">
+        <label>Nome do Produto:</label>
+        <input type="text" id="nome" required placeholder="Ex: Smartwatch Fitness GPS">
+      </div>
+
+      <div class="row-2">
+        <div class="form-group">
+          <label>Preço (€):</label>
+          <input type="number" step="0.01" id="preco" required placeholder="89.90">
+        </div>
+
+        <div class="form-group">
+          <label>Categoria:</label>
+          <select id="categoria">
+            <option value="tecnologia">Tecnologia</option>
+            <option value="casa">Casa & Lar</option>
+            <option value="desporto">Desporto</option>
+            <option value="moda">Moda</option>
+            <option value="beleza">Beleza</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="form-group">
+          <label>Letra (De A a Z):</label>
+          <input type="text" id="letra" maxlength="1" required placeholder="S">
+        </div>
+
+        <div class="form-group">
+          <label>Ícone Alternativo (FontAwesome):</label>
+          <select id="icone">
+            <option value="fa-box">Caixa (Padrão)</option>
+            <option value="fa-headphones">Auscultadores</option>
+            <option value="fa-stopwatch">Relógio / Desporto</option>
+            <option value="fa-mug-hot">Cafeteira / Casa</option>
+            <option value="fa-bottle-water">Garrafa</option>
+            <option value="fa-lightbulb">Lâmpada</option>
+            <option value="fa-shirt">Moda / Roupa</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>URL da Foto do Produto (Link da Imagem):</label>
+        <input type="url" id="imagem" placeholder="https://exemplo.com/foto.jpg" oninput="atualizarPrevisao(this.value)">
+        <div class="preview-box" id="preview-box">
+          <i class="fa-regular fa-image fa-2x"></i>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit">
+        <i class="fa-solid fa-cloud-arrow-up"></i> Inserir Produto na Loja
+      </button>
+    </form>
+
+    <a href="produtos.html" class="back-link">&larr; Voltar ao Catálogo da Loja</a>
+  </div>
+
+  <script>
+    function atualizarPrevisao(url) {
+      const box = document.getElementById('preview-box');
+      if (url && url.trim() !== '') {
+        box.innerHTML = `<img src="${url}" onerror="erroImagem()">`;
+      } else {
+        box.innerHTML = `<i class="fa-regular fa-image fa-2x"></i>`;
+      }
+    }
+
+    function erroImagem() {
+      const box = document.getElementById('preview-box');
+      box.innerHTML = `<span style="color: #ef4444; font-size: 0.85rem; font-weight: 600;">Link de imagem inválido</span>`;
+    }
+
+    document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const btn = document.querySelector('.btn-submit');
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> A guardar...`;
+      btn.disabled = true;
+
+      const produto = {
+        nome: document.getElementById('nome').value,
+        preco: parseFloat(document.getElementById('preco').value),
+        categoria: document.getElementById('categoria').value,
+        letra: document.getElementById('letra').value.toUpperCase(),
+        icone: document.getElementById('icone').value,
+        imagem: document.getElementById('imagem').value
+      };
+
+      try {
+        const resposta = await fetch('/api/produtos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(produto)
+        });
+
+        if (resposta.ok) {
+          alert("✅ Produto adicionado à loja com sucesso!");
+          document.getElementById('add-product-form').reset();
+          document.getElementById('preview-box').innerHTML = `<i class="fa-regular fa-image fa-2x"></i>`;
+        } else {
+          alert("❌ Erro ao guardar o produto na Base de Dados.");
+        }
+      } catch (err) {
+        alert("❌ Erro de ligação com a API.");
+      } finally {
+        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Inserir Produto na Loja`;
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
