@@ -1,46 +1,70 @@
-import { createClient } from '@supabase/supabase-supabase-js';
+import { createClient } from '@supabase/supabase-js';
 
-// A Vercel injeta estas variáveis automaticamente após a integração
-const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+// Conexão direta ao Supabase
+const supabaseUrl = 'https://omtlfwrrqketuaxufmkd.supabase.co';
+const supabaseKey = 'sb_publishable_xQl--9rJB4QN7cwv2EOTnQ_-v7urxK6';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default async function handler(req, res) {
-  // 1. GET: Ler produtos do Supabase
-  if (req.method === 'GET') {
-    const { data, error } = await supabase
-      .from('produtos')
-      .select('*')
-      .order('id', { ascending: false });
+  // Configuração para permitir chamadas do formulário
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-    if (error) return res.status(500).json({ error: error.message });
-    return res.status(200).json(data);
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
 
-  // 2. POST: Criar produto no Supabase (vindo do admin.html)
-  if (req.method === 'POST') {
-    const { nome, preco, categoria, letra, icone, imagem } = req.body;
+  // 1. LER PRODUTOS (GET)
+  if (req.method === 'GET') {
+    try {
+      const { data, error } = await supabase
+        .from('produtos')
+        .select('*')
+        .order('id', { ascending: false });
 
-    if (!nome || !preco || !categoria) {
-      return res.status(400).json({ error: 'Campos obrigatórios em falta.' });
+      if (error) {
+        console.error('Erro GET Supabase:', error);
+        return res.status(500).json({ error: error.message });
+      }
+      return res.status(200).json(data || []);
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
     }
+  }
 
-    const { data, error } = await supabase
-      .from('produtos')
-      .insert([
-        { 
-          nome, 
-          preco: parseFloat(preco), 
-          categoria, 
-          letra: letra.toUpperCase(), 
-          icone: icone || 'fa-box', 
-          imagem: imagem || '' 
-        }
-      ]);
+  // 2. GUARDAR PRODUTO (POST)
+  if (req.method === 'POST') {
+    try {
+      const { nome, preco, categoria, letra, icone, imagem } = req.body;
 
-    if (error) return res.status(500).json({ error: error.message });
-    return res.status(201).json({ message: 'Produto guardado no Supabase com sucesso!', data });
+      if (!nome || !preco || !categoria) {
+        return res.status(400).json({ error: 'Campos obrigatórios em falta.' });
+      }
+
+      const { data, error } = await supabase
+        .from('produtos')
+        .insert([
+          { 
+            nome, 
+            preco: parseFloat(preco), 
+            categoria, 
+            letra: (letra || 'A').toUpperCase(), 
+            icone: icone || 'fa-box', 
+            imagem: imagem || '' 
+          }
+        ]);
+
+      if (error) {
+        console.error('Erro POST Supabase:', error);
+        return res.status(500).json({ error: error.message });
+      }
+
+      return res.status(201).json({ message: 'Produto guardado com sucesso!', data });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
   }
 
   return res.status(405).json({ error: 'Método não permitido' });

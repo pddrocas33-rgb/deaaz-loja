@@ -1,0 +1,24 @@
+{
+  "name": "websites",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pddrocas33-rgb/deaaz-loja.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/pddrocas33-rgb/deaaz-loja/issues"
+  },
+  "homepage": "https://github.com/pddrocas33-rgb/deaaz-loja#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.2"
+  }
+}
