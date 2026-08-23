@@ -25,13 +25,10 @@
       padding: 40px 16px;
     }
 
-    /* Modal de Login */
+    /* Modal de Proteção por Password */
     #auth-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background: #0f172a;
       display: flex;
       align-items: center;
@@ -51,8 +48,7 @@
     }
 
     .auth-box input {
-      margin-top: 16px;
-      margin-bottom: 14px;
+      margin: 16px 0 14px 0;
       text-align: center;
     }
 
@@ -112,6 +108,7 @@
       font-size: 0.8rem;
       color: #64748b;
       font-weight: 600;
+      transition: all 0.2s;
     }
 
     .btn-logout:hover {
@@ -149,6 +146,7 @@
       border-radius: 8px;
       font-size: 0.95rem;
       outline: none;
+      transition: border-color 0.2s;
     }
 
     input:focus, select:focus {
@@ -159,19 +157,6 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
-    }
-
-    .file-input-wrapper {
-      position: relative;
-      overflow: hidden;
-      display: inline-block;
-      width: 100%;
-    }
-
-    .file-input-wrapper input[type="file"] {
-      padding: 10px;
-      background: #f8fafc;
-      cursor: pointer;
     }
 
     .btn-submit {
@@ -189,6 +174,7 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      transition: background 0.2s;
     }
 
     .btn-submit:hover {
@@ -222,8 +208,7 @@
     .preview-box img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      background: #fff;
+      object-fit: cover;
     }
   </style>
 </head>
@@ -234,7 +219,7 @@
     <div class="auth-box">
       <div class="logo" style="margin-bottom: 12px;">De<span>AaZ</span></div>
       <h2 style="font-size: 1.15rem; margin-bottom: 6px;">Acesso Restrito</h2>
-      <p style="font-size: 0.85rem; color: #64748b;">Digita a password para desbloquear o painel:</p>
+      <p style="font-size: 0.85rem; color: #64748b;">Digita a password para aceder ao painel:</p>
       
       <input type="password" id="admin-pass" placeholder="••••••••" onkeydown="verificarEnter(event)">
       <button type="button" class="btn-submit" onclick="autenticar()" style="padding: 10px;">
@@ -243,7 +228,7 @@
     </div>
   </div>
 
-  <!-- PAINEL PRINCIPAL -->
+  <!-- PAINEL ADMINISTRATIVO -->
   <div class="admin-container" id="admin-panel">
     <div class="header-admin">
       <a href="index.html" class="logo">De<span>AaZ</span></a>
@@ -300,11 +285,8 @@
       </div>
 
       <div class="form-group">
-        <label>Foto do Produto (Escolher do PC):</label>
-        <div class="file-input-wrapper">
-          <input type="file" id="ficheiro-imagem" accept="image/*" onchange="carregarImagemPC(event)">
-        </div>
-        
+        <label>URL da Imagem do Produto:</label>
+        <input type="url" id="imagem" placeholder="https://exemplo.com/foto.jpg" oninput="atualizarPrevisao(this.value)">
         <div class="preview-box" id="preview-box">
           <i class="fa-regular fa-image fa-2x"></i>
         </div>
@@ -319,17 +301,13 @@
   </div>
 
   <script>
-    // ==========================================
-    // 1. AUTENTICAÇÃO COM PASSWORD
-    // ==========================================
-    var ADMIN_PASS = "admin123";
+    // 1. SISTEMA DE PASSWORD
+    const ADMIN_PASS = "admin123";
 
     function autenticar() {
-      var passInput = document.getElementById('admin-pass');
-      var valor = passInput.value.trim();
-
-      if (valor === ADMIN_PASS) {
-        sessionStorage.setItem('deaaz_logado', 'true');
+      const passInput = document.getElementById('admin-pass');
+      if (passInput.value.trim() === ADMIN_PASS) {
+        sessionStorage.setItem('deaaz_admin_auth', 'true');
         document.getElementById('auth-overlay').style.display = 'none';
         document.getElementById('admin-panel').style.display = 'block';
       } else {
@@ -340,77 +318,66 @@
     }
 
     function verificarEnter(event) {
-      if (event.key === "Enter" || event.keyCode === 13) {
+      if (event.key === "Enter") {
         event.preventDefault();
         autenticar();
       }
     }
 
     function fazerLogout() {
-      sessionStorage.removeItem('deaaz_logado');
+      sessionStorage.removeItem('deaaz_admin_auth');
       location.reload();
     }
 
-    // Auto-login se a sessão já estiver guardada
-    if (sessionStorage.getItem('deaaz_logado') === 'true') {
+    if (sessionStorage.getItem('deaaz_admin_auth') === 'true') {
       document.getElementById('auth-overlay').style.display = 'none';
       document.getElementById('admin-panel').style.display = 'block';
     }
 
-    // ==========================================
-    // 2. PRÉ-VISUALIZAÇÃO DE IMAGEM
-    // ==========================================
-    var imagemBase64 = "";
-
-    function carregarImagemPC(event) {
-      var file = event.target.files[0];
-      var box = document.getElementById('preview-box');
-
-      if (file) {
-        if (file.size > 5 * 1024 * 1024) {
-          alert("O ficheiro deve ter no máximo 5MB.");
-          event.target.value = "";
-          return;
-        }
-
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          imagemBase64 = e.target.result;
-          box.innerHTML = '<img src="' + imagemBase64 + '" alt="Preview">';
-        };
-        reader.readAsDataURL(file);
+    // 2. PRÉ-VISUALIZAÇÃO DE URL
+    function atualizarPrevisao(url) {
+      const box = document.getElementById('preview-box');
+      if (url && url.trim() !== '') {
+        box.innerHTML = `<img src="${url}" onerror="erroImagem()">`;
       } else {
-        imagemBase64 = "";
-        box.innerHTML = '<i class="fa-regular fa-image fa-2x"></i>';
+        box.innerHTML = `<i class="fa-regular fa-image fa-2x"></i>`;
       }
     }
 
-    // ==========================================
-    // 3. ENVIO DO FORMULÁRIO
-    // ==========================================
+    function erroImagem() {
+      const box = document.getElementById('preview-box');
+      box.innerHTML = `<span style="color: #ef4444; font-size: 0.85rem; font-weight: 600;">Link de imagem inválido</span>`;
+    }
+
+    // 3. GRAVAÇÃO DO PRODUTO NO LOCALSTORAGE DA LOJA
     document.getElementById('add-product-form').addEventListener('submit', function(e) {
       e.preventDefault();
 
-      var btn = document.getElementById('btn-guardar');
+      const btn = document.getElementById('btn-guardar');
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> A guardar...';
       btn.disabled = true;
 
-      var novoProduto = {
+      const novoProduto = {
+        id: Date.now(),
         nome: document.getElementById('nome').value,
         preco: parseFloat(document.getElementById('preco').value),
         categoria: document.getElementById('categoria').value,
         letra: document.getElementById('letra').value.toUpperCase(),
         icone: document.getElementById('icone').value,
-        imagem: imagemBase64
+        imagem: document.getElementById('imagem').value.trim()
       };
 
-      console.log("Produto Pronto para Enviar:", novoProduto);
+      const produtosGuardados = JSON.parse(localStorage.getItem('deaaz_produtos_extras') || '[]');
+      produtosGuardados.unshift(novoProduto);
+      localStorage.setItem('deaaz_produtos_extras', JSON.stringify(produtosGuardados));
 
       setTimeout(function() {
-        alert("✅ Produto pronto para integração!");
+        alert("✅ Produto inserido na loja com sucesso!");
+        document.getElementById('add-product-form').reset();
+        document.getElementById('preview-box').innerHTML = `<i class="fa-regular fa-image fa-2x"></i>`;
         btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Inserir Produto na Loja';
         btn.disabled = false;
-      }, 600);
+      }, 300);
     });
   </script>
 </body>
