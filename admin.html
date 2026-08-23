@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DeAaZ - Painel de Administração</title>
   
+  <!-- Google Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -25,34 +26,6 @@
       padding: 40px 16px;
     }
 
-    /* Modal de Proteção por Password */
-    #auth-overlay {
-      position: fixed;
-      inset: 0;
-      background: #0f172a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 99999;
-    }
-
-    .auth-box {
-      background: #ffffff;
-      padding: 36px 28px;
-      border-radius: 16px;
-      max-width: 380px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-    }
-
-    .auth-box input {
-      margin: 16px 0 14px 0;
-      text-align: center;
-    }
-
-    /* Painel do Formulário */
     .admin-container {
       max-width: 650px;
       margin: 0 auto;
@@ -61,7 +34,6 @@
       border-radius: 16px;
       border: 1px solid #e2e8f0;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-      display: none;
     }
 
     .header-admin {
@@ -82,39 +54,6 @@
 
     .logo span {
       color: #2563eb;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .badge {
-      font-size: 0.8rem;
-      background: #e0e7ff;
-      color: #4338ca;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-weight: 700;
-    }
-
-    .btn-logout {
-      background: none;
-      border: 1px solid #cbd5e1;
-      padding: 5px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      color: #64748b;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-
-    .btn-logout:hover {
-      background: #fee2e2;
-      color: #dc2626;
-      border-color: #fca5a5;
     }
 
     h1 {
@@ -191,9 +130,10 @@
       font-size: 0.85rem;
     }
 
+    /* PREVISÃO DA FOTO */
     .preview-box {
       width: 100%;
-      height: 180px;
+      height: 160px;
       background: #f1f5f9;
       border: 2px dashed #cbd5e1;
       border-radius: 8px;
@@ -214,28 +154,10 @@
 </head>
 <body>
 
-  <!-- ECRÃ DE LOGIN -->
-  <div id="auth-overlay">
-    <div class="auth-box">
-      <div class="logo" style="margin-bottom: 12px;">De<span>AaZ</span></div>
-      <h2 style="font-size: 1.15rem; margin-bottom: 6px;">Acesso Restrito</h2>
-      <p style="font-size: 0.85rem; color: #64748b;">Digita a password para aceder ao painel:</p>
-      
-      <input type="password" id="admin-pass" placeholder="••••••••" onkeydown="verificarEnter(event)">
-      <button type="button" class="btn-submit" onclick="autenticar()" style="padding: 10px;">
-        <i class="fa-solid fa-lock-open"></i> Entrar
-      </button>
-    </div>
-  </div>
-
-  <!-- PAINEL ADMINISTRATIVO -->
-  <div class="admin-container" id="admin-panel">
+  <div class="admin-container">
     <div class="header-admin">
       <a href="index.html" class="logo">De<span>AaZ</span></a>
-      <div class="header-actions">
-        <span class="badge">Painel Gestor</span>
-        <button type="button" class="btn-logout" onclick="fazerLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</button>
-      </div>
+      <span style="font-size: 0.8rem; background: #e0e7ff; color: #4338ca; padding: 4px 10px; border-radius: 20px; font-weight: 700;">Painel Gestor</span>
     </div>
 
     <h1><i class="fa-solid fa-box-open" style="color: #2563eb;"></i> Adicionar Novo Produto</h1>
@@ -285,14 +207,14 @@
       </div>
 
       <div class="form-group">
-        <label>URL da Imagem do Produto:</label>
+        <label>URL da Foto do Produto (Link da Imagem):</label>
         <input type="url" id="imagem" placeholder="https://exemplo.com/foto.jpg" oninput="atualizarPrevisao(this.value)">
         <div class="preview-box" id="preview-box">
           <i class="fa-regular fa-image fa-2x"></i>
         </div>
       </div>
 
-      <button type="submit" class="btn-submit" id="btn-guardar">
+      <button type="submit" class="btn-submit">
         <i class="fa-solid fa-cloud-arrow-up"></i> Inserir Produto na Loja
       </button>
     </form>
@@ -301,40 +223,6 @@
   </div>
 
   <script>
-    // 1. SISTEMA DE PASSWORD
-    const ADMIN_PASS = "admin123";
-
-    function autenticar() {
-      const passInput = document.getElementById('admin-pass');
-      if (passInput.value.trim() === ADMIN_PASS) {
-        sessionStorage.setItem('deaaz_admin_auth', 'true');
-        document.getElementById('auth-overlay').style.display = 'none';
-        document.getElementById('admin-panel').style.display = 'block';
-      } else {
-        alert("❌ Password incorreta!");
-        passInput.value = "";
-        passInput.focus();
-      }
-    }
-
-    function verificarEnter(event) {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        autenticar();
-      }
-    }
-
-    function fazerLogout() {
-      sessionStorage.removeItem('deaaz_admin_auth');
-      location.reload();
-    }
-
-    if (sessionStorage.getItem('deaaz_admin_auth') === 'true') {
-      document.getElementById('auth-overlay').style.display = 'none';
-      document.getElementById('admin-panel').style.display = 'block';
-    }
-
-    // 2. PRÉ-VISUALIZAÇÃO DE URL
     function atualizarPrevisao(url) {
       const box = document.getElementById('preview-box');
       if (url && url.trim() !== '') {
@@ -349,35 +237,42 @@
       box.innerHTML = `<span style="color: #ef4444; font-size: 0.85rem; font-weight: 600;">Link de imagem inválido</span>`;
     }
 
-    // 3. GRAVAÇÃO DO PRODUTO NO LOCALSTORAGE DA LOJA
-    document.getElementById('add-product-form').addEventListener('submit', function(e) {
+    document.getElementById('add-product-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      const btn = document.getElementById('btn-guardar');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> A guardar...';
+      
+      const btn = document.querySelector('.btn-submit');
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> A guardar...`;
       btn.disabled = true;
 
-      const novoProduto = {
-        id: Date.now(),
+      const produto = {
         nome: document.getElementById('nome').value,
         preco: parseFloat(document.getElementById('preco').value),
         categoria: document.getElementById('categoria').value,
         letra: document.getElementById('letra').value.toUpperCase(),
         icone: document.getElementById('icone').value,
-        imagem: document.getElementById('imagem').value.trim()
+        imagem: document.getElementById('imagem').value
       };
 
-      const produtosGuardados = JSON.parse(localStorage.getItem('deaaz_produtos_extras') || '[]');
-      produtosGuardados.unshift(novoProduto);
-      localStorage.setItem('deaaz_produtos_extras', JSON.stringify(produtosGuardados));
+      try {
+        const resposta = await fetch('/api/produtos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(produto)
+        });
 
-      setTimeout(function() {
-        alert("✅ Produto inserido na loja com sucesso!");
-        document.getElementById('add-product-form').reset();
-        document.getElementById('preview-box').innerHTML = `<i class="fa-regular fa-image fa-2x"></i>`;
-        btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Inserir Produto na Loja';
+        if (resposta.ok) {
+          alert("✅ Produto adicionado à loja com sucesso!");
+          document.getElementById('add-product-form').reset();
+          document.getElementById('preview-box').innerHTML = `<i class="fa-regular fa-image fa-2x"></i>`;
+        } else {
+          alert("❌ Erro ao guardar o produto na Base de Dados.");
+        }
+      } catch (err) {
+        alert("❌ Erro de ligação com a API.");
+      } finally {
+        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Inserir Produto na Loja`;
         btn.disabled = false;
-      }, 300);
+      }
     });
   </script>
 </body>
