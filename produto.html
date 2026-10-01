@@ -14,9 +14,42 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
     body { background-color: #f8fafc; color: #0f172a; line-height: 1.6; }
 
-    .header-nav { background: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header-nav { background: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
     .logo { font-size: 1.5rem; font-weight: 800; color: #0f172a; text-decoration: none; }
     .logo span { color: #2563eb; }
+
+    /* ESTILO DO BOTÃO DO CARRINHO */
+    .user-actions { display: flex; align-items: center; }
+    .cart-btn {
+      position: relative;
+      background: #f1f5f9;
+      padding: 10px 18px;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #0f172a;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+    .cart-btn:hover { background: #e2e8f0; }
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #f97316;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     .product-page-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
     
@@ -62,11 +95,16 @@
 </head>
 <body>
 
+  <!-- CABEÇALHO ATUALIZADO: ADMIN REMOVIDO, CARRINHO ADICIONADO -->
   <header class="header-nav">
     <a href="index.html" class="logo">De<span>AaZ</span></a>
-    <a href="admin.html" style="text-decoration:none; font-size:0.85rem; font-weight:600; color:#64748b;">
-      <i class="fa-solid fa-gear"></i> Painel Admin
-    </a>
+    <div class="user-actions">
+      <a href="carrinho.html" class="cart-btn">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span>Carrinho</span>
+        <div class="cart-badge" id="cart-counter">0</div>
+      </a>
+    </div>
   </header>
 
   <div class="product-page-container">
@@ -98,7 +136,7 @@
           <p id="product-desc">Sem descrição detalhada disponível.</p>
         </div>
 
-        <button type="button" class="btn-buy" onclick="alert('Item adicionado ao carrinho com a cor selecionada!')">
+        <button type="button" class="btn-buy" id="btn-comprar" onclick="adicionarAoCarrinhoEIr()">
           <i class="fa-solid fa-cart-shopping"></i> Comprar Agora
         </button>
       </div>
@@ -115,9 +153,57 @@
       "Content-Type": "application/json"
     };
 
-    // Lê o ID da URL (ex: produto.html?id=123)
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
+
+    let produtoAtual = null;
+    let fotoSelecionada = '';
+    let varianteSelecionada = 'Padrão';
+
+    // Gestão do Badge do Carrinho
+    function atualizarContadorCarrinho() {
+      let carrinho = [];
+      try {
+        carrinho = JSON.parse(localStorage.getItem('deaaz_cart')) || [];
+      } catch (e) {
+        carrinho = [];
+      }
+      const total = carrinho.reduce((sum, item) => sum + (item.qtd || 1), 0);
+      const badge = document.getElementById('cart-counter');
+      if (badge) badge.innerText = total;
+    }
+
+    // Ação ao carregar no botão Comprar Agora
+    function adicionarAoCarrinhoEIr() {
+      if (!produtoAtual) return;
+
+      let carrinho = [];
+      try {
+        carrinho = JSON.parse(localStorage.getItem('deaaz_cart')) || [];
+      } catch (e) {
+        carrinho = [];
+      }
+
+      // Procura se já existe com o mesmo ID e a mesma variante selecionada
+      const itemExistente = carrinho.find(p => p.id.toString() === produtoAtual.id.toString() && p.variante === varianteSelecionada);
+
+      if (itemExistente) {
+        itemExistente.qtd = (itemExistente.qtd || 1) + 1;
+      } else {
+        carrinho.push({
+          id: produtoAtual.id,
+          nome: produtoAtual.nome,
+          preco: produtoAtual.preco,
+          categoria: produtoAtual.categoria,
+          imagem: fotoSelecionada || produtoAtual.imagem,
+          variante: varianteSelecionada,
+          qtd: 1
+        });
+      }
+
+      localStorage.setItem('deaaz_cart', JSON.stringify(carrinho));
+      window.location.href = "carrinho.html";
+    }
 
     async function carregarDetalheProduto() {
       if (!productId) {
@@ -134,19 +220,20 @@
           return;
         }
 
-        const p = data[0];
+        produtoAtual = data[0];
 
         // Atualiza textos
-        document.getElementById('bread-category').innerText = p.categoria || 'Geral';
-        document.getElementById('bread-name').innerText = p.nome;
-        document.getElementById('product-category').innerText = p.categoria || 'Geral';
-        document.getElementById('product-title').innerText = p.nome;
-        document.getElementById('product-price').innerText = `${parseFloat(p.preco).toFixed(2)} €`;
-        document.getElementById('product-desc').innerText = p.descricao || 'Este produto ainda não possui especificações detalhadas.';
+        document.getElementById('bread-category').innerText = produtoAtual.categoria || 'Geral';
+        document.getElementById('bread-name').innerText = produtoAtual.nome;
+        document.getElementById('product-category').innerText = produtoAtual.categoria || 'Geral';
+        document.getElementById('product-title').innerText = produtoAtual.nome;
+        document.getElementById('product-price').innerText = `${parseFloat(produtoAtual.preco).toFixed(2)} €`;
+        document.getElementById('product-desc').innerText = produtoAtual.descricao || 'Este produto ainda não possui especificações detalhadas.';
 
         // Imagem principal padrão
         const mainImg = document.getElementById('main-product-img');
-        mainImg.src = p.imagem || 'https://via.placeholder.com/400';
+        mainImg.src = produtoAtual.imagem || 'https://via.placeholder.com/400';
+        fotoSelecionada = produtoAtual.imagem;
 
         // Galeria de miniaturas (Foto Principal + Variantes)
         const thumbsRow = document.getElementById('thumbnails-row');
@@ -154,19 +241,16 @@
 
         const todasAsFotos = [];
 
-        // Adiciona foto padrão como opção 1
-        if (p.imagem) {
-          todasAsFotos.push({ nome: 'Original', foto: p.imagem });
+        if (produtoAtual.imagem) {
+          todasAsFotos.push({ nome: 'Padrão', foto: produtoAtual.imagem });
         }
 
-        // Adiciona as variantes (Mais do mesmo / Cores)
-        if (Array.isArray(p.variantes)) {
-          p.variantes.forEach(v => {
+        if (Array.isArray(produtoAtual.variantes)) {
+          produtoAtual.variantes.forEach(v => {
             if (v.foto) todasAsFotos.push(v);
           });
         }
 
-        // Renderiza sub-itens para seleção
         if (todasAsFotos.length > 1) {
           todasAsFotos.forEach((item, index) => {
             const thumb = document.createElement('div');
@@ -174,18 +258,17 @@
             thumb.innerHTML = `<img src="${item.foto}" alt="${item.nome}">`;
             
             thumb.onclick = () => {
-              // Troca foto principal com efeito visual
               mainImg.style.opacity = '0.4';
               setTimeout(() => {
                 mainImg.src = item.foto;
                 mainImg.style.opacity = '1';
               }, 120);
 
-              // Atualiza classe ativa nas miniaturas
               document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
               thumb.classList.add('active');
 
-              // Atualiza o nome da cor/variante selecionada
+              varianteSelecionada = item.nome;
+              fotoSelecionada = item.foto;
               document.getElementById('selected-color-text').innerText = item.nome;
             };
 
@@ -201,6 +284,7 @@
       }
     }
 
+    atualizarContadorCarrinho();
     carregarDetalheProduto();
   </script>
 </body>
