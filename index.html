@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
+    /* RESET & VARIÁVEIS */
     * {
       margin: 0;
       padding: 0;
@@ -20,9 +21,9 @@
     }
 
     :root {
-      --primary: #2563eb;
+      --primary: #2563eb;       /* Azul elétrico */
       --primary-dark: #1d4ed8;
-      --accent: #f97316;
+      --accent: #f97316;        /* Laranja para destaques */
       --bg-light: #f8fafc;
       --text-dark: #0f172a;
       --text-muted: #64748b;
@@ -120,7 +121,7 @@
 
     .user-actions {
       display: flex;
-      gap: 16px;
+      gap: 20px;
       align-items: center;
     }
 
@@ -157,7 +158,7 @@
       justify-content: center;
     }
 
-    /* HERO */
+    /* HERO BANNER */
     .hero {
       max-width: 1200px;
       margin: 20px auto;
@@ -176,7 +177,7 @@
     }
 
     .hero-content h1 {
-      font-size: 2.4rem;
+      font-size: 2.5rem;
       font-weight: 800;
       margin-bottom: 12px;
       line-height: 1.2;
@@ -203,7 +204,7 @@
       background: var(--primary-dark);
     }
 
-    /* CATEGORIAS */
+    /* CATEGORIAS EM DESTAQUE */
     .section {
       max-width: 1200px;
       margin: 40px auto;
@@ -234,6 +235,7 @@
       color: var(--text-dark);
       border: 1px solid var(--border);
       transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
     }
 
     .category-card:hover {
@@ -254,7 +256,7 @@
       font-weight: 600;
     }
 
-    /* GRELHA DE PRODUTOS CLICÁVEIS */
+    /* GRELHA DE PRODUTOS */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
@@ -263,27 +265,25 @@
 
     .product-card {
       background: var(--card-bg);
-      border-radius: 14px;
+      border-radius: 12px;
       border: 1px solid var(--border);
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
       text-decoration: none;
       color: inherit;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .product-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
-      border-color: #cbd5e1;
+      box-shadow: var(--shadow);
     }
 
     .product-img {
       width: 100%;
-      height: 190px;
-      background: #f8fafc;
+      height: 180px;
+      background: #f1f5f9;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -295,11 +295,6 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.2s ease;
-    }
-
-    .product-card:hover .product-img img {
-      transform: scale(1.04);
     }
 
     .product-info {
@@ -313,15 +308,16 @@
       font-size: 0.75rem;
       color: var(--text-muted);
       text-transform: uppercase;
-      font-weight: 700;
+      font-weight: 600;
       margin-bottom: 4px;
     }
 
     .product-title {
       font-size: 0.95rem;
-      font-weight: 700;
+      font-weight: 600;
       margin-bottom: 8px;
       color: var(--text-dark);
+      text-decoration: none;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -329,7 +325,7 @@
     }
 
     .product-price {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 800;
       color: var(--primary);
       margin-top: auto;
@@ -340,15 +336,15 @@
       width: 100%;
       background: var(--bg-light);
       border: 1px solid var(--border);
-      padding: 9px;
+      padding: 8px;
       border-radius: 8px;
-      font-weight: 700;
+      font-weight: 600;
       font-size: 0.85rem;
-      color: var(--text-dark);
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
       transition: all 0.2s;
     }
 
@@ -405,10 +401,19 @@
     }
 
     @media (max-width: 768px) {
-      .main-header { flex-direction: column; align-items: stretch; }
-      .user-actions { justify-content: space-between; }
-      .hero-card { padding: 24px; }
-      .hero-content h1 { font-size: 1.8rem; }
+      .main-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .user-actions {
+        justify-content: flex-end;
+      }
+      .hero-card {
+        padding: 24px;
+      }
+      .hero-content h1 {
+        font-size: 1.8rem;
+      }
     }
   </style>
 </head>
@@ -430,13 +435,9 @@
         <button type="button" onclick="pesquisarProdutos()"><i class="fa-solid fa-magnifying-glass"></i></button>
       </div>
 
-      <!-- AÇÕES -->
+      <!-- AÇÕES DO UTILIZADOR -->
       <div class="user-actions">
-        <a href="admin.html" class="action-btn">
-          <i class="fa-solid fa-gear"></i>
-          <span>Gestão</span>
-        </a>
-        <a href="#" class="action-btn cart-btn">
+        <a href="carrinho.html" class="action-btn cart-btn">
           <i class="fa-solid fa-bag-shopping"></i>
           <span>Carrinho</span>
           <div class="cart-badge" id="cart-counter">0</div>
@@ -462,41 +463,41 @@
       <span>Explorar por Categoria</span>
     </div>
     <div class="categories-grid">
-      <div class="category-card" onclick="filtrarCategoria('tecnologia')" style="cursor:pointer;">
+      <div class="category-card" onclick="filtrarCategoria('tecnologia')">
         <i class="fa-solid fa-mobile-screen-button"></i>
         <span>Tecnologia</span>
       </div>
-      <div class="category-card" onclick="filtrarCategoria('casa')" style="cursor:pointer;">
+      <div class="category-card" onclick="filtrarCategoria('casa')">
         <i class="fa-solid fa-house"></i>
         <span>Casa & Lar</span>
       </div>
-      <div class="category-card" onclick="filtrarCategoria('moda')" style="cursor:pointer;">
+      <div class="category-card" onclick="filtrarCategoria('moda')">
         <i class="fa-solid fa-shirt"></i>
         <span>Moda</span>
       </div>
-      <div class="category-card" onclick="filtrarCategoria('desporto')" style="cursor:pointer;">
+      <div class="category-card" onclick="filtrarCategoria('desporto')">
         <i class="fa-solid fa-dumbbell"></i>
         <span>Desporto</span>
       </div>
-      <div class="category-card" onclick="filtrarCategoria('beleza')" style="cursor:pointer;">
+      <div class="category-card" onclick="filtrarCategoria('beleza')">
         <i class="fa-solid fa-spray-can-sparkles"></i>
         <span>Beleza</span>
       </div>
-      <div class="category-card" onclick="filtrarCategoria('todos')" style="cursor:pointer;">
+      <div class="category-card" onclick="filtrarCategoria('todos')">
         <i class="fa-solid fa-border-all"></i>
         <span>Ver Todos</span>
       </div>
     </div>
   </section>
 
-  <!-- GRELHA DE PRODUTOS DINÂMICOS -->
+  <!-- PRODUTOS EM DESTAQUE (LIGADOS AO SUPABASE) -->
   <section class="section" id="produtos">
     <div class="section-title">
       <span id="titulo-seccao">Produtos Disponíveis</span>
     </div>
     <div class="products-grid" id="produtos-container">
       <p style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">
-        <i class="fa-solid fa-spinner fa-spin"></i> A carregar catálogo...
+        <i class="fa-solid fa-spinner fa-spin"></i> A carregar catálogo do Supabase...
       </p>
     </div>
   </section>
@@ -531,7 +532,7 @@
     </div>
   </footer>
 
-  <!-- SCRIPT DIRETO DE CARREGAMENTO DOS PRODUTOS REAIS -->
+  <!-- SCRIPT PARA IR BUSCAR OS PRODUTOS AO SUPABASE -->
   <script>
     const API_URL = "https://omtlfwrrqketuaxufmkd.supabase.co/rest/v1";
     const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tdGxmd3JycWtldHVheHVmbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDA5OTgsImV4cCI6MjEwMTY3Njk5OH0.vTDHpe2HmFNgJ2T9diTwbGParsMpcoeqDzhoivrtELo";
@@ -547,14 +548,21 @@
     async function buscarProdutosLoja() {
       const container = document.getElementById('produtos-container');
       try {
-        const res = await fetch(`${API_URL}/produtos?order=created_at.desc`, { headers: HEADERS });
+        // Pede os produtos diretamente à tabela 'produtos' ordenada por id decrescente
+        const res = await fetch(`${API_URL}/produtos?order=id.desc`, { headers: HEADERS });
+        
+        if (!res.ok) {
+          const errDetail = await res.text();
+          console.error("Erro Supabase:", res.status, errDetail);
+          throw new Error(`Erro na API (${res.status})`);
+        }
+
         catalogoGlobal = await res.json();
 
         if (!Array.isArray(catalogoGlobal) || catalogoGlobal.length === 0) {
           container.innerHTML = `
             <div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">
-              Ainda não existem produtos disponíveis na loja.<br>
-              <a href="admin.html" style="color: #2563eb; font-weight: 700; text-decoration: none;">Adicionar produtos no Painel</a>
+              Ainda não existem produtos disponíveis na base de dados.
             </div>
           `;
           return;
@@ -563,14 +571,14 @@
         renderizarProdutos(catalogoGlobal);
       } catch (err) {
         console.error(err);
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #ef4444;">Erro ao ligar ao catálogo.</p>`;
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 30px;">Erro ao ligar ao catálogo do Supabase.</p>`;
       }
     }
 
     function renderizarProdutos(lista) {
       const container = document.getElementById('produtos-container');
       if (lista.length === 0) {
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 30px;">Nenhum produto encontrado nesta categoria.</p>`;
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 30px;">Nenhum produto encontrado.</p>`;
         return;
       }
 
@@ -578,7 +586,6 @@
         const foto = p.imagem || 'https://via.placeholder.com/250';
         const precoFormatado = parseFloat(p.preco || 0).toFixed(2);
 
-        // O cartão inteiro é uma tag <a> que redireciona diretamente com o ID real
         return `
           <a href="produto.html?id=${p.id}" class="product-card">
             <div class="product-img">
@@ -626,7 +633,7 @@
       if (e.key === 'Enter') pesquisarProdutos();
     });
 
-    // Inicia a pesquisa direta ao abrir
+    // Iniciar carregamento
     buscarProdutosLoja();
   </script>
 </body>
