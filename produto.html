@@ -18,7 +18,6 @@
     .logo { font-size: 1.5rem; font-weight: 800; color: #0f172a; text-decoration: none; }
     .logo span { color: #2563eb; }
 
-    /* ESTILO DO BOTÃO DO CARRINHO */
     .user-actions { display: flex; align-items: center; }
     .cart-btn {
       position: relative;
@@ -60,7 +59,6 @@
 
     /* ÁREA DA FOTO E MINIATURAS */
     .gallery-container { display: flex; flex-direction: column; gap: 16px; }
-
     .main-image-box { width: 100%; height: 420px; background: #f1f5f9; border-radius: 14px; overflow: hidden; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; }
     .main-image-box img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.25s ease; }
 
@@ -84,18 +82,58 @@
     .description-box h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: #334155; }
     .description-box p { color: #475569; font-size: 0.95rem; white-space: pre-line; }
 
-    .btn-buy { background: #2563eb; color: #ffffff; border: none; padding: 16px 24px; border-radius: 10px; font-weight: 700; font-size: 1.05rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.2s; width: 100%; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
-    .btn-buy:hover { background: #1d4ed8; }
+    /* BOTÕES DE AÇÃO */
+    .actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: auto; }
+    
+    .btn-cart-secondary {
+      background: #eff6ff;
+      color: #2563eb;
+      border: 2px solid #2563eb;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+    .btn-cart-secondary:hover {
+      background: #dbeafe;
+    }
+
+    .btn-buy-primary {
+      background: #2563eb;
+      color: #ffffff;
+      border: 2px solid #2563eb;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    .btn-buy-primary:hover {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+    }
 
     @media (max-width: 850px) {
       .product-layout { grid-template-columns: 1fr; gap: 28px; padding: 20px; }
       .main-image-box { height: 320px; }
+      .actions-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- CABEÇALHO ATUALIZADO: ADMIN REMOVIDO, CARRINHO ADICIONADO -->
   <header class="header-nav">
     <a href="index.html" class="logo">De<span>AaZ</span></a>
     <div class="user-actions">
@@ -136,9 +174,15 @@
           <p id="product-desc">Sem descrição detalhada disponível.</p>
         </div>
 
-        <button type="button" class="btn-buy" id="btn-comprar" onclick="adicionarAoCarrinhoEIr()">
-          <i class="fa-solid fa-cart-shopping"></i> Comprar Agora
-        </button>
+        <!-- DOIS BOTÕES: ADICIONAR E COMPRAR -->
+        <div class="actions-row">
+          <button type="button" class="btn-cart-secondary" onclick="adicionarProduto(false)">
+            <i class="fa-solid fa-cart-plus"></i> Adicionar ao Carrinho
+          </button>
+          <button type="button" class="btn-buy-primary" onclick="adicionarProduto(true)">
+            <i class="fa-solid fa-bolt"></i> Comprar Agora
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -160,7 +204,6 @@
     let fotoSelecionada = '';
     let varianteSelecionada = 'Padrão';
 
-    // Gestão do Badge do Carrinho
     function atualizarContadorCarrinho() {
       let carrinho = [];
       try {
@@ -173,8 +216,7 @@
       if (badge) badge.innerText = total;
     }
 
-    // Ação ao carregar no botão Comprar Agora
-    function adicionarAoCarrinhoEIr() {
+    function adicionarProduto(redirecionarParaCarrinho = false) {
       if (!produtoAtual) return;
 
       let carrinho = [];
@@ -184,7 +226,6 @@
         carrinho = [];
       }
 
-      // Procura se já existe com o mesmo ID e a mesma variante selecionada
       const itemExistente = carrinho.find(p => p.id.toString() === produtoAtual.id.toString() && p.variante === varianteSelecionada);
 
       if (itemExistente) {
@@ -202,7 +243,13 @@
       }
 
       localStorage.setItem('deaaz_cart', JSON.stringify(carrinho));
-      window.location.href = "carrinho.html";
+      atualizarContadorCarrinho();
+
+      if (redirecionarParaCarrinho) {
+        window.location.href = "carrinho.html";
+      } else {
+        alert(`"${produtoAtual.nome}" (${varianteSelecionada}) adicionado ao carrinho!`);
+      }
     }
 
     async function carregarDetalheProduto() {
@@ -222,7 +269,6 @@
 
         produtoAtual = data[0];
 
-        // Atualiza textos
         document.getElementById('bread-category').innerText = produtoAtual.categoria || 'Geral';
         document.getElementById('bread-name').innerText = produtoAtual.nome;
         document.getElementById('product-category').innerText = produtoAtual.categoria || 'Geral';
@@ -230,12 +276,10 @@
         document.getElementById('product-price').innerText = `${parseFloat(produtoAtual.preco).toFixed(2)} €`;
         document.getElementById('product-desc').innerText = produtoAtual.descricao || 'Este produto ainda não possui especificações detalhadas.';
 
-        // Imagem principal padrão
         const mainImg = document.getElementById('main-product-img');
         mainImg.src = produtoAtual.imagem || 'https://via.placeholder.com/400';
         fotoSelecionada = produtoAtual.imagem;
 
-        // Galeria de miniaturas (Foto Principal + Variantes)
         const thumbsRow = document.getElementById('thumbnails-row');
         thumbsRow.innerHTML = '';
 
