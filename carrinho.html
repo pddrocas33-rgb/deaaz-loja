@@ -39,7 +39,7 @@
     .breadcrumb { max-width: 1200px; margin: 20px auto 0; padding: 0 16px; font-size: 0.85rem; color: var(--text-muted); }
     .breadcrumb a { color: var(--text-muted); text-decoration: none; }
     
-    .cart-container { max-width: 1200px; margin: 30px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 380px; gap: 30px; }
+    .cart-container { max-width: 1200px; margin: 30px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 420px; gap: 30px; }
     .cart-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
     .cart-items-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
     
@@ -61,26 +61,75 @@
     .btn-remove { background: none; border: none; color: #ef4444; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 4px; }
     .btn-remove:hover { text-decoration: underline; }
 
-    .summary-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; height: fit-content; }
-    .summary-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-    
-    .shipping-details-box {
+    .summary-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; height: fit-content; box-shadow: var(--shadow); }
+    .summary-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+
+    /* SELECÇÃO DE MORADA DE ENVIO */
+    .shipping-section {
       background: #f8fafc;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 18px;
-      font-size: 0.85rem;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
     }
-    .shipping-details-box strong { color: var(--text-dark); display: block; margin-bottom: 4px; }
-    .shipping-details-box p { color: var(--text-muted); margin: 0; line-height: 1.4; }
+    .shipping-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .shipping-option input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .shipping-preview {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.85rem;
+      color: var(--text-dark);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    .shipping-form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .shipping-form-fields.hidden { display: none; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .field-group { display: flex; flex-direction: column; gap: 4px; }
+    .field-group label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    .field-group input, .field-group select {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .field-group input:focus, .field-group select:focus {
+      border-color: var(--primary);
+    }
 
     .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; color: var(--text-muted); }
-    .summary-row.total { font-size: 1.2rem; font-weight: 800; color: var(--text-dark); margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
-    .shipping-free { color: #16a34a; font-weight: 600; }
+    .summary-row.total { font-size: 1.25rem; font-weight: 800; color: var(--text-dark); margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .shipping-free { color: #16a34a; font-weight: 700; }
 
     #paypal-button-container {
-      margin-top: 18px;
+      margin-top: 16px;
     }
 
     .btn-simulate {
@@ -88,12 +137,12 @@
       background: #10b981;
       color: white;
       border: none;
-      padding: 12px;
+      padding: 13px;
       border-radius: 8px;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       cursor: pointer;
-      margin-top: 12px;
+      margin-top: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -102,10 +151,11 @@
     }
     .btn-simulate:hover { background: #059669; }
 
-    .continue-shopping { display: block; text-align: center; margin-top: 15px; color: var(--primary); text-decoration: none; font-size: 0.85rem; font-weight: 600; }
+    .continue-shopping { display: block; text-align: center; margin-top: 16px; color: var(--primary); text-decoration: none; font-size: 0.85rem; font-weight: 600; }
 
     @media (max-width: 850px) {
       .cart-container { grid-template-columns: 1fr; }
+      .field-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -144,11 +194,76 @@
 
     <div>
       <div class="summary-card">
-        <h2 class="summary-title">Resumo do Pedido</h2>
+        <h2 class="summary-title"><i class="fa-solid fa-truck-fast" style="color:var(--primary);"></i> Morada de Envio</h2>
         
-        <div class="shipping-details-box" id="shipping-details">
-          <p><i class="fa-solid fa-spinner fa-spin"></i> A carregar morada de envio...</p>
+        <!-- SECÇÃO DE SELEÇÃO DE MORADA -->
+        <div class="shipping-section">
+          <!-- OPÇÃO 1: MORADA DE REGISTO -->
+          <label class="shipping-option" id="opt-registo-label" style="display: none;">
+            <input type="radio" name="opcao_envio" value="registo" id="radio-registo" checked onchange="alternarModoMorada()">
+            <span>Enviar para a morada de registo</span>
+          </label>
+
+          <div class="shipping-preview" id="preview-morada-registo" style="display: none;">
+            <div id="dados-morada-registo-texto">A carregar morada de registo...</div>
+          </div>
+
+          <!-- OPÇÃO 2: OUTRA MORADA OU CLIENTE NÃO AUTENTICADO -->
+          <label class="shipping-option" style="margin-top: 10px;">
+            <input type="radio" name="opcao_envio" value="outra" id="radio-outra" onchange="alternarModoMorada()">
+            <span id="label-outra-morada">Enviar para outra morada</span>
+          </label>
+
+          <!-- CAMPOS DE MORADA EDITÁVEL -->
+          <div class="shipping-form-fields hidden" id="campos-morada-editavel">
+            <div class="field-group">
+              <label>Nome Completo do Destinatário</label>
+              <input type="text" id="env-nome" placeholder="Nome de quem recebe">
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label>Email</label>
+                <input type="email" id="env-email" placeholder="email@exemplo.com">
+              </div>
+              <div class="field-group">
+                <label>NIF / Ref. Fiscal</label>
+                <input type="text" id="env-nif" placeholder="Contribuinte">
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label>Morada (Rua, Nº, Andar/Porta)</label>
+              <input type="text" id="env-rua" placeholder="Ex: Av. da Liberdade, 10, 2º Dto">
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label>Código Postal</label>
+                <input type="text" id="env-cp" placeholder="1000-001">
+              </div>
+              <div class="field-group">
+                <label>Cidade</label>
+                <input type="text" id="env-cidade" placeholder="Lisboa">
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label>País</label>
+              <select id="env-pais">
+                <option value="Portugal" selected>Portugal</option>
+                <option value="Espanha">Espanha</option>
+                <option value="França">França</option>
+                <option value="Brasil">Brasil</option>
+                <option value="Angola">Angola</option>
+                <option value="Moçambique">Moçambique</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
+          </div>
         </div>
+
+        <h2 class="summary-title"><i class="fa-solid fa-receipt" style="color:var(--primary);"></i> Resumo</h2>
 
         <div class="summary-row">
           <span>Subtotal</span>
@@ -164,10 +279,10 @@
           <span id="resumo-total">0.00€</span>
         </div>
 
-        <!-- PAYPAL -->
+        <!-- BOTÕES PAYPAL -->
         <div id="paypal-button-container"></div>
 
-        <!-- TESTE SEM CONTA PAYPAL -->
+        <!-- SIMULAR PAGAMENTO (TESTE DIRETO) -->
         <button type="button" class="btn-simulate" onclick="simularPagamentoImediato()">
           <i class="fa-solid fa-circle-check"></i> Simular Pagamento Concluído (Teste)
         </button>
@@ -187,6 +302,8 @@
       "Content-Type": "application/json",
       "Prefer": "return=representation"
     };
+
+    let dadosClienteSupabase = null;
 
     function obterCarrinho() {
       try {
@@ -213,27 +330,116 @@
       return carrinho.reduce((sum, item) => sum + (parseFloat(item.preco || 0) * parseInt(item.qtd || 1, 10)), 0);
     }
 
-    function carregarDadosEnvio() {
-      const box = document.getElementById('shipping-details');
-      const userSalvo = localStorage.getItem('deaaz_user');
+    /* GESTÃO DA MORADA DE ENVIO (REGISTO VS MANUAL) */
+    async function inicializarMoradaEnvio() {
+      const userLocal = localStorage.getItem('deaaz_user');
+      const optRegistoLabel = document.getElementById('opt-registo-label');
+      const previewRegisto = document.getElementById('preview-morada-registo');
+      const radioRegisto = document.getElementById('radio-registo');
+      const radioOutra = document.getElementById('radio-outra');
+      const labelOutra = document.getElementById('label-outra-morada');
 
-      if (!userSalvo) {
-        box.innerHTML = `
-          <strong><i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;"></i> Não iniciou sessão</strong>
-          <p>Para prosseguir com os dados de envio (morada, nif), por favor faça login na loja.</p>
-          <a href="index.html" style="color:#2563eb; font-weight:700; text-decoration:none; display:inline-block; margin-top:6px;">Fazer Login</a>
+      if (!userLocal) {
+        // Sem sessão iniciada: força o preenchimento manual
+        optRegistoLabel.style.display = 'none';
+        previewRegisto.style.display = 'none';
+        radioOutra.checked = true;
+        labelOutra.innerText = "Preencher dados de entrega";
+        alternarModoMorada();
+        return;
+      }
+
+      const user = JSON.parse(userLocal);
+
+      // Tenta obter os dados atualizados com Morada e NIF direto da tabela clientes do Supabase
+      try {
+        const res = await fetch(`${API_URL}/clientes?email=eq.${encodeURIComponent(user.email)}`, { headers: HEADERS });
+        const clientes = await res.json();
+        if (Array.isArray(clientes) && clientes.length > 0) {
+          dadosClienteSupabase = clientes[0];
+        } else {
+          dadosClienteSupabase = user;
+        }
+      } catch (e) {
+        dadosClienteSupabase = user;
+      }
+
+      if (dadosClienteSupabase && dadosClienteSupabase.morada) {
+        optRegistoLabel.style.display = 'flex';
+        previewRegisto.style.display = 'block';
+        radioRegisto.checked = true;
+        labelOutra.innerText = "Enviar para outra morada";
+
+        document.getElementById('dados-morada-registo-texto').innerHTML = `
+          <strong>${dadosClienteSupabase.nome}</strong> (NIF: ${dadosClienteSupabase.nif || 'Não indicado'})<br>
+          ${dadosClienteSupabase.morada}<br>
+          ${dadosClienteSupabase.codigo_postal || ''} ${dadosClienteSupabase.cidade || ''}, <strong>${dadosClienteSupabase.pais || 'Portugal'}</strong>
         `;
+      } else {
+        // Tem sessão mas não tinha morada guardada
+        optRegistoLabel.style.display = 'none';
+        previewRegisto.style.display = 'none';
+        radioOutra.checked = true;
+        labelOutra.innerText = "Indicar dados de envio";
+        document.getElementById('env-nome').value = dadosClienteSupabase?.nome || '';
+        document.getElementById('env-email').value = dadosClienteSupabase?.email || '';
+      }
+
+      alternarModoMorada();
+    }
+
+    function alternarModoMorada() {
+      const modoRegisto = document.getElementById('radio-registo').checked;
+      const previewRegisto = document.getElementById('preview-morada-registo');
+      const camposEditaveis = document.getElementById('campos-morada-editavel');
+
+      if (modoRegisto && dadosClienteSupabase?.morada) {
+        previewRegisto.style.display = 'block';
+        camposEditaveis.classList.add('hidden');
+      } else {
+        previewRegisto.style.display = 'none';
+        camposEditaveis.classList.remove('hidden');
+      }
+    }
+
+    function recolherDadosEnvioFinais() {
+      const modoRegisto = document.getElementById('radio-registo')?.checked;
+
+      if (modoRegisto && dadosClienteSupabase && dadosClienteSupabase.morada) {
+        return {
+          nome: dadosClienteSupabase.nome,
+          email: dadosClienteSupabase.email,
+          nif: dadosClienteSupabase.nif || 'Consumidor Final',
+          rua: dadosClienteSupabase.morada,
+          codigo_postal: dadosClienteSupabase.codigo_postal || '',
+          cidade: dadosClienteSupabase.cidade || '',
+          pais: dadosClienteSupabase.pais || 'Portugal'
+        };
+      }
+
+      // Lê campos editáveis
+      const nome = document.getElementById('env-nome').value.trim();
+      const email = document.getElementById('env-email').value.trim();
+      const nif = document.getElementById('env-nif').value.trim();
+      const rua = document.getElementById('env-rua').value.trim();
+      const cp = document.getElementById('env-cp').value.trim();
+      const cidade = document.getElementById('env-cidade').value.trim();
+      const pais = document.getElementById('env-pais').value;
+
+      if (!nome || !rua || !cp || !cidade) {
+        alert("Por favor preencha todos os campos da morada de envio (Nome, Rua, Código Postal e Cidade).");
         return null;
       }
 
-      const user = JSON.parse(userSalvo);
-      box.innerHTML = `
-        <strong><i class="fa-solid fa-location-dot" style="color:#2563eb;"></i> Enviar para:</strong>
-        <p><strong>${user.nome}</strong> (NIF: ${user.nif || 'Não indicado'})</p>
-        <p>${user.morada || 'Morada não definida'}</p>
-        <p>${user.codigo_postal || ''} ${user.cidade || ''}, ${user.pais || 'Portugal'}</p>
-      `;
-      return user;
+      return {
+        nome,
+        email: email || 'cliente@loja.com',
+        nif: nif || 'Consumidor Final',
+        rua,
+        codigo_postal: cp,
+        cidade,
+        pais
+      };
     }
 
     function alterarQtd(id, delta) {
@@ -316,28 +522,25 @@
 
     async function registarEncomendaPaga(transacaoInfo = {}) {
       const carrinho = obterCarrinho();
-      const user = carregarDadosEnvio();
+      const envio = recolherDadosEnvioFinais();
 
-      if (!user) {
-        alert("Erro: É obrigatório ter sessão iniciada com morada e NIF para registar o envio!");
-        return false;
-      }
+      if (!envio) return false;
 
       if (carrinho.length === 0) {
-        alert("O carrinho está vazio.");
+        alert("O teu carrinho está vazio.");
         return false;
       }
 
       const totalCalculado = calcularTotalCarrinho();
 
       const novaEncomenda = {
-        cliente_nome: user.nome,
-        cliente_email: user.email,
-        cliente_nif: user.nif || 'Não indicado',
-        morada_rua: user.morada || 'Morada não indicada',
-        morada_codigo_postal: user.codigo_postal || '',
-        morada_cidade: user.cidade || '',
-        morada_pais: user.pais || 'Portugal',
+        cliente_nome: envio.nome,
+        cliente_email: envio.email,
+        cliente_nif: envio.nif,
+        morada_rua: envio.rua,
+        morada_codigo_postal: envio.codigo_postal,
+        morada_cidade: envio.cidade,
+        morada_pais: envio.pais,
         itens: carrinho.map(item => ({
           id: item.id,
           nome: item.nome,
@@ -361,7 +564,7 @@
           throw new Error(err.message || "Erro na base de dados");
         }
 
-        alert("🎉 Pagamento confirmado com sucesso! A encomenda foi enviada para o painel de gestão.");
+        alert("🎉 Pagamento concluído! A encomenda foi enviada para o painel de gestão com a morada selecionada.");
         localStorage.removeItem('deaaz_cart');
         renderizarCarrinho();
         return true;
@@ -378,25 +581,15 @@
 
     if (window.paypal) {
       paypal.Buttons({
-        style: {
-          layout: 'vertical',
-          color: 'gold',
-          shape: 'rect',
-          label: 'paypal'
-        },
+        style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
         createOrder: function(data, actions) {
-          const user = carregarDadosEnvio();
-          if (!user) {
-            alert("Inicie sessão antes de concluir o pagamento.");
-            return;
-          }
+          const envio = recolherDadosEnvioFinais();
+          if (!envio) return actions.reject();
+
           const total = calcularTotalCarrinho().toFixed(2);
           return actions.order.create({
             purchase_units: [{
-              amount: {
-                value: total,
-                currency_code: 'EUR'
-              }
+              amount: { value: total, currency_code: 'EUR' }
             }]
           });
         },
@@ -406,13 +599,13 @@
           });
         },
         onError: function(err) {
-          console.error("Erro no checkout PayPal:", err);
-          alert("Ocorreu um erro no processamento do PayPal.");
+          console.error("Erro PayPal:", err);
+          alert("Erro ao processar PayPal.");
         }
       }).render('#paypal-button-container');
     }
 
-    carregarDadosEnvio();
+    inicializarMoradaEnvio();
     renderizarCarrinho();
   </script>
 </body>
