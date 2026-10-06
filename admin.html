@@ -20,7 +20,7 @@
     .logo span { color: #2563eb; }
     .badge-admin { background: #eff6ff; color: #1d4ed8; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 9999px; border: 1px solid #bfdbfe; }
 
-    .container { max-width: 1280px; width: 100%; margin: 0 auto; padding: 28px 20px 60px; }
+    .container { max-width: 1320px; width: 100%; margin: 0 auto; padding: 28px 20px 60px; }
 
     .tabs-nav { display: flex; gap: 8px; border-bottom: 2px solid #cbd5e1; margin-bottom: 24px; overflow-x: auto; }
     .tab-btn { background: transparent; border: none; padding: 14px 22px; font-weight: 600; font-size: 0.95rem; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 8px; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.15s ease; white-space: nowrap; }
@@ -31,18 +31,25 @@
     .tab-pane.active { display: block !important; }
 
     .table-container { background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow-x: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
-    .table-header { padding: 16px 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+    .table-header { padding: 16px 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
     .table-header h2 { font-size: 1.1rem; font-weight: 700; color: #0f172a; }
 
+    .batch-actions { display: flex; align-items: center; gap: 10px; }
+
     table { width: 100%; border-collapse: collapse; text-align: left; }
-    th { background: #f8fafc; color: #475569; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; padding: 12px 18px; border-bottom: 1px solid #e2e8f0; }
-    td { padding: 16px 18px; font-size: 0.9rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    th { background: #f8fafc; color: #475569; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
+    td { padding: 14px 16px; font-size: 0.88rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
 
     .customer-info strong { display: block; color: #0f172a; }
     .customer-info span { display: block; font-size: 0.8rem; color: #64748b; }
+    .customer-nif { display: inline-block; background: #eff6ff; color: #1d4ed8; font-weight: 700; font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
 
-    .address-box { font-size: 0.85rem; color: #334155; background: #f8fafc; padding: 8px 12px; border-radius: 6px; border: 1px solid #e2e8f0; min-width: 220px; }
+    .address-box { font-size: 0.85rem; color: #334155; background: #f8fafc; padding: 8px 12px; border-radius: 6px; border: 1px solid #e2e8f0; min-width: 240px; line-height: 1.4; }
+    .address-box strong { color: #0f172a; }
+
+    .status-badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 0.75rem; }
+    .status-expedicao { background: #fef3c7; color: #b45309; }
 
     .form-card { max-width: 760px; margin: 0 auto; background: #ffffff; padding: 32px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     .form-group { margin-bottom: 16px; }
@@ -55,7 +62,6 @@
     .preview-box { width: 100%; height: 180px; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; margin-top: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; color: #94a3b8; }
     .preview-box img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* ESTILO PARA VARIANTES / MAIS DO MESMO */
     .variant-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 10px; display: grid; grid-template-columns: 1fr 1.5fr auto; gap: 10px; align-items: center; }
     .btn-add-variant { background: #f1f5f9; border: 1.5px dashed #cbd5e1; color: #2563eb; padding: 10px; border-radius: 8px; font-weight: 700; width: 100%; cursor: pointer; margin-top: 6px; }
     .btn-add-variant:hover { background: #e0e7ff; border-color: #2563eb; }
@@ -65,6 +71,15 @@
 
     .btn-sm-action { background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #475569; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
     .btn-sm-action:hover { background: #f8fafc; border-color: #94a3b8; }
+    
+    .btn-order { background: #e11d48; color: white; border-color: #be123c; font-weight: 700; }
+    .btn-order:hover { background: #be123c; }
+
+    .btn-ship { background: #f59e0b; color: white; border-color: #d97706; font-weight: 700; }
+    .btn-ship:hover { background: #d97706; }
+
+    .btn-delete { background: #ef4444; color: white; border-color: #dc2626; font-weight: 700; }
+    .btn-delete:hover { background: #dc2626; }
 
     .empty-state { padding: 40px; text-align: center; color: #94a3b8; }
 
@@ -97,7 +112,10 @@
     <!-- ABAS -->
     <nav class="tabs-nav">
       <button type="button" class="tab-btn active" id="btn-tab-encomendas" onclick="alternarAba('tab-encomendas', this)">
-        <i class="fa-solid fa-cart-flatbed"></i> Encomendas (<span id="count-enc">0</span>)
+        <i class="fa-solid fa-cart-flatbed"></i> Encomendas Pagas (<span id="count-enc">0</span>)
+      </button>
+      <button type="button" class="tab-btn" id="btn-tab-expedicao" onclick="alternarAba('tab-expedicao', this)">
+        <i class="fa-solid fa-truck-fast"></i> Em Expedição (<span id="count-exp">0</span>)
       </button>
       <button type="button" class="tab-btn" id="btn-tab-clientes" onclick="alternarAba('tab-clientes', this)">
         <i class="fa-solid fa-user-group"></i> Clientes (<span id="count-cli">0</span>)
@@ -110,32 +128,77 @@
       </button>
     </nav>
 
-    <!-- ABA 1: ENCOMENDAS -->
+    <!-- ABA 1: ENCOMENDAS PAGAS -->
     <section id="tab-encomendas" class="tab-pane active">
       <div class="table-container">
         <div class="table-header">
-          <h2>Encomendas Recebidas</h2>
-          <button type="button" class="btn-sm-action" onclick="carregarEncomendas()"><i class="fa-solid fa-rotate"></i> Recarregar</button>
+          <h2>Encomendas Pendentes de Envio</h2>
+          <div class="batch-actions">
+            <button type="button" class="btn-sm-action btn-ship" onclick="enviarSelecionadasParaExpedicao()">
+              <i class="fa-solid fa-truck-arrow-right"></i> Mover Selecionadas para Em Expedição
+            </button>
+            <button type="button" class="btn-sm-action btn-delete" onclick="eliminarSelecionadas('check-enc-item')">
+              <i class="fa-solid fa-trash-can"></i> Eliminar Selecionadas
+            </button>
+            <button type="button" class="btn-sm-action" onclick="carregarEncomendas()"><i class="fa-solid fa-rotate"></i> Recarregar</button>
+          </div>
         </div>
         <table>
           <thead>
             <tr>
+              <th style="width: 35px; text-align: center;">
+                <input type="checkbox" id="check-todas-enc" onchange="selecionarTodasPorClasse('check-enc-item', this.checked)" style="cursor: pointer; width: 16px; height: 16px;">
+              </th>
               <th>ID / Data</th>
-              <th>Cliente</th>
-              <th>Morada de Envio</th>
-              <th>Itens</th>
+              <th>Cliente & NIF</th>
+              <th>Morada de Envio (Para Fornecedor)</th>
+              <th>Itens Comprados</th>
               <th>Total</th>
-              <th>Estado</th>
+              <th style="text-align: right;">Ações</th>
             </tr>
           </thead>
           <tbody id="tbody-encomendas">
-            <tr><td colspan="6" class="empty-state">A carregar encomendas...</td></tr>
+            <tr><td colspan="7" class="empty-state">A carregar encomendas...</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- ABA 2: DADOS DE CLIENTES -->
+    <!-- ABA 2: EM EXPEDIÇÃO -->
+    <section id="tab-expedicao" class="tab-pane">
+      <div class="table-container">
+        <div class="table-header">
+          <h2>Encomendas em Trânsito / Já Encomendadas</h2>
+          <div class="batch-actions">
+            <button type="button" class="btn-sm-action btn-delete" onclick="eliminarSelecionadas('check-exp-item')">
+              <i class="fa-solid fa-trash-can"></i> Eliminar Selecionadas
+            </button>
+            <button type="button" class="btn-sm-action" onclick="carregarEncomendas()"><i class="fa-solid fa-rotate"></i> Recarregar</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 35px; text-align: center;">
+                <input type="checkbox" id="check-todas-exp" onchange="selecionarTodasPorClasse('check-exp-item', this.checked)" style="cursor: pointer; width: 16px; height: 16px;">
+              </th>
+              <th>ID / Data</th>
+              <th>Cliente & NIF</th>
+              <th>Morada de Envio</th>
+              <th>Itens</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th style="text-align: right;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-expedicao">
+            <tr><td colspan="8" class="empty-state">A carregar artigos em expedição...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ABA 3: DADOS DE CLIENTES -->
     <section id="tab-clientes" class="tab-pane">
       <div class="table-container">
         <div class="table-header">
@@ -147,7 +210,7 @@
             <tr>
               <th>Nome</th>
               <th>Contacto</th>
-              <th>Localidade / País</th>
+              <th>Morada / País</th>
               <th>NIF</th>
               <th>Registo</th>
             </tr>
@@ -159,11 +222,11 @@
       </div>
     </section>
 
-    <!-- ABA 3: INSERIR PRODUTO COM VARIANTES -->
+    <!-- ABA 4: INSERIR PRODUTO COM LINK DO FORNECEDOR -->
     <section id="tab-inserir-produto" class="tab-pane">
       <div class="form-card">
         <h2 style="font-size: 1.25rem; font-weight:700; margin-bottom: 20px; display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-box-open" style="color: #2563eb;"></i> Adicionar Produto com Variantes
+          <i class="fa-solid fa-box-open" style="color: #2563eb;"></i> Adicionar Produto com Link do Fornecedor
         </h2>
 
         <form id="add-product-form" onsubmit="return false;">
@@ -189,6 +252,11 @@
                 <option value="outros">Outros</option>
               </select>
             </div>
+          </div>
+
+          <div class="form-group">
+            <label><i class="fa-solid fa-link" style="color:#e11d48;"></i> Link do Produto no Fornecedor (Para Encomendar):</label>
+            <input type="url" id="prod-fornecedor" placeholder="https://exemplo-fornecedor.com/produto/...">
           </div>
 
           <div class="row-2">
@@ -224,7 +292,6 @@
             </div>
           </div>
 
-          <!-- BLOCO DE VARIANTES (MAIS DO MESMO) -->
           <div class="form-group" style="margin-top: 24px;">
             <label style="display:flex; justify-content:space-between; align-items:center;">
               <span><i class="fa-solid fa-clone" style="color:#2563eb;"></i> Mais do Mesmo (Cores / Modelos adicionais):</span>
@@ -242,7 +309,7 @@
       </div>
     </section>
 
-    <!-- ABA 4: GERIR CATÁLOGO -->
+    <!-- ABA 5: GERIR CATÁLOGO -->
     <section id="tab-catalogo" class="tab-pane">
       <div class="table-container">
         <div class="table-header">
@@ -304,6 +371,11 @@
         </div>
 
         <div class="form-group">
+          <label><i class="fa-solid fa-link" style="color:#e11d48;"></i> Link do Produto no Fornecedor:</label>
+          <input type="url" id="edit-fornecedor" placeholder="https://exemplo-fornecedor.com/produto/...">
+        </div>
+
+        <div class="form-group">
           <label>Letra (De A a Z):</label>
           <input type="text" id="edit-letra" maxlength="1" required>
         </div>
@@ -358,7 +430,6 @@
       }
     }
 
-    /* GESTÃO DE VARIANTES DINÂMICAS */
     function adicionarLinhaVariante(containerId, nomeVal = '', fotoVal = '') {
       const container = document.getElementById(containerId);
       const div = document.createElement('div');
@@ -399,57 +470,266 @@
     };
 
     let listaProdutosEmMemoria = [];
+    let listaEncomendasEmMemoria = [];
 
-    /* INSERIR NOVO PRODUTO COM VARIANTES */
-    async function gravarProduto() {
-      const nome = document.getElementById('prod-nome').value.trim();
-      const precoValor = document.getElementById('prod-preco').value.trim();
-      const preco = parseFloat(precoValor);
-      const categoria = document.getElementById('prod-categoria').value;
-      const letra = document.getElementById('prod-letra').value.trim().toUpperCase();
-      const icone = document.getElementById('prod-icone').value;
-      const descricao = document.getElementById('prod-descricao').value.trim();
-      const imagem = document.getElementById('prod-imagem').value.trim();
-      const variantes = obterVariantes('variants-container');
-      const btn = document.getElementById('btn-salvar');
+    /* SELEÇÃO EM MASSA */
+    function selecionarTodasPorClasse(classe, isChecked) {
+      const checkboxes = document.querySelectorAll(`.${classe}`);
+      checkboxes.forEach(cb => cb.checked = isChecked);
+    }
 
-      if (!nome || !precoValor || isNaN(preco) || !letra) {
-        alert("Preenche o Nome, Preço e Letra.");
-        return;
-      }
-
-      btn.innerText = "A guardar na base de dados...";
-      btn.disabled = true;
+    /* ELIMINAR UMA ENCOMENDA ESPECÍFICA */
+    async function eliminarEncomenda(id) {
+      if (!confirm(`Tem a certeza que deseja eliminar permanentemente a encomenda #${id.toString().slice(-6)}?`)) return;
 
       try {
-        const resposta = await fetch(`${API_URL}/produtos`, {
-          method: "POST",
-          headers: HEADERS,
-          body: JSON.stringify([{
-            nome, preco, categoria, letra, icone, descricao, imagem, variantes
-          }])
+        const res = await fetch(`${API_URL}/encomendas?id=eq.${id}`, {
+          method: "DELETE",
+          headers: HEADERS
         });
-
-        const resultado = await resposta.json();
-
-        if (!resposta.ok) {
-          alert("❌ Erro do Supabase: " + (resultado.message || JSON.stringify(resultado)));
-        } else {
-          alert("✅ Artigo publicado com sucesso!");
-          document.getElementById('add-product-form').reset();
-          document.getElementById('variants-container').innerHTML = '';
-          document.getElementById('preview-box').innerHTML = `<i class="fa-regular fa-image fa-2x"></i>`;
-          carregarProdutos();
-        }
+        if (!res.ok) throw new Error("Erro ao eliminar no Supabase");
+        carregarEncomendas();
       } catch (err) {
-        alert("❌ Erro no envio: " + err.message);
-      } finally {
-        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Artigo na Loja`;
-        btn.disabled = false;
+        alert("Erro ao eliminar: " + err.message);
       }
     }
 
-    /* CARREGAR CATÁLOGO */
+    /* ELIMINAR ENCOMENDAS SELECIONADAS EM LOTE */
+    async function eliminarSelecionadas(classe) {
+      const selecionadas = Array.from(document.querySelectorAll(`.${classe}:checked`)).map(cb => cb.value);
+      if (selecionadas.length === 0) {
+        alert("Selecione pelo menos uma encomenda através da caixa de seleção.");
+        return;
+      }
+
+      if (!confirm(`Tem a certeza que deseja eliminar ${selecionadas.length} encomenda(s) selecionada(s)? Esta ação é irreversível!`)) return;
+
+      try {
+        for (const id of selecionadas) {
+          await fetch(`${API_URL}/encomendas?id=eq.${id}`, {
+            method: "DELETE",
+            headers: HEADERS
+          });
+        }
+        alert("✅ Encomenda(s) eliminada(s) com sucesso!");
+        carregarEncomendas();
+      } catch (err) {
+        alert("Erro ao eliminar: " + err.message);
+      }
+    }
+
+    /* ENCOMENDAR COM LINK DO FORNECEDOR */
+    async function encomendarItem(idEncomenda, linkFornecedor) {
+      if (linkFornecedor && linkFornecedor !== 'null' && linkFornecedor.trim() !== '') {
+        window.open(linkFornecedor, '_blank');
+      } else {
+        alert("Aviso: Este produto não tem link do fornecedor configurado no catálogo.");
+      }
+
+      setTimeout(async () => {
+        if (confirm("Já realizou a compra no fornecedor com a morada do cliente?\nDeseja mover a encomenda para 'Em Expedição'?")) {
+          await mudarEstadoEncomenda(idEncomenda, 'Em Expedição');
+        }
+      }, 800);
+    }
+
+    async function mudarEstadoEncomenda(id, novoEstado) {
+      try {
+        const res = await fetch(`${API_URL}/encomendas?id=eq.${id}`, {
+          method: "PATCH",
+          headers: HEADERS,
+          body: JSON.stringify({ estado: novoEstado })
+        });
+        if (!res.ok) throw new Error("Falha ao atualizar estado");
+        carregarEncomendas();
+      } catch (err) {
+        alert("Erro ao atualizar: " + err.message);
+      }
+    }
+
+    async function enviarSelecionadasParaExpedicao() {
+      const selecionadas = Array.from(document.querySelectorAll('.check-enc-item:checked')).map(cb => cb.value);
+      if (selecionadas.length === 0) {
+        alert("Selecione pelo menos uma encomenda através da caixa de seleção.");
+        return;
+      }
+
+      if (!confirm(`Deseja mover ${selecionadas.length} encomenda(s) para "Em Expedição"?`)) return;
+
+      try {
+        for (const id of selecionadas) {
+          await fetch(`${API_URL}/encomendas?id=eq.${id}`, {
+            method: "PATCH",
+            headers: HEADERS,
+            body: JSON.stringify({ estado: 'Em Expedição' })
+          });
+        }
+        alert("✅ Encomenda(s) transferida(s) para 'Em Expedição'!");
+        carregarEncomendas();
+      } catch (e) {
+        alert("Erro no envio em massa: " + e.message);
+      }
+    }
+
+    /* CARREGAR ENCOMENDAS */
+    async function carregarEncomendas() {
+      const tbodyPagas = document.getElementById('tbody-encomendas');
+      const tbodyExpedicao = document.getElementById('tbody-expedicao');
+      if (document.getElementById('check-todas-enc')) document.getElementById('check-todas-enc').checked = false;
+      if (document.getElementById('check-todas-exp')) document.getElementById('check-todas-exp').checked = false;
+
+      try {
+        if (listaProdutosEmMemoria.length === 0) {
+          const resP = await fetch(`${API_URL}/produtos`, { headers: HEADERS });
+          listaProdutosEmMemoria = await resP.json();
+        }
+
+        const res = await fetch(`${API_URL}/encomendas?order=created_at.desc`, { headers: HEADERS });
+        listaEncomendasEmMemoria = await res.json();
+
+        if (!Array.isArray(listaEncomendasEmMemoria) || listaEncomendasEmMemoria.length === 0) {
+          tbodyPagas.innerHTML = `<tr><td colspan="7" class="empty-state">Sem encomendas registadas.</td></tr>`;
+          tbodyExpedicao.innerHTML = `<tr><td colspan="8" class="empty-state">Sem encomendas em expedição.</td></tr>`;
+          document.getElementById('count-enc').innerText = 0;
+          document.getElementById('count-exp').innerText = 0;
+          return;
+        }
+
+        const pagas = listaEncomendasEmMemoria.filter(e => (e.estado || '').toLowerCase() === 'paga' || !(e.estado));
+        const expedicao = listaEncomendasEmMemoria.filter(e => (e.estado || '').toLowerCase() === 'em expedição');
+
+        document.getElementById('count-enc').innerText = pagas.length;
+        document.getElementById('count-exp').innerText = expedicao.length;
+
+        // Renderiza Encomendas Pagas
+        if (pagas.length === 0) {
+          tbodyPagas.innerHTML = `<tr><td colspan="7" class="empty-state">Nenhuma encomenda pendente de envio.</td></tr>`;
+        } else {
+          tbodyPagas.innerHTML = pagas.map(e => {
+            let linkFornecedor = '';
+            if (Array.isArray(e.itens) && e.itens.length > 0) {
+              const primeiroItem = e.itens[0];
+              const prodNoCatalogo = listaProdutosEmMemoria.find(p => p.id?.toString() === primeiroItem.id?.toString() || p.nome === primeiroItem.nome);
+              linkFornecedor = prodNoCatalogo?.link_fornecedor || prodNoCatalogo?.link_aliexpress || '';
+            }
+
+            return `
+              <tr>
+                <td style="text-align: center;">
+                  <input type="checkbox" class="check-enc-item" value="${e.id}" style="cursor: pointer; width: 16px; height: 16px;">
+                </td>
+                <td>
+                  <strong>#${e.id.toString().slice(-6)}</strong>
+                  <div style="font-size:0.75rem; color:#64748b;">${new Date(e.created_at).toLocaleDateString('pt-PT')} ${new Date(e.created_at).toLocaleTimeString('pt-PT', {hour: '2-digit', minute:'2-digit'})}</div>
+                </td>
+                <td>
+                  <div class="customer-info">
+                    <strong>${e.cliente_nome || 'Consumidor'}</strong>
+                    <span>${e.cliente_email || '-'}</span>
+                    <div class="customer-nif">NIF: ${e.cliente_nif || 'Consumidor Final'}</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="address-box">
+                    <strong>${e.morada_rua || 'Rua não indicada'}</strong><br>
+                    ${e.morada_codigo_postal || ''} ${e.morada_cidade || ''}<br>
+                    <span style="color:#2563eb; font-weight:700;">País: ${e.morada_pais || 'Portugal'}</span>
+                  </div>
+                </td>
+                <td style="font-size:0.85rem;">
+                  ${Array.isArray(e.itens) ? e.itens.map(i => `<strong>${i.nome}</strong> (x${i.qtd || 1})`).join('<br>') : (e.itens || '-')}
+                </td>
+                <td style="font-weight:700; color:#2563eb;">${parseFloat(e.total || 0).toFixed(2)} €</td>
+                <td style="text-align: right; white-space: nowrap;">
+                  <button type="button" class="btn-sm-action btn-order" onclick="encomendarItem('${e.id}', '${linkFornecedor}')" title="Abrir fornecedor e despachar">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Encomendar
+                  </button>
+                  <button type="button" class="btn-sm-action" onclick="eliminarEncomenda('${e.id}')" style="color:#ef4444; border-color:#fee2e2; margin-left: 4px;" title="Eliminar encomenda">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+
+        // Renderiza Encomendas Em Expedição
+        if (expedicao.length === 0) {
+          tbodyExpedicao.innerHTML = `<tr><td colspan="8" class="empty-state">Nenhuma encomenda em trânsito no momento.</td></tr>`;
+        } else {
+          tbodyExpedicao.innerHTML = expedicao.map(e => `
+            <tr>
+              <td style="text-align: center;">
+                <input type="checkbox" class="check-exp-item" value="${e.id}" style="cursor: pointer; width: 16px; height: 16px;">
+              </td>
+              <td>
+                <strong>#${e.id.toString().slice(-6)}</strong>
+                <div style="font-size:0.75rem; color:#64748b;">${new Date(e.created_at).toLocaleDateString('pt-PT')}</div>
+              </td>
+              <td>
+                <div class="customer-info">
+                  <strong>${e.cliente_nome || 'Consumidor'}</strong>
+                  <span>${e.cliente_email || '-'}</span>
+                  <div class="customer-nif">NIF: ${e.cliente_nif || 'Consumidor Final'}</div>
+                </div>
+              </td>
+              <td>
+                <div class="address-box">
+                  <strong>${e.morada_rua || 'Rua não indicada'}</strong><br>
+                  ${e.morada_codigo_postal || ''} ${e.morada_cidade || ''}<br>
+                  <span style="color:#2563eb; font-weight:700;">País: ${e.morada_pais || 'Portugal'}</span>
+                </div>
+              </td>
+              <td style="font-size:0.85rem;">
+                ${Array.isArray(e.itens) ? e.itens.map(i => `<strong>${i.nome}</strong> (x${i.qtd || 1})`).join('<br>') : (e.itens || '-')}
+              </td>
+              <td style="font-weight:700; color:#2563eb;">${parseFloat(e.total || 0).toFixed(2)} €</td>
+              <td><span class="status-badge status-expedicao"><i class="fa-solid fa-truck-fast"></i> Em Expedição</span></td>
+              <td style="text-align: right;">
+                <button type="button" class="btn-sm-action" onclick="eliminarEncomenda('${e.id}')" style="color:#ef4444; border-color:#fee2e2;" title="Eliminar encomenda concluída">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </td>
+            </tr>
+          `).join('');
+        }
+
+      } catch (e) {
+        tbodyPagas.innerHTML = `<tr><td colspan="7" class="empty-state">Erro ao ligar à tabela de encomendas.</td></tr>`;
+        tbodyExpedicao.innerHTML = `<tr><td colspan="8" class="empty-state">Erro ao ligar à tabela de encomendas.</td></tr>`;
+      }
+    }
+
+    /* CARREGAR CLIENTES */
+    async function carregarClientes() {
+      const tbody = document.getElementById('tbody-clientes');
+      try {
+        const res = await fetch(`${API_URL}/clientes?order=created_at.desc`, { headers: HEADERS });
+        const clientes = await res.json();
+        if (!Array.isArray(clientes) || clientes.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Sem clientes registados.</td></tr>`;
+          document.getElementById('count-cli').innerText = 0;
+          return;
+        }
+        document.getElementById('count-cli').innerText = clientes.length;
+        tbody.innerHTML = clientes.map(c => `
+          <tr>
+            <td><strong>${c.nome || '-'}</strong></td>
+            <td>${c.email || '-'}</td>
+            <td>
+              <div style="line-height:1.3;">
+                ${c.morada ? `${c.morada}<br>` : ''}
+                ${c.codigo_postal ? `${c.codigo_postal} ` : ''}${c.cidade ? `${c.cidade}, ` : ''}<strong>${c.pais || 'PT'}</strong>
+              </div>
+            </td>
+            <td><span class="customer-nif">${c.nif || 'Não indicado'}</span></td>
+            <td>${new Date(c.created_at).toLocaleDateString('pt-PT')}</td>
+          </tr>
+        `).join('');
+      } catch (e) { tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Tabela clientes pendente.</td></tr>`; }
+    }
+
+    /* CATÁLOGO DE PRODUTOS */
     async function carregarProdutos() {
       const tbody = document.getElementById('tbody-catalogo');
       try {
@@ -465,6 +745,7 @@
         document.getElementById('count-prod').innerText = listaProdutosEmMemoria.length;
         tbody.innerHTML = listaProdutosEmMemoria.map(p => {
           const numVars = Array.isArray(p.variantes) ? p.variantes.length : 0;
+          const linkForn = p.link_fornecedor || p.link_aliexpress || '';
 
           return `
             <tr>
@@ -475,6 +756,7 @@
                 <a href="produto.html?id=${p.id}" target="_blank" style="color:#0f172a; font-weight:700; text-decoration:none;">${p.nome}</a>
                 <span style="font-size:0.75rem; background:#eff6ff; color:#2563eb; padding:2px 6px; border-radius:4px; font-weight:700; margin-left:6px;">Letra: ${p.letra}</span>
                 <div style="font-size:0.8rem; color:#64748b; margin-top:4px; max-width:350px;">${p.descricao || 'Sem descrição.'}</div>
+                ${linkForn ? `<div style="font-size:0.75rem; margin-top:4px;"><a href="${linkForn}" target="_blank" style="color:#e11d48; text-decoration:none;"><i class="fa-solid fa-link"></i> Link do Fornecedor</a></div>` : ''}
               </td>
               <td>
                 <span style="font-size:0.8rem; background:#f1f5f9; padding:4px 8px; border-radius:6px; font-weight:600;">
@@ -501,7 +783,55 @@
       }
     }
 
-    /* MODAL DE EDIÇÃO COM VARIANTES */
+    async function gravarProduto() {
+      const nome = document.getElementById('prod-nome').value.trim();
+      const precoValor = document.getElementById('prod-preco').value.trim();
+      const preco = parseFloat(precoValor);
+      const categoria = document.getElementById('prod-categoria').value;
+      const link_fornecedor = document.getElementById('prod-fornecedor').value.trim();
+      const letra = document.getElementById('prod-letra').value.trim().toUpperCase();
+      const icone = document.getElementById('prod-icone').value;
+      const descricao = document.getElementById('prod-descricao').value.trim();
+      const imagem = document.getElementById('prod-imagem').value.trim();
+      const variantes = obterVariantes('variants-container');
+      const btn = document.getElementById('btn-salvar');
+
+      if (!nome || !precoValor || isNaN(preco) || !letra) {
+        alert("Preenche o Nome, Preço e Letra.");
+        return;
+      }
+
+      btn.innerText = "A guardar na base de dados...";
+      btn.disabled = true;
+
+      try {
+        const resposta = await fetch(`${API_URL}/produtos`, {
+          method: "POST",
+          headers: HEADERS,
+          body: JSON.stringify([{
+            nome, preco, categoria, link_fornecedor, letra, icone, descricao, imagem, variantes
+          }])
+        });
+
+        const resultado = await resposta.json();
+
+        if (!resposta.ok) {
+          alert("❌ Erro do Supabase: " + (resultado.message || JSON.stringify(resultado)));
+        } else {
+          alert("✅ Artigo publicado com sucesso com link do fornecedor!");
+          document.getElementById('add-product-form').reset();
+          document.getElementById('variants-container').innerHTML = '';
+          document.getElementById('preview-box').innerHTML = `<i class="fa-regular fa-image fa-2x"></i>`;
+          carregarProdutos();
+        }
+      } catch (err) {
+        alert("❌ Erro no envio: " + err.message);
+      } finally {
+        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Artigo na Loja`;
+        btn.disabled = false;
+      }
+    }
+
     function abrirModalEdicao(id) {
       const p = listaProdutosEmMemoria.find(item => item.id.toString() === id.toString());
       if (!p) return;
@@ -510,6 +840,7 @@
       document.getElementById('edit-nome').value = p.nome || '';
       document.getElementById('edit-preco').value = p.preco || '';
       document.getElementById('edit-categoria').value = p.categoria || 'tecnologia';
+      document.getElementById('edit-fornecedor').value = p.link_fornecedor || p.link_aliexpress || '';
       document.getElementById('edit-letra').value = p.letra || '';
       document.getElementById('edit-descricao').value = p.descricao || '';
       document.getElementById('edit-imagem').value = p.imagem || '';
@@ -533,6 +864,7 @@
       const nome = document.getElementById('edit-nome').value.trim();
       const preco = parseFloat(document.getElementById('edit-preco').value);
       const categoria = document.getElementById('edit-categoria').value;
+      const link_fornecedor = document.getElementById('edit-fornecedor').value.trim();
       const letra = document.getElementById('edit-letra').value.trim().toUpperCase();
       const descricao = document.getElementById('edit-descricao').value.trim();
       const imagem = document.getElementById('edit-imagem').value.trim();
@@ -551,7 +883,7 @@
         const resposta = await fetch(`${API_URL}/produtos?id=eq.${id}`, {
           method: "PATCH",
           headers: HEADERS,
-          body: JSON.stringify({ nome, preco, categoria, letra, descricao, imagem, variantes })
+          body: JSON.stringify({ nome, preco, categoria, link_fornecedor, letra, descricao, imagem, variantes })
         });
 
         if (!resposta.ok) {
@@ -576,54 +908,7 @@
       carregarProdutos();
     }
 
-    /* ENCOMENDAS & CLIENTES */
-    async function carregarEncomendas() {
-      const tbody = document.getElementById('tbody-encomendas');
-      try {
-        const res = await fetch(`${API_URL}/encomendas?order=created_at.desc`, { headers: HEADERS });
-        const encomendas = await res.json();
-        if (!Array.isArray(encomendas) || encomendas.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" class="empty-state">Sem encomendas registadas.</td></tr>`;
-          document.getElementById('count-enc').innerText = 0;
-          return;
-        }
-        document.getElementById('count-enc').innerText = encomendas.length;
-        tbody.innerHTML = encomendas.map(e => `
-          <tr>
-            <td><strong>#${e.id.toString().slice(-6)}</strong><div style="font-size:0.75rem; color:#64748b;">${new Date(e.created_at).toLocaleDateString('pt-PT')}</div></td>
-            <td><div class="customer-info"><strong>${e.cliente_nome || 'Consumidor'}</strong><span>${e.cliente_email || '-'}</span><span>${e.cliente_telefone || '-'}</span></div></td>
-            <td><div class="address-box">${e.morada_rua || 'Rua não indicada'}<br>${e.morada_codigo_postal || ''} ${e.morada_cidade || ''}</div></td>
-            <td style="font-size:0.85rem;">${Array.isArray(e.itens) ? e.itens.map(i => `${i.nome} (x${i.qtd || 1})`).join('<br>') : (e.itens || '-')}</td>
-            <td style="font-weight:700; color:#2563eb;">${parseFloat(e.total || 0).toFixed(2)} €</td>
-            <td>${e.estado || 'Pendente'}</td>
-          </tr>
-        `).join('');
-      } catch (e) { tbody.innerHTML = `<tr><td colspan="6" class="empty-state">Tabela encomendas pendente.</td></tr>`; }
-    }
-
-    async function carregarClientes() {
-      const tbody = document.getElementById('tbody-clientes');
-      try {
-        const res = await fetch(`${API_URL}/clientes?order=created_at.desc`, { headers: HEADERS });
-        const clientes = await res.json();
-        if (!Array.isArray(clientes) || clientes.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Sem clientes registados.</td></tr>`;
-          document.getElementById('count-cli').innerText = 0;
-          return;
-        }
-        document.getElementById('count-cli').innerText = clientes.length;
-        tbody.innerHTML = clientes.map(c => `
-          <tr>
-            <td><strong>${c.nome || '-'}</strong></td>
-            <td>${c.email || '-'}<br><span style="font-size:0.8rem; color:#64748b;">${c.telefone || '-'}</span></td>
-            <td>${c.cidade ? `${c.cidade},${c.pais || 'PT'}` : 'Não indicada'}</td>
-            <td>${c.nif || '-'}</td>
-            <td>${new Date(c.created_at).toLocaleDateString('pt-PT')}</td>
-          </tr>
-        `).join('');
-      } catch (e) { tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Tabela clientes pendente.</td></tr>`; }
-    }
-
+    // Inicialização
     carregarEncomendas();
     carregarClientes();
     carregarProdutos();

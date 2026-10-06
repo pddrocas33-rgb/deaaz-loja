@@ -269,7 +269,7 @@
     /* GRELHA DE PRODUTOS */
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 20px;
     }
 
@@ -281,7 +281,6 @@
       display: flex;
       flex-direction: column;
       transition: transform 0.2s, box-shadow 0.2s;
-      text-decoration: none;
       color: inherit;
     }
 
@@ -299,6 +298,7 @@
       justify-content: center;
       overflow: hidden;
       border-bottom: 1px solid var(--border);
+      position: relative;
     }
 
     .product-img img {
@@ -335,11 +335,39 @@
     }
 
     .product-price {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 800;
       color: var(--primary);
       margin-top: auto;
       margin-bottom: 12px;
+    }
+
+    /* AÇÕES DO PRODUTO (VER DETALHES + ADICIONAR AO CARRINHO) */
+    .product-card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-add-cart {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-add-cart:hover {
+      background: var(--primary-dark);
     }
 
     .btn-view-product {
@@ -349,19 +377,19 @@
       padding: 8px;
       border-radius: 8px;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
+      text-decoration: none;
+      color: var(--text-dark);
       transition: all 0.2s;
     }
 
-    .product-card:hover .btn-view-product {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
+    .btn-view-product:hover {
+      background: #e2e8f0;
     }
 
     /* MODAL DE LOGIN / REGISTO */
@@ -580,7 +608,7 @@
   <!-- CABEÇALHO -->
   <header>
     <div class="main-header">
-      <a href="index06-10-2026.html" class="logo">De<span>AaZ</span></a>
+      <a href="index.html" class="logo">De<span>AaZ</span></a>
       
       <!-- BARRA DE PESQUISA -->
       <div class="search-box">
@@ -788,6 +816,54 @@
 
     let catalogoGlobal = [];
 
+    /* GESTÃO DO CONTADOR DO CARRINHO */
+    function atualizarContadorCarrinho() {
+      try {
+        const carrinho = JSON.parse(localStorage.getItem('deaaz_cart')) || [];
+        const total = carrinho.reduce((sum, item) => sum + (parseInt(item.qtd || 1, 10)), 0);
+        const badge = document.getElementById('cart-counter');
+        if (badge) badge.innerText = total;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    /* ADICIONAR PRODUTO DIRETAMENTE AO CARRINHO */
+    function adicionarAoCarrinho(id) {
+      const prod = catalogoGlobal.find(p => p.id.toString() === id.toString());
+      if (!prod) return;
+
+      let carrinho = [];
+      try {
+        carrinho = JSON.parse(localStorage.getItem('deaaz_cart')) || [];
+      } catch (e) {
+        carrinho = [];
+      }
+
+      const itemExistente = carrinho.find(p => p.id.toString() === id.toString());
+      if (itemExistente) {
+        itemExistente.qtd = (parseInt(itemExistente.qtd || 1, 10)) + 1;
+      } else {
+        carrinho.push({
+          id: prod.id,
+          nome: prod.nome,
+          preco: parseFloat(prod.preco || 0),
+          imagem: prod.imagem || '',
+          categoria: prod.categoria || 'Geral',
+          qtd: 1
+        });
+      }
+
+      localStorage.setItem('deaaz_cart', JSON.stringify(carrinho));
+      atualizarContadorCarrinho();
+
+      // Feedback rápido
+      const badge = document.getElementById('cart-counter');
+      badge.style.transform = 'scale(1.3)';
+      setTimeout(() => badge.style.transform = 'scale(1)', 200);
+      alert(`🛒 "${prod.nome}" foi adicionado ao teu carrinho!`);
+    }
+
     /* CONTROLO DA MODAL DE AUTENTICAÇÃO */
     function abrirModalAuth() {
       const userLogado = localStorage.getItem('deaaz_user');
@@ -862,7 +938,6 @@
           throw new Error(erroDetalhe.message || "Falha ao gravar no Supabase.");
         }
 
-        // Sucesso: guardar sessão localmente
         localStorage.setItem('deaaz_user', JSON.stringify({
           nome: novoCliente.nome,
           email: novoCliente.email
@@ -978,19 +1053,25 @@
         const precoFormatado = parseFloat(p.preco || 0).toFixed(2);
 
         return `
-          <a href="produto.html?id=${p.id}" class="product-card">
-            <div class="product-img">
+          <div class="product-card">
+            <a href="produto.html?id=${p.id}" class="product-img">
               <img src="${foto}" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/250'">
-            </div>
+            </a>
             <div class="product-info">
               <span class="product-category">${p.categoria || 'Geral'}</span>
-              <h2 class="product-title">${p.nome}</h2>
+              <a href="produto.html?id=${p.id}" class="product-title">${p.nome}</a>
               <div class="product-price">${precoFormatado} €</div>
-              <div class="btn-view-product">
-                <i class="fa-solid fa-eye"></i> Ver Detalhes
+              
+              <div class="product-card-actions">
+                <button type="button" class="btn-add-cart" onclick="adicionarAoCarrinho('${p.id}')">
+                  <i class="fa-solid fa-cart-plus"></i> Adicionar ao Carrinho
+                </button>
+                <a href="produto.html?id=${p.id}" class="btn-view-product">
+                  <i class="fa-solid fa-eye"></i> Ver Detalhes
+                </a>
               </div>
             </div>
-          </a>
+          </div>
         `;
       }).join('');
     }
@@ -1026,6 +1107,7 @@
 
     // Iniciar carregamentos
     atualizarEstadoSessao();
+    atualizarContadorCarrinho();
     buscarProdutosLoja();
   </script>
 </body>
