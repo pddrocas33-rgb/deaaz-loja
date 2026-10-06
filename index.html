@@ -11,6 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <!-- Cliente da Base de Dados / Autenticação -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     /* RESET & VARIÁVEIS */
     * {
@@ -21,9 +24,9 @@
     }
 
     :root {
-      --primary: #2563eb;       /* Azul elétrico */
+      --primary: #2563eb;
       --primary-dark: #1d4ed8;
-      --accent: #f97316;        /* Laranja para destaques */
+      --accent: #f97316;
       --bg-light: #f8fafc;
       --text-dark: #0f172a;
       --text-muted: #64748b;
@@ -121,7 +124,7 @@
 
     .user-actions {
       display: flex;
-      gap: 20px;
+      gap: 16px;
       align-items: center;
     }
 
@@ -133,6 +136,9 @@
       color: var(--text-dark);
       font-weight: 500;
       font-size: 0.9rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
     }
 
     .cart-btn {
@@ -156,6 +162,28 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      background: #f1f5f9;
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+
+    .btn-logout {
+      color: #ef4444;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+      margin-left: 4px;
     }
 
     /* HERO BANNER */
@@ -204,7 +232,7 @@
       background: var(--primary-dark);
     }
 
-    /* CATEGORIAS EM DESTAQUE */
+    /* CATEGORIAS */
     .section {
       max-width: 1200px;
       margin: 40px auto;
@@ -256,7 +284,7 @@
       font-weight: 600;
     }
 
-    /* GRELHA DE PRODUTOS */
+    /* PRODUTOS */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
@@ -354,6 +382,164 @@
       border-color: var(--primary);
     }
 
+    /* MODAL DE LOGIN / REGISTO */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .auth-modal {
+      background: #ffffff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      padding: 28px;
+      position: relative;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .btn-close-modal {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .auth-tab-btn {
+      border: none;
+      background: transparent;
+      padding: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .auth-tab-btn.active {
+      background: #ffffff;
+      color: var(--text-dark);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .auth-input-group {
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .auth-input-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .auth-input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .auth-input-box i {
+      position: absolute;
+      left: 12px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .auth-input-box input {
+      width: 100%;
+      padding: 10px 12px 10px 36px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .auth-input-box input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-auth-submit {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 11px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-auth-submit:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-auth-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .auth-alert {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .auth-alert-error {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .auth-alert-success {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
     /* FOOTER */
     footer {
       background: #ffffff;
@@ -406,7 +592,7 @@
         align-items: stretch;
       }
       .user-actions {
-        justify-content: flex-end;
+        justify-content: space-between;
       }
       .hero-card {
         padding: 24px;
@@ -437,6 +623,15 @@
 
       <!-- AÇÕES DO UTILIZADOR -->
       <div class="user-actions">
+        <!-- ÁREA DINÂMICA DE LOGIN/SESSÃO -->
+        <div id="auth-actions-container">
+          <button type="button" class="action-btn" onclick="abrirModalAuth('login')">
+            <i class="fa-regular fa-user"></i>
+            <span>Entrar</span>
+          </button>
+        </div>
+
+        <!-- CARRINHO -->
         <a href="carrinho.html" class="action-btn cart-btn">
           <i class="fa-solid fa-bag-shopping"></i>
           <span>Carrinho</span>
@@ -490,19 +685,19 @@
     </div>
   </section>
 
-  <!-- PRODUTOS EM DESTAQUE (LIGADOS AO SUPABASE) -->
+  <!-- PRODUTOS -->
   <section class="section" id="produtos">
     <div class="section-title">
       <span id="titulo-seccao">Produtos Disponíveis</span>
     </div>
     <div class="products-grid" id="produtos-container">
       <p style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">
-        <i class="fa-solid fa-spinner fa-spin"></i> A carregar catálogo do Supabase...
+        <i class="fa-solid fa-spinner fa-spin"></i> A carregar catálogo de produtos...
       </p>
     </div>
   </section>
 
-  <!-- RODAPÉ -->
+  <!-- FOOTER -->
   <footer>
     <div class="footer-container">
       <div class="footer-col">
@@ -532,37 +727,258 @@
     </div>
   </footer>
 
-  <!-- SCRIPT PARA IR BUSCAR OS PRODUTOS AO SUPABASE -->
-  <script>
-    const API_URL = "https://omtlfwrrqketuaxufmkd.supabase.co/rest/v1";
-    const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tdGxmd3JycWtldHVheHVmbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDA5OTgsImV4cCI6MjEwMTY3Njk5OH0.vTDHpe2HmFNgJ2T9diTwbGParsMpcoeqDzhoivrtELo";
+  <!-- MODAL DE LOGIN / REGISTO -->
+  <div class="modal-backdrop" id="modal-auth" onclick="fecharModalAuthSeClicarFora(event)">
+    <div class="auth-modal">
+      <button type="button" class="btn-close-modal" onclick="fecharModalAuth()">&times;</button>
+      
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="btn-tab-login" onclick="mudarAuthTab('login')">Entrar</button>
+        <button class="auth-tab-btn" id="btn-tab-reg" onclick="mudarAuthTab('reg')">Criar Conta</button>
+      </div>
 
-    const HEADERS = {
-      "apikey": API_KEY,
-      "Authorization": "Bearer " + API_KEY,
-      "Content-Type": "application/json"
-    };
+      <div id="modal-auth-alert" class="auth-alert"></div>
+
+      <!-- FORMULÁRIO DE LOGIN -->
+      <form id="form-modal-login" onsubmit="executarLogin(event)">
+        <div class="auth-input-group">
+          <label for="login-email">Email</label>
+          <div class="auth-input-box">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="login-email" required placeholder="exemplo@email.com">
+          </div>
+        </div>
+
+        <div class="auth-input-group">
+          <label for="login-password">Palavra-passe</label>
+          <div class="auth-input-box">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="login-password" required placeholder="••••••••">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-auth-submit" id="btn-submit-login">
+          <span>Entrar</span>
+        </button>
+      </form>
+
+      <!-- FORMULÁRIO DE REGISTO -->
+      <form id="form-modal-reg" onsubmit="executarRegisto(event)" style="display: none;">
+        <div class="auth-input-group">
+          <label for="reg-nome">Nome Completo</label>
+          <div class="auth-input-box">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" id="reg-nome" required placeholder="O teu nome">
+          </div>
+        </div>
+
+        <div class="auth-input-group">
+          <label for="reg-email">Email</label>
+          <div class="auth-input-box">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="reg-email" required placeholder="exemplo@email.com">
+          </div>
+        </div>
+
+        <div class="auth-input-group">
+          <label for="reg-password">Palavra-passe</label>
+          <div class="auth-input-box">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="reg-password" required minlength="6" placeholder="Mínimo 6 caracteres">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-auth-submit" id="btn-submit-reg">
+          <span>Criar Conta</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPTS PRINCIPAIS -->
+  <script>
+    const SUPABASE_PROJECT_URL = "https://omtlfwrrqketuaxufmkd.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tdGxmd3JycWtldHVheHVmbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDA5OTgsImV4cCI6MjEwMTY3Njk5OH0.vTDHpe2HmFNgJ2T9diTwbGParsMpcoeqDzhoivrtELo";
+
+    const supabase = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_KEY);
 
     let catalogoGlobal = [];
 
+    // ---------------- AUTHENTICATION & SESSÃO ----------------
+    function abrirModalAuth(aba = 'login') {
+      document.getElementById('modal-auth').classList.add('active');
+      mudarAuthTab(aba);
+    }
+
+    function fecharModalAuth() {
+      document.getElementById('modal-auth').classList.remove('active');
+      limparAuthAlert();
+    }
+
+    function fecharModalAuthSeClicarFora(e) {
+      if (e.target.id === 'modal-auth') fecharModalAuth();
+    }
+
+    function mudarAuthTab(modo) {
+      limparAuthAlert();
+      const loginForm = document.getElementById('form-modal-login');
+      const regForm = document.getElementById('form-modal-reg');
+      const tabLogin = document.getElementById('btn-tab-login');
+      const tabReg = document.getElementById('btn-tab-reg');
+
+      if (modo === 'login') {
+        loginForm.style.display = 'block';
+        regForm.style.display = 'none';
+        tabLogin.classList.add('active');
+        tabReg.classList.remove('active');
+      } else {
+        loginForm.style.display = 'none';
+        regForm.style.display = 'block';
+        tabLogin.classList.remove('active');
+        tabReg.classList.add('active');
+      }
+    }
+
+    function exibirAuthAlert(msg, tipo = 'error') {
+      const box = document.getElementById('modal-auth-alert');
+      box.textContent = msg;
+      box.className = `auth-alert auth-alert-${tipo}`;
+      box.style.display = 'block';
+    }
+
+    function limparAuthAlert() {
+      const box = document.getElementById('modal-auth-alert');
+      box.style.display = 'none';
+    }
+
+    async function atualizarInterfaceUsuario() {
+      const { data: { user } } = await supabase.auth.getUser();
+      const authBox = document.getElementById('auth-actions-container');
+
+      if (user) {
+        const nome = user.user_metadata?.full_name || user.email.split('@')[0];
+        authBox.innerHTML = `
+          <div class="user-pill">
+            <i class="fa-solid fa-circle-user" style="color: var(--primary);"></i>
+            <span>Olá, ${nome}</span>
+            <button class="btn-logout" title="Terminar Sessão" onclick="terminarSessao()">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </button>
+          </div>
+        `;
+      } else {
+        authBox.innerHTML = `
+          <button type="button" class="action-btn" onclick="abrirModalAuth('login')">
+            <i class="fa-regular fa-user"></i>
+            <span>Entrar</span>
+          </button>
+        `;
+      }
+    }
+
+    async function executarLogin(e) {
+      e.preventDefault();
+      limparAuthAlert();
+
+      const email = document.getElementById('login-email').value.trim();
+      const pass = document.getElementById('login-password').value;
+      const btn = document.getElementById('btn-submit-login');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> A entrar...';
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: pass
+      });
+
+      btn.disabled = false;
+      btn.innerHTML = '<span>Entrar</span>';
+
+      if (error) {
+        exibirAuthAlert('Email ou palavra-passe incorretos.', 'error');
+        return;
+      }
+
+      fecharModalAuth();
+      atualizarInterfaceUsuario();
+    }
+
+    async function executarRegisto(e) {
+      e.preventDefault();
+      limparAuthAlert();
+
+      const nome = document.getElementById('reg-nome').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const pass = document.getElementById('reg-password').value;
+      const btn = document.getElementById('btn-submit-reg');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> A criar conta...';
+
+      const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: pass,
+        options: {
+          data: { full_name: nome }
+        }
+      });
+
+      btn.disabled = false;
+      btn.innerHTML = '<span>Criar Conta</span>';
+
+      if (error) {
+        exibirAuthAlert(error.message, 'error');
+        return;
+      }
+
+      exibirAuthAlert('Conta criada com sucesso! Podes agora iniciar sessão.', 'success');
+      setTimeout(() => mudarAuthTab('login'), 2000);
+    }
+
+    async function terminarSessao() {
+      await supabase.auth.signOut();
+      atualizarInterfaceUsuario();
+    }
+
+    // ---------------- CARRINHO ----------------
+    function atualizarBadgeCarrinho() {
+      try {
+        const carrinho = JSON.parse(localStorage.getItem('deaaz_cart')) || [];
+        const total = carrinho.reduce((sum, item) => sum + (item.qtd || 1), 0);
+        document.getElementById('cart-counter').innerText = total;
+      } catch (e) {
+        document.getElementById('cart-counter').innerText = 0;
+      }
+    }
+
+    // ---------------- CATÁLOGO DE PRODUTOS ----------------
     async function buscarProdutosLoja() {
       const container = document.getElementById('produtos-container');
+      
+      container.innerHTML = `
+        <p style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">
+          <i class="fa-solid fa-spinner fa-spin"></i> A carregar catálogo de produtos...
+        </p>
+      `;
+
       try {
-        // Pede os produtos diretamente à tabela 'produtos' ordenada por id decrescente
-        const res = await fetch(`${API_URL}/produtos?order=id.desc`, { headers: HEADERS });
-        
-        if (!res.ok) {
-          const errDetail = await res.text();
-          console.error("Erro Supabase:", res.status, errDetail);
-          throw new Error(`Erro na API (${res.status})`);
+        const { data, error } = await supabase
+          .from('produtos')
+          .select('*')
+          .order('id', { ascending: false });
+
+        if (error) {
+          console.error("Erro técnico na leitura:", error.message);
+          throw error;
         }
 
-        catalogoGlobal = await res.json();
+        catalogoGlobal = data || [];
 
-        if (!Array.isArray(catalogoGlobal) || catalogoGlobal.length === 0) {
+        if (catalogoGlobal.length === 0) {
           container.innerHTML = `
             <div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">
-              Ainda não existem produtos disponíveis na base de dados.
+              Ainda não existem produtos disponíveis na loja.
             </div>
           `;
           return;
@@ -570,8 +986,13 @@
 
         renderizarProdutos(catalogoGlobal);
       } catch (err) {
-        console.error(err);
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 30px;">Erro ao ligar ao catálogo do Supabase.</p>`;
+        container.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 30px;">
+            <i class="fa-solid fa-triangle-exclamation" style="margin-bottom: 8px; font-size: 1.5rem;"></i>
+            <p style="font-weight: 600;">Não foi possível carregar os produtos neste momento.</p>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Por favor, tenta recarregar a página.</p>
+          </div>
+        `;
       }
     }
 
@@ -633,8 +1054,10 @@
       if (e.key === 'Enter') pesquisarProdutos();
     });
 
-    // Iniciar carregamento
+    // INICIALIZAÇÃO AUTOMÁTICA
     buscarProdutosLoja();
+    atualizarInterfaceUsuario();
+    atualizarBadgeCarrinho();
   </script>
 </body>
 </html>
