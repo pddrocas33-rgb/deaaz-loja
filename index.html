@@ -11,9 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Cliente da Base de Dados / Autenticação -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     /* RESET & VARIÁVEIS */
     * {
@@ -24,9 +21,9 @@
     }
 
     :root {
-      --primary: #2563eb;
+      --primary: #2563eb;       /* Azul elétrico */
       --primary-dark: #1d4ed8;
-      --accent: #f97316;
+      --accent: #f97316;        /* Laranja para destaques */
       --bg-light: #f8fafc;
       --text-dark: #0f172a;
       --text-muted: #64748b;
@@ -124,7 +121,7 @@
 
     .user-actions {
       display: flex;
-      gap: 16px;
+      gap: 15px;
       align-items: center;
     }
 
@@ -136,9 +133,16 @@
       color: var(--text-dark);
       font-weight: 500;
       font-size: 0.9rem;
-      background: transparent;
+      background: none;
       border: none;
       cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 20px;
+      transition: background 0.2s;
+    }
+
+    .action-btn:hover {
+      background: #f1f5f9;
     }
 
     .cart-btn {
@@ -162,28 +166,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .user-pill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      background: #f1f5f9;
-      padding: 6px 14px;
-      border-radius: 20px;
-    }
-
-    .btn-logout {
-      color: #ef4444;
-      cursor: pointer;
-      border: none;
-      background: transparent;
-      display: flex;
-      align-items: center;
-      font-size: 0.9rem;
-      margin-left: 4px;
     }
 
     /* HERO BANNER */
@@ -232,7 +214,7 @@
       background: var(--primary-dark);
     }
 
-    /* CATEGORIAS */
+    /* CATEGORIAS EM DESTAQUE */
     .section {
       max-width: 1200px;
       margin: 40px auto;
@@ -284,7 +266,7 @@
       font-weight: 600;
     }
 
-    /* PRODUTOS */
+    /* GRELHA DE PRODUTOS */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
@@ -383,161 +365,143 @@
     }
 
     /* MODAL DE LOGIN / REGISTO */
-    .modal-backdrop {
-      display: none;
+    .modal-overlay {
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(15, 23, 42, 0.6);
       backdrop-filter: blur(4px);
-      z-index: 1000;
+      display: none;
       align-items: center;
       justify-content: center;
+      z-index: 1000;
       padding: 16px;
     }
 
-    .modal-backdrop.active {
+    .modal-overlay.active {
       display: flex;
     }
 
-    .auth-modal {
+    .modal-card {
       background: #ffffff;
       border-radius: 16px;
       width: 100%;
-      max-width: 400px;
-      padding: 28px;
-      position: relative;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      animation: modalFadeIn 0.2s ease-out;
+      position: relative;
+      padding: 32px;
+      animation: modalFadeIn 0.25s ease-out;
     }
 
     @keyframes modalFadeIn {
-      from { opacity: 0; transform: translateY(12px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .btn-close-modal {
       position: absolute;
-      top: 18px;
-      right: 18px;
-      background: transparent;
+      top: 20px;
+      right: 20px;
+      background: none;
       border: none;
+      font-size: 1.25rem;
       color: var(--text-muted);
-      font-size: 1.4rem;
       cursor: pointer;
-      line-height: 1;
+      transition: color 0.2s;
     }
 
-    .auth-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      background: #f1f5f9;
-      padding: 4px;
-      border-radius: 10px;
-      margin-bottom: 20px;
+    .btn-close-modal:hover {
+      color: var(--text-dark);
     }
 
-    .auth-tab-btn {
-      border: none;
-      background: transparent;
-      padding: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
+    .modal-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .modal-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      font-weight: 700;
       color: var(--text-muted);
-      border-radius: 8px;
       cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
       transition: all 0.2s;
     }
 
-    .auth-tab-btn.active {
-      background: #ffffff;
-      color: var(--text-dark);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    .modal-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
     }
 
-    .auth-input-group {
-      margin-bottom: 14px;
+    .auth-form {
+      display: none;
+    }
+
+    .auth-form.active {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 14px;
     }
 
-    .auth-input-group label {
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
       font-size: 0.8rem;
       font-weight: 600;
       color: var(--text-dark);
     }
 
-    .auth-input-box {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .auth-input-box i {
-      position: absolute;
-      left: 12px;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
-
-    .auth-input-box input {
-      width: 100%;
-      padding: 10px 12px 10px 36px;
+    .form-group input, .form-group select {
+      padding: 10px 14px;
       border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 0.9rem;
       outline: none;
+      transition: border-color 0.2s;
     }
 
-    .auth-input-box input:focus {
+    .form-group input:focus, .form-group select:focus {
       border-color: var(--primary);
     }
 
-    .btn-auth-submit {
-      width: 100%;
+    .form-submit-btn {
       background: var(--primary);
       color: white;
       border: none;
-      padding: 11px;
+      padding: 12px;
       border-radius: 8px;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       cursor: pointer;
-      margin-top: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      margin-top: 10px;
+      transition: background 0.2s;
     }
 
-    .btn-auth-submit:hover {
+    .form-submit-btn:hover {
       background: var(--primary-dark);
     }
 
-    .btn-auth-submit:disabled {
-      opacity: 0.7;
+    .form-submit-btn:disabled {
+      background: #94a3b8;
       cursor: not-allowed;
-    }
-
-    .auth-alert {
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      margin-bottom: 14px;
-      display: none;
-    }
-
-    .auth-alert-error {
-      background: #fef2f2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-    }
-
-    .auth-alert-success {
-      background: #f0fdf4;
-      color: #16a34a;
-      border: 1px solid #bbf7d0;
     }
 
     /* FOOTER */
@@ -592,13 +556,16 @@
         align-items: stretch;
       }
       .user-actions {
-        justify-content: space-between;
+        justify-content: flex-end;
       }
       .hero-card {
         padding: 24px;
       }
       .hero-content h1 {
         font-size: 1.8rem;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -613,7 +580,7 @@
   <!-- CABEÇALHO -->
   <header>
     <div class="main-header">
-      <a href="index.html" class="logo">De<span>AaZ</span></a>
+      <a href="index06-10-2026.html" class="logo">De<span>AaZ</span></a>
       
       <!-- BARRA DE PESQUISA -->
       <div class="search-box">
@@ -623,15 +590,12 @@
 
       <!-- AÇÕES DO UTILIZADOR -->
       <div class="user-actions">
-        <!-- ÁREA DINÂMICA DE LOGIN/SESSÃO -->
-        <div id="auth-actions-container">
-          <button type="button" class="action-btn" onclick="abrirModalAuth('login')">
-            <i class="fa-regular fa-user"></i>
-            <span>Entrar</span>
-          </button>
-        </div>
+        <!-- BOTÃO DE LOGIN / UTILIZADOR -->
+        <button class="action-btn" id="btn-auth-open" onclick="abrirModalAuth()">
+          <i class="fa-solid fa-user"></i>
+          <span id="label-user">Entrar / Registar</span>
+        </button>
 
-        <!-- CARRINHO -->
         <a href="carrinho.html" class="action-btn cart-btn">
           <i class="fa-solid fa-bag-shopping"></i>
           <span>Carrinho</span>
@@ -685,19 +649,102 @@
     </div>
   </section>
 
-  <!-- PRODUTOS -->
+  <!-- PRODUTOS EM DESTAQUE (LIGADOS AO SUPABASE) -->
   <section class="section" id="produtos">
     <div class="section-title">
       <span id="titulo-seccao">Produtos Disponíveis</span>
     </div>
     <div class="products-grid" id="produtos-container">
       <p style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">
-        <i class="fa-solid fa-spinner fa-spin"></i> A carregar catálogo de produtos...
+        <i class="fa-solid fa-spinner fa-spin"></i> A carregar catálogo do Supabase...
       </p>
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- MODAL DE LOGIN / REGISTO -->
+  <div class="modal-overlay" id="modal-auth" onclick="fecharModalBackground(event)">
+    <div class="modal-card">
+      <button class="btn-close-modal" onclick="fecharModalAuth()"><i class="fa-solid fa-xmark"></i></button>
+
+      <!-- ABAS -->
+      <div class="modal-tabs">
+        <div class="modal-tab active" id="tab-login" onclick="trocarAbaAuth('login')">Entrar</div>
+        <div class="modal-tab" id="tab-registo" onclick="trocarAbaAuth('registo')">Criar Conta</div>
+      </div>
+
+      <!-- FORMULÁRIO DE LOGIN -->
+      <form class="auth-form active" id="form-login" onsubmit="realizarLogin(event)">
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" placeholder="exemplo@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Palavra-passe</label>
+          <input type="password" id="login-password" placeholder="A sua senha" required>
+        </div>
+        <button type="submit" class="form-submit-btn" id="btn-login-submit">Entrar na Conta</button>
+      </form>
+
+      <!-- FORMULÁRIO DE REGISTO COMPLETO -->
+      <form class="auth-form" id="form-registo" onsubmit="realizarRegisto(event)">
+        <div class="form-group">
+          <label for="reg-nome">Nome Completo</label>
+          <input type="text" id="reg-nome" placeholder="O seu nome e apelido" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reg-email">Email</label>
+            <input type="email" id="reg-email" placeholder="exemplo@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Palavra-passe</label>
+            <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reg-nif">NIF / Ref. Fiscal</label>
+            <input type="text" id="reg-nif" placeholder="Ex: 123456789" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-pais">País</label>
+            <select id="reg-pais" required>
+              <option value="" disabled selected>Selecione o país</option>
+              <option value="Portugal">Portugal</option>
+              <option value="Brasil">Brasil</option>
+              <option value="Espanha">Espanha</option>
+              <option value="França">França</option>
+              <option value="Angola">Angola</option>
+              <option value="Moçambique">Moçambique</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-rua">Morada Completa (Rua, Nº, Andar/Porta)</label>
+          <input type="text" id="reg-rua" placeholder="Ex: Rua Central, Lote 12, 3º Dto" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reg-cp">Código Postal</label>
+            <input type="text" id="reg-cp" placeholder="Ex: 1000-001" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-cidade">Cidade / Localidade</label>
+            <input type="text" id="reg-cidade" placeholder="Ex: Lisboa" required>
+          </div>
+        </div>
+
+        <button type="submit" class="form-submit-btn" id="btn-registo-submit">Concluir Registo</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- RODAPÉ -->
   <footer>
     <div class="footer-container">
       <div class="footer-col">
@@ -727,258 +774,186 @@
     </div>
   </footer>
 
-  <!-- MODAL DE LOGIN / REGISTO -->
-  <div class="modal-backdrop" id="modal-auth" onclick="fecharModalAuthSeClicarFora(event)">
-    <div class="auth-modal">
-      <button type="button" class="btn-close-modal" onclick="fecharModalAuth()">&times;</button>
-      
-      <div class="auth-tabs">
-        <button class="auth-tab-btn active" id="btn-tab-login" onclick="mudarAuthTab('login')">Entrar</button>
-        <button class="auth-tab-btn" id="btn-tab-reg" onclick="mudarAuthTab('reg')">Criar Conta</button>
-      </div>
-
-      <div id="modal-auth-alert" class="auth-alert"></div>
-
-      <!-- FORMULÁRIO DE LOGIN -->
-      <form id="form-modal-login" onsubmit="executarLogin(event)">
-        <div class="auth-input-group">
-          <label for="login-email">Email</label>
-          <div class="auth-input-box">
-            <i class="fa-solid fa-envelope"></i>
-            <input type="email" id="login-email" required placeholder="exemplo@email.com">
-          </div>
-        </div>
-
-        <div class="auth-input-group">
-          <label for="login-password">Palavra-passe</label>
-          <div class="auth-input-box">
-            <i class="fa-solid fa-lock"></i>
-            <input type="password" id="login-password" required placeholder="••••••••">
-          </div>
-        </div>
-
-        <button type="submit" class="btn-auth-submit" id="btn-submit-login">
-          <span>Entrar</span>
-        </button>
-      </form>
-
-      <!-- FORMULÁRIO DE REGISTO -->
-      <form id="form-modal-reg" onsubmit="executarRegisto(event)" style="display: none;">
-        <div class="auth-input-group">
-          <label for="reg-nome">Nome Completo</label>
-          <div class="auth-input-box">
-            <i class="fa-solid fa-user"></i>
-            <input type="text" id="reg-nome" required placeholder="O teu nome">
-          </div>
-        </div>
-
-        <div class="auth-input-group">
-          <label for="reg-email">Email</label>
-          <div class="auth-input-box">
-            <i class="fa-solid fa-envelope"></i>
-            <input type="email" id="reg-email" required placeholder="exemplo@email.com">
-          </div>
-        </div>
-
-        <div class="auth-input-group">
-          <label for="reg-password">Palavra-passe</label>
-          <div class="auth-input-box">
-            <i class="fa-solid fa-lock"></i>
-            <input type="password" id="reg-password" required minlength="6" placeholder="Mínimo 6 caracteres">
-          </div>
-        </div>
-
-        <button type="submit" class="btn-auth-submit" id="btn-submit-reg">
-          <span>Criar Conta</span>
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- SCRIPTS PRINCIPAIS -->
+  <!-- SCRIPTS -->
   <script>
-    const SUPABASE_PROJECT_URL = "https://omtlfwrrqketuaxufmkd.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tdGxmd3JycWtldHVheHVmbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDA5OTgsImV4cCI6MjEwMTY3Njk5OH0.vTDHpe2HmFNgJ2T9diTwbGParsMpcoeqDzhoivrtELo";
+    const API_URL = "https://omtlfwrrqketuaxufmkd.supabase.co/rest/v1";
+    const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tdGxmd3JycWtldHVheHVmbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDA5OTgsImV4cCI6MjEwMTY3Njk5OH0.vTDHpe2HmFNgJ2T9diTwbGParsMpcoeqDzhoivrtELo";
 
-    const supabase = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_KEY);
+    const HEADERS = {
+      "apikey": API_KEY,
+      "Authorization": "Bearer " + API_KEY,
+      "Content-Type": "application/json",
+      "Prefer": "return=representation"
+    };
 
     let catalogoGlobal = [];
 
-    // ---------------- AUTHENTICATION & SESSÃO ----------------
-    function abrirModalAuth(aba = 'login') {
+    /* CONTROLO DA MODAL DE AUTENTICAÇÃO */
+    function abrirModalAuth() {
+      const userLogado = localStorage.getItem('deaaz_user');
+      if (userLogado) {
+        const dados = JSON.parse(userLogado);
+        if (confirm(`Sessão iniciada como ${dados.nome}.\nDeseja terminar a sessão?`)) {
+          localStorage.removeItem('deaaz_user');
+          atualizarEstadoSessao();
+        }
+        return;
+      }
       document.getElementById('modal-auth').classList.add('active');
-      mudarAuthTab(aba);
     }
 
     function fecharModalAuth() {
       document.getElementById('modal-auth').classList.remove('active');
-      limparAuthAlert();
     }
 
-    function fecharModalAuthSeClicarFora(e) {
+    function fecharModalBackground(e) {
       if (e.target.id === 'modal-auth') fecharModalAuth();
     }
 
-    function mudarAuthTab(modo) {
-      limparAuthAlert();
-      const loginForm = document.getElementById('form-modal-login');
-      const regForm = document.getElementById('form-modal-reg');
-      const tabLogin = document.getElementById('btn-tab-login');
-      const tabReg = document.getElementById('btn-tab-reg');
+    function trocarAbaAuth(aba) {
+      const tabLogin = document.getElementById('tab-login');
+      const tabRegisto = document.getElementById('tab-registo');
+      const formLogin = document.getElementById('form-login');
+      const formRegisto = document.getElementById('form-registo');
 
-      if (modo === 'login') {
-        loginForm.style.display = 'block';
-        regForm.style.display = 'none';
+      if (aba === 'login') {
         tabLogin.classList.add('active');
-        tabReg.classList.remove('active');
+        tabRegisto.classList.remove('active');
+        formLogin.classList.add('active');
+        formRegisto.classList.remove('active');
       } else {
-        loginForm.style.display = 'none';
-        regForm.style.display = 'block';
+        tabRegisto.classList.add('active');
         tabLogin.classList.remove('active');
-        tabReg.classList.add('active');
+        formRegisto.classList.add('active');
+        formLogin.classList.remove('active');
       }
     }
 
-    function exibirAuthAlert(msg, tipo = 'error') {
-      const box = document.getElementById('modal-auth-alert');
-      box.textContent = msg;
-      box.className = `auth-alert auth-alert-${tipo}`;
-      box.style.display = 'block';
-    }
-
-    function limparAuthAlert() {
-      const box = document.getElementById('modal-auth-alert');
-      box.style.display = 'none';
-    }
-
-    async function atualizarInterfaceUsuario() {
-      const { data: { user } } = await supabase.auth.getUser();
-      const authBox = document.getElementById('auth-actions-container');
-
-      if (user) {
-        const nome = user.user_metadata?.full_name || user.email.split('@')[0];
-        authBox.innerHTML = `
-          <div class="user-pill">
-            <i class="fa-solid fa-circle-user" style="color: var(--primary);"></i>
-            <span>Olá, ${nome}</span>
-            <button class="btn-logout" title="Terminar Sessão" onclick="terminarSessao()">
-              <i class="fa-solid fa-arrow-right-from-bracket"></i>
-            </button>
-          </div>
-        `;
-      } else {
-        authBox.innerHTML = `
-          <button type="button" class="action-btn" onclick="abrirModalAuth('login')">
-            <i class="fa-regular fa-user"></i>
-            <span>Entrar</span>
-          </button>
-        `;
-      }
-    }
-
-    async function executarLogin(e) {
+    /* REGISTO DIRETO NO SUPABASE */
+    async function realizarRegisto(e) {
       e.preventDefault();
-      limparAuthAlert();
-
-      const email = document.getElementById('login-email').value.trim();
-      const pass = document.getElementById('login-password').value;
-      const btn = document.getElementById('btn-submit-login');
-
+      const btn = document.getElementById('btn-registo-submit');
       btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> A entrar...';
+      btn.innerText = "A guardar no Supabase...";
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: pass
-      });
+      const novoCliente = {
+        nome: document.getElementById('reg-nome').value.trim(),
+        email: document.getElementById('reg-email').value.trim().toLowerCase(),
+        password: document.getElementById('reg-password').value,
+        nif: document.getElementById('reg-nif').value.trim(),
+        pais: document.getElementById('reg-pais').value,
+        morada: document.getElementById('reg-rua').value.trim(),
+        codigo_postal: document.getElementById('reg-cp').value.trim(),
+        cidade: document.getElementById('reg-cidade').value.trim()
+      };
 
-      btn.disabled = false;
-      btn.innerHTML = '<span>Entrar</span>';
-
-      if (error) {
-        exibirAuthAlert('Email ou palavra-passe incorretos.', 'error');
-        return;
-      }
-
-      fecharModalAuth();
-      atualizarInterfaceUsuario();
-    }
-
-    async function executarRegisto(e) {
-      e.preventDefault();
-      limparAuthAlert();
-
-      const nome = document.getElementById('reg-nome').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const pass = document.getElementById('reg-password').value;
-      const btn = document.getElementById('btn-submit-reg');
-
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> A criar conta...';
-
-      const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: pass,
-        options: {
-          data: { full_name: nome }
-        }
-      });
-
-      btn.disabled = false;
-      btn.innerHTML = '<span>Criar Conta</span>';
-
-      if (error) {
-        exibirAuthAlert(error.message, 'error');
-        return;
-      }
-
-      exibirAuthAlert('Conta criada com sucesso! Podes agora iniciar sessão.', 'success');
-      setTimeout(() => mudarAuthTab('login'), 2000);
-    }
-
-    async function terminarSessao() {
-      await supabase.auth.signOut();
-      atualizarInterfaceUsuario();
-    }
-
-    // ---------------- CARRINHO ----------------
-    function atualizarBadgeCarrinho() {
       try {
-        const carrinho = JSON.parse(localStorage.getItem('deaaz_cart')) || [];
-        const total = carrinho.reduce((sum, item) => sum + (item.qtd || 1), 0);
-        document.getElementById('cart-counter').innerText = total;
-      } catch (e) {
-        document.getElementById('cart-counter').innerText = 0;
+        const res = await fetch(`${API_URL}/clientes`, {
+          method: "POST",
+          headers: HEADERS,
+          body: JSON.stringify(novoCliente)
+        });
+
+        if (!res.ok) {
+          const erroDetalhe = await res.json();
+          if (erroDetalhe.code === "23505") {
+            throw new Error("Este email já está registado na plataforma.");
+          }
+          throw new Error(erroDetalhe.message || "Falha ao gravar no Supabase.");
+        }
+
+        // Sucesso: guardar sessão localmente
+        localStorage.setItem('deaaz_user', JSON.stringify({
+          nome: novoCliente.nome,
+          email: novoCliente.email
+        }));
+
+        alert(`Conta criada com sucesso no Supabase, bem-vindo(a) ${novoCliente.nome}!`);
+        fecharModalAuth();
+        atualizarEstadoSessao();
+        document.getElementById('form-registo').reset();
+      } catch (err) {
+        alert("Erro no registo: " + err.message);
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Concluir Registo";
       }
     }
 
-    // ---------------- CATÁLOGO DE PRODUTOS ----------------
+    /* LOGIN DIRETO NO SUPABASE */
+    async function realizarLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-login-submit');
+      btn.disabled = true;
+      btn.innerText = "A verificar...";
+
+      const email = document.getElementById('login-email').value.trim().toLowerCase();
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const res = await fetch(`${API_URL}/clientes?email=eq.${encodeURIComponent(email)}&password=eq.${encodeURIComponent(password)}`, {
+          headers: HEADERS
+        });
+
+        if (!res.ok) throw new Error("Erro ao consultar base de dados.");
+
+        const utilizadores = await res.json();
+
+        if (utilizadores.length === 0) {
+          alert("Email ou palavra-passe incorretos.");
+          return;
+        }
+
+        const utilizador = utilizadores[0];
+        localStorage.setItem('deaaz_user', JSON.stringify({
+          nome: utilizador.nome,
+          email: utilizador.email
+        }));
+
+        alert(`Bem-vindo de volta, ${utilizador.nome}!`);
+        fecharModalAuth();
+        atualizarEstadoSessao();
+        document.getElementById('form-login').reset();
+      } catch (err) {
+        alert("Erro ao tentar entrar: " + err.message);
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Entrar na Conta";
+      }
+    }
+
+    function atualizarEstadoSessao() {
+      const label = document.getElementById('label-user');
+      const userLogado = localStorage.getItem('deaaz_user');
+      if (userLogado) {
+        const dados = JSON.parse(userLogado);
+        const primeiroNome = dados.nome.split(' ')[0];
+        label.innerText = `Olá, ${primeiroNome}`;
+      } else {
+        label.innerText = "Entrar / Registar";
+      }
+    }
+
+    /* CARREGAMENTO DE PRODUTOS */
     async function buscarProdutosLoja() {
       const container = document.getElementById('produtos-container');
-      
-      container.innerHTML = `
-        <p style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">
-          <i class="fa-solid fa-spinner fa-spin"></i> A carregar catálogo de produtos...
-        </p>
-      `;
-
       try {
-        const { data, error } = await supabase
-          .from('produtos')
-          .select('*')
-          .order('id', { ascending: false });
-
-        if (error) {
-          console.error("Erro técnico na leitura:", error.message);
-          throw error;
+        const res = await fetch(`${API_URL}/produtos?order=id.desc`, { headers: HEADERS });
+        
+        if (!res.ok) {
+          const errDetail = await res.text();
+          console.error("Erro Supabase:", res.status, errDetail);
+          throw new Error(`Erro na API (${res.status})`);
         }
 
-        catalogoGlobal = data || [];
+        catalogoGlobal = await res.json();
 
-        if (catalogoGlobal.length === 0) {
+        if (!Array.isArray(catalogoGlobal) || catalogoGlobal.length === 0) {
           container.innerHTML = `
             <div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">
-              Ainda não existem produtos disponíveis na loja.
+              Ainda não existem produtos disponíveis na base de dados.
             </div>
           `;
           return;
@@ -986,13 +961,8 @@
 
         renderizarProdutos(catalogoGlobal);
       } catch (err) {
-        container.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 30px;">
-            <i class="fa-solid fa-triangle-exclamation" style="margin-bottom: 8px; font-size: 1.5rem;"></i>
-            <p style="font-weight: 600;">Não foi possível carregar os produtos neste momento.</p>
-            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Por favor, tenta recarregar a página.</p>
-          </div>
-        `;
+        console.error(err);
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 30px;">Erro ao ligar ao catálogo do Supabase.</p>`;
       }
     }
 
@@ -1054,10 +1024,9 @@
       if (e.key === 'Enter') pesquisarProdutos();
     });
 
-    // INICIALIZAÇÃO AUTOMÁTICA
+    // Iniciar carregamentos
+    atualizarEstadoSessao();
     buscarProdutosLoja();
-    atualizarInterfaceUsuario();
-    atualizarBadgeCarrinho();
   </script>
 </body>
 </html>
