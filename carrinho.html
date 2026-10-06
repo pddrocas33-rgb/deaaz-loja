@@ -10,6 +10,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <!-- SDK OFICIAL DO PAYPAL (Substitui 'sb' pelo teu Client ID do PayPal quando passares para produção) -->
+  <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
     :root {
@@ -36,7 +39,7 @@
     .breadcrumb { max-width: 1200px; margin: 20px auto 0; padding: 0 16px; font-size: 0.85rem; color: var(--text-muted); }
     .breadcrumb a { color: var(--text-muted); text-decoration: none; }
     
-    .cart-container { max-width: 1200px; margin: 30px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 360px; gap: 30px; }
+    .cart-container { max-width: 1200px; margin: 30px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 380px; gap: 30px; }
     .cart-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
     .cart-items-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
     
@@ -59,12 +62,47 @@
     .btn-remove:hover { text-decoration: underline; }
 
     .summary-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; height: fit-content; }
-    .summary-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .summary-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    
+    /* CAIXA COM DADOS DE ENTREGA */
+    .shipping-details-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 18px;
+      font-size: 0.85rem;
+    }
+    .shipping-details-box strong { color: var(--text-dark); display: block; margin-bottom: 4px; }
+    .shipping-details-box p { color: var(--text-muted); margin: 0; line-height: 1.4; }
+
     .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; color: var(--text-muted); }
     .summary-row.total { font-size: 1.2rem; font-weight: 800; color: var(--text-dark); margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
     .shipping-free { color: #16a34a; font-weight: 600; }
-    .btn-checkout { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-    .btn-checkout:hover { background: var(--primary-dark); }
+
+    #paypal-button-container {
+      margin-top: 18px;
+    }
+
+    .btn-simulate {
+      width: 100%;
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+    .btn-simulate:hover { background: #059669; }
+
     .continue-shopping { display: block; text-align: center; margin-top: 15px; color: var(--primary); text-decoration: none; font-size: 0.85rem; font-weight: 600; }
 
     @media (max-width: 850px) {
@@ -80,8 +118,12 @@
 
   <header>
     <div class="main-header">
-      <a href="index.html" class="logo">De<span>AaZ</span></a>
+      <a href="index06-10-2026.html" class="logo">De<span>AaZ</span></a>
       <div class="user-actions">
+        <a href="index06-10-2026.html" class="action-btn">
+          <i class="fa-solid fa-store"></i>
+          <span>Loja</span>
+        </a>
         <a href="carrinho.html" class="action-btn cart-btn">
           <i class="fa-solid fa-bag-shopping"></i>
           <span>Carrinho</span>
@@ -92,7 +134,7 @@
   </header>
 
   <div class="breadcrumb">
-    <a href="index.html">Início</a> &gt; <span>Carrinho de Compras</span>
+    <a href="index06-10-2026.html">Início</a> &gt; <span>Carrinho de Compras</span>
   </div>
 
   <div class="cart-container">
@@ -106,6 +148,11 @@
       <div class="summary-card">
         <h2 class="summary-title">Resumo do Pedido</h2>
         
+        <!-- DADOS DE ENTREGA DETETADOS AUTOMATICAMENTE -->
+        <div class="shipping-details-box" id="shipping-details">
+          <p><i class="fa-solid fa-spinner fa-spin"></i> A carregar morada de envio...</p>
+        </div>
+
         <div class="summary-row">
           <span>Subtotal</span>
           <span id="resumo-subtotal">0.00€</span>
@@ -120,17 +167,30 @@
           <span id="resumo-total">0.00€</span>
         </div>
 
-        <button class="btn-checkout" onclick="alert('Funcionalidade de checkout em processamento.')">
-          <i class="fa-solid fa-lock"></i> Finalizar Compra
+        <!-- BOTÕES OFICIAIS DO PAYPAL -->
+        <div id="paypal-button-container"></div>
+
+        <!-- BOTÃO DE TESTE DIRETO (SEM PRECISAR DE CONTA PAYPAL) -->
+        <button type="button" class="btn-simulate" onclick="simularPagamentoImediato()">
+          <i class="fa-solid fa-circle-check"></i> Simular Pagamento Concluído (Teste)
         </button>
 
-        <a href="index.html" class="continue-shopping">&larr; Continuar a comprar</a>
+        <a href="index06-10-2026.html" class="continue-shopping">&larr; Continuar a comprar</a>
       </div>
     </div>
   </div>
 
   <script>
-    // Carregar carrinho do localStorage
+    const API_URL = "https://omtlfwrrqketuaxufmkd.supabase.co/rest/v1";
+    const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tdGxmd3JycWtldHVheHVmbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDA5OTgsImV4cCI6MjEwMTY3Njk5OH0.vTDHpe2HmFNgJ2T9diTwbGParsMpcoeqDzhoivrtELo";
+
+    const HEADERS = {
+      "apikey": API_KEY,
+      "Authorization": "Bearer " + API_KEY,
+      "Content-Type": "application/json",
+      "Prefer": "return=representation"
+    };
+
     function obterCarrinho() {
       try {
         return JSON.parse(localStorage.getItem('deaaz_cart')) || [];
@@ -149,6 +209,34 @@
       const totalItens = carrinho.reduce((sum, item) => sum + (item.qtd || 1), 0);
       const badge = document.getElementById('cart-counter');
       if (badge) badge.innerText = totalItens;
+    }
+
+    function calcularTotalCarrinho() {
+      const carrinho = obterCarrinho();
+      return carrinho.reduce((sum, item) => sum + (parseFloat(item.preco || 0) * parseInt(item.qtd || 1, 10)), 0);
+    }
+
+    function carregarDadosEnvio() {
+      const box = document.getElementById('shipping-details');
+      const userSalvo = localStorage.getItem('deaaz_user');
+
+      if (!userSalvo) {
+        box.innerHTML = `
+          <strong><i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;"></i> Não iniciou sessão</strong>
+          <p>Para prosseguir com os dados de envio (morada, nif), por favor faça login na loja.</p>
+          <a href="index06-10-2026.html" style="color:#2563eb; font-weight:700; text-decoration:none; display:inline-block; margin-top:6px;">Fazer Login</a>
+        `;
+        return null;
+      }
+
+      const user = JSON.parse(userSalvo);
+      box.innerHTML = `
+        <strong><i class="fa-solid fa-location-dot" style="color:#2563eb;"></i> Enviar para:</strong>
+        <p><strong>${user.nome}</strong> (NIF: ${user.nif || 'Não indicado'})</p>
+        <p>${user.morada || 'Morada não definida'}</p>
+        <p>${user.codigo_postal || ''} ${user.cidade || ''}, ${user.pais || 'Portugal'}</p>
+      `;
+      return user;
     }
 
     function alterarQtd(id, delta) {
@@ -181,15 +269,18 @@
           <div style="text-align: center; padding: 40px; color: #64748b;">
             <i class="fa-solid fa-bag-shopping fa-3x" style="margin-bottom: 12px; color: #cbd5e1;"></i>
             <p style="font-size: 1.1rem; font-weight: 600;">O teu carrinho está vazio.</p>
-            <a href="index.html" style="display:inline-block; margin-top:16px; color:#2563eb; font-weight:700; text-decoration:none;">
+            <a href="index06-10-2026.html" style="display:inline-block; margin-top:16px; color:#2563eb; font-weight:700; text-decoration:none;">
               &larr; Ver produtos da loja
             </a>
           </div>
         `;
         document.getElementById('resumo-subtotal').innerText = '0.00€';
         document.getElementById('resumo-total').innerText = '0.00€';
+        document.getElementById('paypal-button-container').style.display = 'none';
         return;
       }
+
+      document.getElementById('paypal-button-container').style.display = 'block';
 
       let subtotal = 0;
 
@@ -226,6 +317,109 @@
       document.getElementById('resumo-total').innerText = subtotal.toFixed(2) + '€';
     }
 
+    /* GRAVA A ENCOMENDA NO SUPABASE APÓS CONFIRMAÇÃO DO PAGAMENTO */
+    async function registarEncomendaPaga(transacaoInfo = {}) {
+      const carrinho = obterCarrinho();
+      const user = carregarDadosEnvio();
+
+      if (!user) {
+        alert("Erro: É obrigatório ter sessão iniciada com morada e NIF para registar o envio!");
+        return false;
+      }
+
+      if (carrinho.length === 0) {
+        alert("O carrinho está vazio.");
+        return false;
+      }
+
+      const totalCalculado = calcularTotalCarrinho();
+
+      // Estrutura a encomenda para guardar no Supabase
+      const novaEncomenda = {
+        cliente_nome: user.nome,
+        cliente_email: user.email,
+        cliente_nif: user.nif || 'Não indicado',
+        morada_rua: user.morada || 'Morada não indicada',
+        morada_codigo_postal: user.codigo_postal || '',
+        morada_cidade: user.cidade || '',
+        morada_pais: user.pais || 'Portugal',
+        itens: carrinho.map(item => ({
+          id: item.id,
+          nome: item.nome,
+          preco: item.preco,
+          qtd: item.qtd || 1,
+          imagem: item.imagem || ''
+        })),
+        total: totalCalculado,
+        estado: 'Paga'
+      };
+
+      try {
+        const res = await fetch(`${API_URL}/encomendas`, {
+          method: "POST",
+          headers: HEADERS,
+          body: JSON.stringify(novaEncomenda)
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.message || "Erro na base de dados");
+        }
+
+        alert("🎉 Pagamento confirmado com sucesso! A encomenda foi enviada para o painel de gestão.");
+        localStorage.removeItem('deaaz_cart');
+        renderizarCarrinho();
+        return true;
+      } catch (erro) {
+        console.error("Falha ao gravar encomenda:", erro);
+        alert("Erro ao gravar encomenda: " + erro.message);
+        return false;
+      }
+    }
+
+    /* SIMULAR PAGAMENTO PARA TESTES */
+    async function simularPagamentoImediato() {
+      await registarEncomendaPaga({ simulado: true });
+    }
+
+    /* CONFIGURAÇÃO DO BOTÃO PAYPAL */
+    if (window.paypal) {
+      paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'gold',
+          shape: 'rect',
+          label: 'paypal'
+        },
+        createOrder: function(data, actions) {
+          const user = carregarDadosEnvio();
+          if (!user) {
+            alert("Inicie sessão antes de concluir o pagamento.");
+            return;
+          }
+          const total = calcularTotalCarrinho().toFixed(2);
+          return actions.order.create({
+            purchase_units: [{
+              amount: {
+                value: total,
+                currency_code: 'EUR'
+              }
+            }]
+          });
+        },
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(details) {
+            registarEncomendaPaga(details);
+          });
+        },
+        onError: function(err) {
+          console.error("Erro no checkout PayPal:", err);
+          alert("Ocorreu um erro no processamento do PayPal.");
+        }
+      }).render('#paypal-button-container');
+    }
+
+    carregarDadosEnvio();
     renderizarCarrinho();
   </script>
 </body>
