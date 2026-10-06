@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- SDK OFICIAL DO PAYPAL (Substitui 'sb' pelo teu Client ID do PayPal quando passares para produção) -->
+  <!-- SDK OFICIAL DO PAYPAL -->
   <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
 
   <style>
@@ -64,7 +64,6 @@
     .summary-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; height: fit-content; }
     .summary-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
     
-    /* CAIXA COM DADOS DE ENTREGA */
     .shipping-details-box {
       background: #f8fafc;
       border: 1px solid var(--border);
@@ -118,9 +117,9 @@
 
   <header>
     <div class="main-header">
-      <a href="index06-10-2026.html" class="logo">De<span>AaZ</span></a>
+      <a href="index.html" class="logo">De<span>AaZ</span></a>
       <div class="user-actions">
-        <a href="index06-10-2026.html" class="action-btn">
+        <a href="index.html" class="action-btn">
           <i class="fa-solid fa-store"></i>
           <span>Loja</span>
         </a>
@@ -134,13 +133,12 @@
   </header>
 
   <div class="breadcrumb">
-    <a href="index06-10-2026.html">Início</a> &gt; <span>Carrinho de Compras</span>
+    <a href="index.html">Início</a> &gt; <span>Carrinho de Compras</span>
   </div>
 
   <div class="cart-container">
     <div>
       <h1 class="cart-title"><i class="fa-solid fa-cart-shopping"></i> Teu Carrinho</h1>
-      <!-- CONTENTOR DINÂMICO -->
       <div class="cart-items-card" id="cart-items-container"></div>
     </div>
 
@@ -148,7 +146,6 @@
       <div class="summary-card">
         <h2 class="summary-title">Resumo do Pedido</h2>
         
-        <!-- DADOS DE ENTREGA DETETADOS AUTOMATICAMENTE -->
         <div class="shipping-details-box" id="shipping-details">
           <p><i class="fa-solid fa-spinner fa-spin"></i> A carregar morada de envio...</p>
         </div>
@@ -167,15 +164,15 @@
           <span id="resumo-total">0.00€</span>
         </div>
 
-        <!-- BOTÕES OFICIAIS DO PAYPAL -->
+        <!-- PAYPAL -->
         <div id="paypal-button-container"></div>
 
-        <!-- BOTÃO DE TESTE DIRETO (SEM PRECISAR DE CONTA PAYPAL) -->
+        <!-- TESTE SEM CONTA PAYPAL -->
         <button type="button" class="btn-simulate" onclick="simularPagamentoImediato()">
           <i class="fa-solid fa-circle-check"></i> Simular Pagamento Concluído (Teste)
         </button>
 
-        <a href="index06-10-2026.html" class="continue-shopping">&larr; Continuar a comprar</a>
+        <a href="index.html" class="continue-shopping">&larr; Continuar a comprar</a>
       </div>
     </div>
   </div>
@@ -224,7 +221,7 @@
         box.innerHTML = `
           <strong><i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;"></i> Não iniciou sessão</strong>
           <p>Para prosseguir com os dados de envio (morada, nif), por favor faça login na loja.</p>
-          <a href="index06-10-2026.html" style="color:#2563eb; font-weight:700; text-decoration:none; display:inline-block; margin-top:6px;">Fazer Login</a>
+          <a href="index.html" style="color:#2563eb; font-weight:700; text-decoration:none; display:inline-block; margin-top:6px;">Fazer Login</a>
         `;
         return null;
       }
@@ -269,7 +266,7 @@
           <div style="text-align: center; padding: 40px; color: #64748b;">
             <i class="fa-solid fa-bag-shopping fa-3x" style="margin-bottom: 12px; color: #cbd5e1;"></i>
             <p style="font-size: 1.1rem; font-weight: 600;">O teu carrinho está vazio.</p>
-            <a href="index06-10-2026.html" style="display:inline-block; margin-top:16px; color:#2563eb; font-weight:700; text-decoration:none;">
+            <a href="index.html" style="display:inline-block; margin-top:16px; color:#2563eb; font-weight:700; text-decoration:none;">
               &larr; Ver produtos da loja
             </a>
           </div>
@@ -317,7 +314,6 @@
       document.getElementById('resumo-total').innerText = subtotal.toFixed(2) + '€';
     }
 
-    /* GRAVA A ENCOMENDA NO SUPABASE APÓS CONFIRMAÇÃO DO PAGAMENTO */
     async function registarEncomendaPaga(transacaoInfo = {}) {
       const carrinho = obterCarrinho();
       const user = carregarDadosEnvio();
@@ -334,7 +330,6 @@
 
       const totalCalculado = calcularTotalCarrinho();
 
-      // Estrutura a encomenda para guardar no Supabase
       const novaEncomenda = {
         cliente_nome: user.nome,
         cliente_email: user.email,
@@ -377,12 +372,10 @@
       }
     }
 
-    /* SIMULAR PAGAMENTO PARA TESTES */
     async function simularPagamentoImediato() {
       await registarEncomendaPaga({ simulado: true });
     }
 
-    /* CONFIGURAÇÃO DO BOTÃO PAYPAL */
     if (window.paypal) {
       paypal.Buttons({
         style: {
