@@ -61,7 +61,6 @@
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
 
-    /* Caixa de Cálculo de Preço */
     .calc-box {
       background: #eff6ff;
       border: 1.5px dashed #60a5fa;
@@ -110,7 +109,6 @@
 
     .empty-state { padding: 40px; text-align: center; color: #94a3b8; }
 
-    /* Estilo de Clientes na Aba Finalizadas */
     .client-group-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 24px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
     .client-group-header { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
     .client-group-header h3 { font-size: 1rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
@@ -239,7 +237,7 @@
       </div>
     </section>
 
-    <!-- ABA 3: ENCOMENDAS FINALIZADAS (SEPARADAS POR CLIENTE COM DOWNLOAD PDF) -->
+    <!-- ABA 3: ENCOMENDAS FINALIZADAS (POR CLIENTE COM DOWNLOAD PDF) -->
     <section id="tab-finalizadas" class="tab-pane">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">
@@ -297,7 +295,7 @@
             </div>
             <div class="row-3">
               <div class="form-group" style="margin-bottom: 0;">
-                <label>Preço de Compra / Fornecedor (€):</label>
+                <label>Preço de Compra / Custo (€):</label>
                 <input type="number" step="0.01" id="calc-custo" placeholder="Ex: 20.00" oninput="calcularPrecoFinal()">
               </div>
               <div class="form-group" style="margin-bottom: 0;">
@@ -533,7 +531,6 @@
   </div>
 
   <script>
-    /* NAVEGAÇÃO DE ABAS */
     function alternarAba(idAba, botaoClicado) {
       const paineis = document.getElementsByClassName('tab-pane');
       for (let i = 0; i < paineis.length; i++) paineis[i].classList.remove('active');
@@ -546,16 +543,14 @@
       if (botaoClicado) botaoClicado.classList.add('active');
     }
 
-    /* CALCULADORA DE PREÇO FINAL (CUSTO + LUCRO + IVA) */
+    /* CÁLCULO AUTOMÁTICO DE PREÇO (CUSTO + LUCRO + IVA) */
     function calcularPrecoFinal() {
       const custo = parseFloat(document.getElementById('calc-custo').value) || 0;
       const margem = parseFloat(document.getElementById('calc-margem').value) || 0;
       const iva = parseFloat(document.getElementById('calc-iva').value) || 0;
 
       if (custo > 0) {
-        // Preço com Margem de Lucro
         const precoComLucro = custo * (1 + (margem / 100));
-        // Preço Final com IVA
         const precoFinal = precoComLucro * (1 + (iva / 100));
         document.getElementById('prod-preco').value = precoFinal.toFixed(2);
       }
@@ -598,7 +593,7 @@
       return resultado;
     }
 
-    /* CONFIGURAÇÃO SUPABASE */
+    /* REST API SUPABASE */
     const API_URL = "https://omtlfwrrqketuaxufmkd.supabase.co/rest/v1";
     const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tdGxmd3JycWtldHVheHVmbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDA5OTgsImV4cCI6MjEwMTY3Njk5OH0.vTDHpe2HmFNgJ2T9diTwbGParsMpcoeqDzhoivrtELo";
 
@@ -676,7 +671,7 @@
           headers: HEADERS,
           body: JSON.stringify({ estado: novoEstado })
         });
-        if (!res.ok) throw new Error("Falha ao atualizar estado");
+        if (!res.ok) throw new Error("Falha ao atualizar estado no Supabase");
         carregarEncomendas();
       } catch (err) {
         alert("Erro ao atualizar: " + err.message);
@@ -707,9 +702,8 @@
       }
     }
 
-    /* MOVER PARA FINALIZADAS */
     async function moverParaFinalizada(id) {
-      if (!confirm(`Deseja marcar a encomenda #${id.toString().slice(-6)} como Finalizada/Entregue?`)) return;
+      if (!confirm(`Deseja marcar a encomenda #${id.toString().slice(-6)} como Finalizada?`)) return;
       await mudarEstadoEncomenda(id, 'Finalizada');
     }
 
@@ -756,7 +750,7 @@
           </tr>
         `).join('');
       } else {
-        itensTabela = `<tr><td colspan="4" style="padding:10px;">${enc.itens || 'Sem itens'}</td></tr>`;
+        itensTabela = `<tr><td colspan="4" style="padding:10px;">${enc.itens || 'Sem itens registados'}</td></tr>`;
       }
 
       const dataStr = enc.created_at ? new Date(enc.created_at).toLocaleDateString('pt-PT') : new Date().toLocaleDateString('pt-PT');
@@ -846,7 +840,7 @@
       janelaPdf.document.close();
     }
 
-    /* CARREGAR ENCOMENDAS */
+    /* CARREGAMENTO DE ENCOMENDAS COM TRATAMENTO DE ERROS E NORMALIZAÇÃO */
     async function carregarEncomendas() {
       const tbodyPagas = document.getElementById('tbody-encomendas');
       const tbodyExpedicao = document.getElementById('tbody-expedicao');
@@ -857,31 +851,57 @@
 
       try {
         if (listaProdutosEmMemoria.length === 0) {
-          const resP = await fetch(`${API_URL}/produtos`, { headers: HEADERS });
-          listaProdutosEmMemoria = await resP.json();
+          try {
+            const resP = await fetch(`${API_URL}/produtos`, { headers: HEADERS });
+            if (resP.ok) listaProdutosEmMemoria = await resP.json();
+          } catch (errP) {
+            console.warn("Aviso ao carregar produtos:", errP);
+          }
         }
 
-        const res = await fetch(`${API_URL}/encomendas?order=created_at.desc`, { headers: HEADERS });
-        listaEncomendasEmMemoria = await res.json();
+        let res = await fetch(`${API_URL}/encomendas?order=id.desc`, { headers: HEADERS });
+        if (!res.ok) {
+          res = await fetch(`${API_URL}/encomendas`, { headers: HEADERS });
+        }
 
-        if (!Array.isArray(listaEncomendasEmMemoria) || listaEncomendasEmMemoria.length === 0) {
+        if (!res.ok) {
+          const errTexto = await res.text();
+          console.error("Erro Supabase:", res.status, errTexto);
+          throw new Error(`Erro na API (${res.status})`);
+        }
+
+        const dadosBrutos = await res.json();
+        listaEncomendasEmMemoria = Array.isArray(dadosBrutos) ? dadosBrutos : [];
+
+        // Normalização de itens se vierem como string JSON
+        listaEncomendasEmMemoria.forEach(enc => {
+          if (typeof enc.itens === 'string') {
+            try {
+              enc.itens = JSON.parse(enc.itens);
+            } catch (e) {
+              // Mantém original se não for JSON
+            }
+          }
+        });
+
+        if (listaEncomendasEmMemoria.length === 0) {
           tbodyPagas.innerHTML = `<tr><td colspan="7" class="empty-state">Sem encomendas registadas.</td></tr>`;
           tbodyExpedicao.innerHTML = `<tr><td colspan="8" class="empty-state">Sem encomendas em expedição.</td></tr>`;
-          containerFinalizadas.innerHTML = `<div class="empty-state">Sem encomendas finalizadas.</div>`;
+          if (containerFinalizadas) containerFinalizadas.innerHTML = `<div class="empty-state">Sem encomendas finalizadas.</div>`;
           document.getElementById('count-enc').innerText = 0;
           document.getElementById('count-exp').innerText = 0;
-          document.getElementById('count-fin').innerText = 0;
+          if (document.getElementById('count-fin')) document.getElementById('count-fin').innerText = 0;
           return;
         }
 
         const pagas = listaEncomendasEmMemoria.filter(e => {
           const st = (e.estado || '').toLowerCase().trim();
-          return st === 'paga' || st === '';
+          return st === 'paga' || st === '' || st === 'pendente';
         });
 
         const expedicao = listaEncomendasEmMemoria.filter(e => {
           const st = (e.estado || '').toLowerCase().trim();
-          return st === 'em expedição' || st === 'em expedicao';
+          return st === 'em expedição' || st === 'em expedicao' || st === 'transito';
         });
 
         const finalizadas = listaEncomendasEmMemoria.filter(e => {
@@ -891,7 +911,13 @@
 
         document.getElementById('count-enc').innerText = pagas.length;
         document.getElementById('count-exp').innerText = expedicao.length;
-        document.getElementById('count-fin').innerText = finalizadas.length;
+        if (document.getElementById('count-fin')) document.getElementById('count-fin').innerText = finalizadas.length;
+
+        const formatarData = (dt) => {
+          if (!dt) return 'Recente';
+          const d = new Date(dt);
+          return isNaN(d.getTime()) ? 'Recente' : d.toLocaleDateString('pt-PT');
+        };
 
         // 1. RENDERIZA PAGAS
         if (pagas.length === 0) {
@@ -911,8 +937,8 @@
                   <input type="checkbox" class="check-enc-item" value="${e.id}" style="cursor: pointer; width: 16px; height: 16px;">
                 </td>
                 <td>
-                  <strong>#${e.id.toString().slice(-6)}</strong>
-                  <div style="font-size:0.75rem; color:#64748b;">${new Date(e.created_at).toLocaleDateString('pt-PT')} ${new Date(e.created_at).toLocaleTimeString('pt-PT', {hour: '2-digit', minute:'2-digit'})}</div>
+                  <strong>#${e.id ? e.id.toString().slice(-6) : '---'}</strong>
+                  <div style="font-size:0.75rem; color:#64748b;">${formatarData(e.created_at)}</div>
                 </td>
                 <td>
                   <div class="customer-info">
@@ -929,7 +955,7 @@
                   </div>
                 </td>
                 <td style="font-size:0.85rem;">
-                  ${Array.isArray(e.itens) ? e.itens.map(i => `<strong>${i.nome}</strong> (x${i.qtd || 1})`).join('<br>') : (e.itens || '-')}
+                  ${Array.isArray(e.itens) ? e.itens.map(i => `<strong>${i.nome \vert{}\vert{} 'Artigo'}</strong> (x${i.qtd || 1})`).join('<br>') : (e.itens || '-')}
                 </td>
                 <td style="font-weight:700; color:#2563eb;">${parseFloat(e.total || 0).toFixed(2)} €</td>
                 <td style="text-align: right; white-space: nowrap;">
@@ -945,7 +971,7 @@
           }).join('');
         }
 
-        // 2. RENDERIZA EM EXPEDIÇÃO (COM BOTÃO PARA MOVER PARA FINALIZADAS)
+        // 2. RENDERIZA EM EXPEDIÇÃO
         if (expedicao.length === 0) {
           tbodyExpedicao.innerHTML = `<tr><td colspan="8" class="empty-state">Nenhuma encomenda em trânsito no momento.</td></tr>`;
         } else {
@@ -955,8 +981,8 @@
                 <input type="checkbox" class="check-exp-item" value="${e.id}" style="cursor: pointer; width: 16px; height: 16px;">
               </td>
               <td>
-                <strong>#${e.id.toString().slice(-6)}</strong>
-                <div style="font-size:0.75rem; color:#64748b;">${new Date(e.created_at).toLocaleDateString('pt-PT')}</div>
+                <strong>#${e.id ? e.id.toString().slice(-6) : '---'}</strong>
+                <div style="font-size:0.75rem; color:#64748b;">${formatarData(e.created_at)}</div>
               </td>
               <td>
                 <div class="customer-info">
@@ -973,7 +999,7 @@
                 </div>
               </td>
               <td style="font-size:0.85rem;">
-                ${Array.isArray(e.itens) ? e.itens.map(i => `<strong>${i.nome}</strong> (x${i.qtd || 1})`).join('<br>') : (e.itens || '-')}
+                ${Array.isArray(e.itens) ? e.itens.map(i => `<strong>${i.nome \vert{}\vert{} 'Artigo'}</strong> (x${i.qtd || 1})`).join('<br>') : (e.itens || '-')}
               </td>
               <td style="font-weight:700; color:#2563eb;">${parseFloat(e.total || 0).toFixed(2)} €</td>
               <td><span class="status-badge status-expedicao"><i class="fa-solid fa-truck-fast"></i> Em Expedição</span></td>
@@ -989,102 +1015,105 @@
           `).join('');
         }
 
-        // 3. RENDERIZA FINALIZADAS (SEPARADAS POR CLIENTE COM BOTÃO PDF)
-        if (finalizadas.length === 0) {
-          containerFinalizadas.innerHTML = `<div class="empty-state">Sem encomendas finalizadas até ao momento.</div>`;
-        } else {
-          // Agrupar por Cliente (Email ou Nome)
-          const agrupadasPorCliente = {};
-          finalizadas.forEach(enc => {
-            const chaveCliente = (enc.cliente_email && enc.cliente_email.trim() !== '') 
-              ? enc.cliente_email.trim().toLowerCase() 
-              : (enc.cliente_nome || 'Consumidor Geral');
+        // 3. RENDERIZA FINALIZADAS (SEPARADAS POR CLIENTE)
+        if (containerFinalizadas) {
+          if (finalizadas.length === 0) {
+            containerFinalizadas.innerHTML = `<div class="empty-state">Sem encomendas finalizadas até ao momento.</div>`;
+          } else {
+            const agrupadasPorCliente = {};
+            finalizadas.forEach(enc => {
+              const chaveCliente = (enc.cliente_email && enc.cliente_email.trim() !== '') 
+                ? enc.cliente_email.trim().toLowerCase() 
+                : (enc.cliente_nome || 'Consumidor Geral');
 
-            if (!agrupadasPorCliente[chaveCliente]) {
-              agrupadasPorCliente[chaveCliente] = {
-                nome: enc.cliente_nome || 'Consumidor',
-                email: enc.cliente_email || 'Email não indicado',
-                nif: enc.cliente_nif || 'Consumidor Final',
-                encomendas: []
-              };
-            }
-            agrupadasPorCliente[chaveCliente].encomendas.push(enc);
-          });
+              if (!agrupadasPorCliente[chaveCliente]) {
+                agrupadasPorCliente[chaveCliente] = {
+                  nome: enc.cliente_nome || 'Consumidor',
+                  email: enc.cliente_email || 'Email não indicado',
+                  nif: enc.cliente_nif || 'Consumidor Final',
+                  encomendas: []
+                };
+              }
+              agrupadasPorCliente[chaveCliente].encomendas.push(enc);
+            });
 
-          let htmlGrupos = '';
-          for (const chave in agrupadasPorCliente) {
-            const grupo = agrupadasPorCliente[chave];
-            const totalGastoCliente = grupo.encomendas.reduce((s, x) => s + parseFloat(x.total || 0), 0);
+            let htmlGrupos = '';
+            for (const chave in agrupadasPorCliente) {
+              const grupo = agrupadasPorCliente[chave];
+              const totalGastoCliente = grupo.encomendas.reduce((s, x) => s + parseFloat(x.total || 0), 0);
 
-            htmlGrupos += `
-              <div class="client-group-card">
-                <div class="client-group-header">
-                  <div>
-                    <h3><i class="fa-solid fa-user-check" style="color:#2563eb;"></i> ${grupo.nome}</h3>
-                    <span style="font-size:0.8rem; color:#64748b;">${grupo.email} • NIF: <strong>${grupo.nif}</strong></span>
+              htmlGrupos += `
+                <div class="client-group-card">
+                  <div class="client-group-header">
+                    <div>
+                      <h3><i class="fa-solid fa-user-check" style="color:#2563eb;"></i> ${grupo.nome}</h3>
+                      <span style="font-size:0.8rem; color:#64748b;">${grupo.email} • NIF: <strong>${grupo.nif}</strong></span>
+                    </div>
+                    <div>
+                      <span style="background:#eff6ff; color:#1d4ed8; font-weight:700; padding:4px 10px; border-radius:6px; font-size:0.85rem;">
+                        ${grupo.encomendas.length} encomenda(s) • Total: ${totalGastoCliente.toFixed(2)} €
+                      </span>
+                    </div>
                   </div>
-                  <div style="font-size:0.9rem;">
-                    <span style="background:#eff6ff; color:#1d4ed8; font-weight:700; padding:4px 10px; border-radius:6px;">
-                      ${grupo.encomendas.length} encomenda(s) • Total: ${totalGastoCliente.toFixed(2)} €
-                    </span>
-                  </div>
-                </div>
 
-                <table>
-                  <thead>
-                    <tr>
-                      <th>ID / Data</th>
-                      <th>Morada de Envio</th>
-                      <th>Itens Comprados</th>
-                      <th>Total</th>
-                      <th>Estado</th>
-                      <th style="text-align: right;">Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${grupo.encomendas.map(item => `
+                  <table>
+                    <thead>
                       <tr>
-                        <td>
-                          <strong>#${item.id.toString().slice(-6)}</strong>
-                          <div style="font-size:0.75rem; color:#64748b;">${new Date(item.created_at).toLocaleDateString('pt-PT')}</div>
-                        </td>
-                        <td>
-                          <div class="address-box" style="min-width: 200px;">
-                            ${item.morada_rua || 'Rua não indicada'}<br>
-                            ${item.morada_codigo_postal || ''} ${item.morada_cidade \vert{}\vert{} ''} (<strong>${item.morada_pais || 'PT'}</strong>)
-                          </div>
-                        </td>
-                        <td style="font-size:0.85rem;">
-                          ${Array.isArray(item.itens) ? item.itens.map(i => `• <strong>${i.nome}</strong> (x${i.qtd || 1}) - ${(parseFloat(i.preco || 0) * (i.qtd || 1)).toFixed(2)}€`).join('<br>') : (item.itens || '-')}
-                        </td>
-                        <td style="font-weight:700; color:#10b981; font-size:0.95rem;">
-                          ${parseFloat(item.total || 0).toFixed(2)} €
-                        </td>
-                        <td>
-                          <span class="status-badge status-finalizada"><i class="fa-solid fa-check"></i> Finalizada</span>
-                        </td>
-                        <td style="text-align: right; white-space: nowrap;">
-                          <button type="button" class="btn-sm-action btn-pdf" onclick="gerarPdfEncomenda('${item.id}')" title="Descarregar / Imprimir Fatura PDF">
-                            <i class="fa-solid fa-file-pdf"></i> Download PDF
-                          </button>
-                          <button type="button" class="btn-sm-action" onclick="eliminarEncomenda('${item.id}')" style="color:#ef4444; border-color:#fee2e2; margin-left:4px;">
-                            <i class="fa-solid fa-trash-can"></i>
-                          </button>
-                        </td>
+                        <th>ID / Data</th>
+                        <th>Morada de Envio</th>
+                        <th>Itens Comprados</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th style="text-align: right;">Ações</th>
                       </tr>
-                    `).join('')}
-                  </tbody>
-                </table>
-              </div>
-            `;
-          }
+                    </thead>
+                    <tbody>
+                      ${grupo.encomendas.map(item => `
+                        <tr>
+                          <td>
+                            <strong>#${item.id ? item.id.toString().slice(-6) : '---'}</strong>
+                            <div style="font-size:0.75rem; color:#64748b;">${formatarData(item.created_at)}</div>
+                          </td>
+                          <td>
+                            <div class="address-box" style="min-width: 200px;">
+                              ${item.morada_rua || 'Rua não indicada'}<br>
+                              ${item.morada_codigo_postal || ''} ${item.morada_cidade \vert{}\vert{} ''} (<strong>${item.morada_pais || 'PT'}</strong>)
+                            </div>
+                          </td>
+                          <td style="font-size:0.85rem;">
+                            ${Array.isArray(item.itens) ? item.itens.map(i => `• <strong>${i.nome || 'Artigo'}</strong> (x${i.qtd || 1}) - ${(parseFloat(i.preco || 0) * (i.qtd || 1)).toFixed(2)}€`).join('<br>') : (item.itens || '-')}
+                          </td>
+                          <td style="font-weight:700; color:#10b981; font-size:0.95rem;">
+                            ${parseFloat(item.total || 0).toFixed(2)} €
+                          </td>
+                          <td>
+                            <span class="status-badge status-finalizada"><i class="fa-solid fa-check"></i> Finalizada</span>
+                          </td>
+                          <td style="text-align: right; white-space: nowrap;">
+                            <button type="button" class="btn-sm-action btn-pdf" onclick="gerarPdfEncomenda('${item.id}')" title="Descarregar / Imprimir PDF">
+                              <i class="fa-solid fa-file-pdf"></i> Download PDF
+                            </button>
+                            <button type="button" class="btn-sm-action" onclick="eliminarEncomenda('${item.id}')" style="color:#ef4444; border-color:#fee2e2; margin-left:4px;">
+                              <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              `;
+            }
 
-          containerFinalizadas.innerHTML = htmlGrupos;
+            containerFinalizadas.innerHTML = htmlGrupos;
+          }
         }
 
-      } catch (e) {
-        tbodyPagas.innerHTML = `<tr><td colspan="7" class="empty-state">Erro ao ligar à tabela de encomendas.</td></tr>`;
-        tbodyExpedicao.innerHTML = `<tr><td colspan="8" class="empty-state">Erro ao ligar à tabela de encomendas.</td></tr>`;
+      } catch (err) {
+        console.error("Falha ao carregar encomendas:", err);
+        tbodyPagas.innerHTML = `<tr><td colspan="7" class="empty-state" style="color:#ef4444;">Erro ao aceder à tabela 'encomendas': ${err.message}</td></tr>`;
+        tbodyExpedicao.innerHTML = `<tr><td colspan="8" class="empty-state" style="color:#ef4444;">Erro ao aceder à tabela 'encomendas': ${err.message}</td></tr>`;
+        if (containerFinalizadas) containerFinalizadas.innerHTML = `<div class="empty-state" style="color:#ef4444;">Erro: ${err.message}</div>`;
       }
     }
 
@@ -1092,8 +1121,15 @@
     async function carregarClientes() {
       const tbody = document.getElementById('tbody-clientes');
       try {
-        const res = await fetch(`${API_URL}/clientes?order=created_at.desc`, { headers: HEADERS });
-        const clientes = await res.json();
+        const res = await fetch(`${API_URL}/clientes?order=id.desc`, { headers: HEADERS });
+        let clientes = [];
+        if (res.ok) {
+          clientes = await res.json();
+        } else {
+          const resSemOrder = await fetch(`${API_URL}/clientes`, { headers: HEADERS });
+          if (resSemOrder.ok) clientes = await resSemOrder.json();
+        }
+
         if (!Array.isArray(clientes) || clientes.length === 0) {
           tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Sem clientes registados.</td></tr>`;
           document.getElementById('count-cli').innerText = 0;
@@ -1111,7 +1147,7 @@
               </div>
             </td>
             <td><span class="customer-nif">${c.nif || 'Não indicado'}</span></td>
-            <td>${new Date(c.created_at).toLocaleDateString('pt-PT')}</td>
+            <td>${c.created_at ? new Date(c.created_at).toLocaleDateString('pt-PT') : '-'}</td>
           </tr>
         `).join('');
       } catch (e) { tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Tabela clientes pendente.</td></tr>`; }
@@ -1121,7 +1157,7 @@
     async function carregarProdutos() {
       const tbody = document.getElementById('tbody-catalogo');
       try {
-        const res = await fetch(`${API_URL}/produtos?order=letra.asc`, { headers: HEADERS });
+        const res = await fetch(`${API_URL}/produtos?order=id.desc`, { headers: HEADERS });
         listaProdutosEmMemoria = await res.json();
 
         if (!Array.isArray(listaProdutosEmMemoria) || listaProdutosEmMemoria.length === 0) {
@@ -1142,7 +1178,7 @@
               </td>
               <td>
                 <a href="produto.html?id=${p.id}" target="_blank" style="color:#0f172a; font-weight:700; text-decoration:none;">${p.nome}</a>
-                <span style="font-size:0.75rem; background:#eff6ff; color:#2563eb; padding:2px 6px; border-radius:4px; font-weight:700; margin-left:6px;">Letra: ${p.letra}</span>
+                <span style="font-size:0.75rem; background:#eff6ff; color:#2563eb; padding:2px 6px; border-radius:4px; font-weight:700; margin-left:6px;">Letra: ${p.letra || '-'}</span>
                 <div style="font-size:0.8rem; color:#64748b; margin-top:4px; max-width:350px;">${p.descricao || 'Sem descrição.'}</div>
                 ${linkForn ? `<div style="font-size:0.75rem; margin-top:4px;"><a href="${linkForn}" target="_blank" style="color:#e11d48; text-decoration:none;"><i class="fa-solid fa-link"></i> Link do Fornecedor</a></div>` : ''}
               </td>
@@ -1151,7 +1187,7 @@
                   ${numVars} variante(s)
                 </span>
               </td>
-              <td style="font-weight:700; color:#0f172a;">${parseFloat(p.preco).toFixed(2)} €</td>
+              <td style="font-weight:700; color:#0f172a;">${parseFloat(p.preco || 0).toFixed(2)} €</td>
               <td style="text-align: right; white-space: nowrap;">
                 <a href="produto.html?id=${p.id}" target="_blank" class="btn-sm-action" style="color:#10b981; margin-right:4px;">
                   <i class="fa-solid fa-eye"></i> Ver
@@ -1313,7 +1349,7 @@
         ativas = ['tecnologia'];
       }
 
-      const ativasNormalizadas = (Array.isArray(ativas) ? ativas : []).map(c => String(c).toLowerCase().trim());
+      const ativasNormalizadas = Array.isArray(ativas) ? ativas.map(c => String(c).toLowerCase().trim()) : [];
 
       todas.forEach(cat => {
         const el = document.getElementById(`cat-check-${cat}`);
