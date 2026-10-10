@@ -21,9 +21,9 @@
     }
 
     :root {
-      --primary: #2563eb;       /* Azul elétrico */
+      --primary: #2563eb;
       --primary-dark: #1d4ed8;
-      --accent: #f97316;        /* Laranja para destaques */
+      --accent: #f97316;
       --bg-light: #f8fafc;
       --text-dark: #0f172a;
       --text-muted: #64748b;
@@ -38,7 +38,6 @@
       line-height: 1.5;
     }
 
-    /* HEADER & NAVEGAÇÃO */
     header {
       background: #ffffff;
       border-bottom: 1px solid var(--border);
@@ -168,7 +167,6 @@
       justify-content: center;
     }
 
-    /* HERO BANNER */
     .hero {
       max-width: 1200px;
       margin: 20px auto;
@@ -214,7 +212,6 @@
       background: var(--primary-dark);
     }
 
-    /* CATEGORIAS EM DESTAQUE */
     .section {
       max-width: 1200px;
       margin: 40px auto;
@@ -266,7 +263,6 @@
       font-weight: 600;
     }
 
-    /* GRELHA DE PRODUTOS */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -342,7 +338,6 @@
       margin-bottom: 12px;
     }
 
-    /* AÇÕES DO PRODUTO */
     .product-card-actions {
       display: flex;
       flex-direction: column;
@@ -392,7 +387,6 @@
       background: #e2e8f0;
     }
 
-    /* MODAL DE LOGIN / REGISTO */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -532,7 +526,6 @@
       cursor: not-allowed;
     }
 
-    /* FOOTER */
     footer {
       background: #ffffff;
       border-top: 1px solid var(--border);
@@ -639,7 +632,8 @@
       <div class="hero-content">
         <h1>O teu grande mercado online.</h1>
         <p>Milhares de produtos, das melhores marcas, aos melhores preços.</p>
-        <a href="#produtos" class="btn-primary">Explorar Produtos</a>
+        <!-- LIGAÇÃO PARA PRODUTOS.HTML -->
+        <a href="produtos.html" class="btn-primary">Explorar Produtos</a>
       </div>
     </div>
   </section>
@@ -650,14 +644,11 @@
       <span>Explorar por Categoria</span>
     </div>
     <div class="categories-grid" id="categorias-container">
-      <div class="category-card" onclick="filtrarCategoria('todos')">
-        <i class="fa-solid fa-border-all"></i>
-        <span>Ver Todos</span>
-      </div>
+      <!-- Gerado dinamicamente via JS de acordo com as opções do admin -->
     </div>
   </section>
 
-  <!-- PRODUTOS EM DESTAQUE (LIGADOS AO SUPABASE) -->
+  <!-- PRODUTOS EM DESTAQUE -->
   <section class="section" id="produtos">
     <div class="section-title">
       <span id="titulo-seccao">Produtos Disponíveis</span>
@@ -805,7 +796,6 @@
       outros: { nome: 'Outros', icone: 'fa-box' }
     };
 
-    /* GESTÃO DO CONTADOR DO CARRINHO */
     function atualizarContadorCarrinho() {
       try {
         const carrinho = JSON.parse(localStorage.getItem('deaaz_cart')) || [];
@@ -817,7 +807,6 @@
       }
     }
 
-    /* ADICIONAR PRODUTO DIRETAMENTE AO CARRINHO */
     function adicionarAoCarrinho(id) {
       const prod = catalogoGlobal.find(p => p.id.toString() === id.toString());
       if (!prod) return;
@@ -854,7 +843,6 @@
       alert(`🛒 "${prod.nome}" foi adicionado ao teu carrinho!`);
     }
 
-    /* REDIRECIONAR PARA PERFIL OU ABRIR MODAL */
     function clicarAcaoUtilizador() {
       const userLogado = localStorage.getItem('deaaz_user');
       if (userLogado) {
@@ -864,7 +852,6 @@
       }
     }
 
-    /* CONTROLO DA MODAL DE AUTENTICAÇÃO */
     function abrirModalAuth() {
       document.getElementById('modal-auth').classList.add('active');
     }
@@ -896,7 +883,6 @@
       }
     }
 
-    /* REGISTO DIRETO NO SUPABASE */
     async function realizarRegisto(e) {
       e.preventDefault();
       const btn = document.getElementById('btn-registo-submit');
@@ -947,7 +933,6 @@
       }
     }
 
-    /* LOGIN DIRETO NO SUPABASE */
     async function realizarLogin(e) {
       e.preventDefault();
       const btn = document.getElementById('btn-login-submit');
@@ -1006,10 +991,12 @@
       }
     }
 
-    /* CARREGAMENTO DE CATEGORIAS ATIVAS CONFIGURADAS NO ADMIN */
+    /* RENDERIZAÇÃO ESTREITA E CONTROLADA DE CATEGORIAS */
     function carregarCategoriasAtivas() {
       const container = document.getElementById('categorias-container');
       if (!container) return;
+
+      container.innerHTML = '';
 
       const rawAtivas = localStorage.getItem('deaaz_categorias_ativas');
       let ativas = [];
@@ -1021,18 +1008,19 @@
           ativas = [];
         }
       } else {
-        // Padrão apenas na primeira execução antes de qualquer gravação no admin
         ativas = ['tecnologia', 'casa', 'moda', 'desporto', 'beleza'];
       }
 
-      const ativasNormalizadas = Array.isArray(ativas) ? ativas.map(c => String(c).toLowerCase().trim()) : [];
+      if (!Array.isArray(ativas)) ativas = [];
 
-      let html = '';
+      const ativasNormalizadas = ativas.map(c => String(c).toLowerCase().trim());
+
+      let cardsHtml = '';
 
       ativasNormalizadas.forEach(catKey => {
         const info = CATEGORIAS_INFO[catKey];
         if (info) {
-          html += `
+          cardsHtml += `
             <div class="category-card" onclick="filtrarCategoria('${catKey}')">
               <i class="fa-solid ${info.icone}"></i>
               <span>${info.nome}</span>
@@ -1041,21 +1029,27 @@
         }
       });
 
-      if (ativasNormalizadas.length > 0) {
-        html += `
+      if (cardsHtml !== '') {
+        cardsHtml += `
           <div class="category-card" onclick="filtrarCategoria('todos')">
             <i class="fa-solid fa-border-all"></i>
             <span>Ver Todos</span>
           </div>
         `;
       } else {
-        html = `<p style="grid-column: 1/-1; text-align:center; color:#94a3b8; padding:20px;">Nenhuma categoria ativa no momento.</p>`;
+        cardsHtml = `<p style="grid-column: 1/-1; text-align:center; color:#94a3b8; padding:20px;">Nenhuma categoria ativa no momento.</p>`;
       }
 
-      container.innerHTML = html;
+      container.innerHTML = cardsHtml;
     }
 
-    /* CARREGAMENTO DE PRODUTOS */
+    /* ESCUTA ATUALIZAÇÕES DO ADMIN EM TEMPO REAL */
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'deaaz_categorias_ativas') {
+        carregarCategoriasAtivas();
+      }
+    });
+
     async function buscarProdutosLoja() {
       const container = document.getElementById('produtos-container');
       try {
