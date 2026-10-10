@@ -611,7 +611,6 @@
 
       <!-- AÇÕES DO UTILIZADOR -->
       <div class="user-actions">
-        <!-- BOTÃO DE LOGIN / PERFIL -->
         <button class="action-btn" id="btn-auth-open" onclick="clicarAcaoUtilizador()">
           <i class="fa-solid fa-user"></i>
           <span id="label-user">Entrar / Registar</span>
@@ -632,7 +631,6 @@
       <div class="hero-content">
         <h1>O teu grande mercado online.</h1>
         <p>Milhares de produtos, das melhores marcas, aos melhores preços.</p>
-        <!-- LIGAÇÃO PARA PRODUTOS.HTML -->
         <a href="produtos.html" class="btn-primary">Explorar Produtos</a>
       </div>
     </div>
@@ -644,7 +642,7 @@
       <span>Explorar por Categoria</span>
     </div>
     <div class="categories-grid" id="categorias-container">
-      <!-- Gerado dinamicamente via JS de acordo com as opções do admin -->
+      <!-- Inserido dinamicamente via JS -->
     </div>
   </section>
 
@@ -665,13 +663,11 @@
     <div class="modal-card">
       <button class="btn-close-modal" onclick="fecharModalAuth()"><i class="fa-solid fa-xmark"></i></button>
 
-      <!-- ABAS -->
       <div class="modal-tabs">
         <div class="modal-tab active" id="tab-login" onclick="trocarAbaAuth('login')">Entrar</div>
         <div class="modal-tab" id="tab-registo" onclick="trocarAbaAuth('registo')">Criar Conta</div>
       </div>
 
-      <!-- FORMULÁRIO DE LOGIN -->
       <form class="auth-form active" id="form-login" onsubmit="realizarLogin(event)">
         <div class="form-group">
           <label for="login-email">Email</label>
@@ -684,7 +680,6 @@
         <button type="submit" class="form-submit-btn" id="btn-login-submit">Entrar na Conta</button>
       </form>
 
-      <!-- FORMULÁRIO DE REGISTO COMPLETO -->
       <form class="auth-form" id="form-registo" onsubmit="realizarRegisto(event)">
         <div class="form-group">
           <label for="reg-nome">Nome Completo</label>
@@ -991,29 +986,38 @@
       }
     }
 
-    /* RENDERIZAÇÃO ESTREITA E CONTROLADA DE CATEGORIAS */
-    function carregarCategoriasAtivas() {
+    /* CARREGAR CATEGORIAS ATIVAS (SUPABASE + LOCALSTORAGE) */
+    async function carregarCategoriasAtivas() {
       const container = document.getElementById('categorias-container');
       if (!container) return;
 
-      container.innerHTML = '';
+      container.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#94a3b8; padding:15px;"><i class="fa-solid fa-spinner fa-spin"></i> A carregar categorias...</p>`;
 
-      const rawAtivas = localStorage.getItem('deaaz_categorias_ativas');
-      let ativas = [];
+      let ativas = null;
 
-      if (rawAtivas !== null) {
-        try {
-          ativas = JSON.parse(rawAtivas);
-        } catch (e) {
-          ativas = [];
+      try {
+        const res = await fetch(`${API_URL}/configuracoes?chave=eq.categorias_ativas`, { headers: HEADERS });
+        if (res.ok) {
+          const dados = await res.json();
+          if (Array.isArray(dados) && dados.length > 0 && Array.isArray(dados[0].valor)) {
+            ativas = dados[0].valor;
+            localStorage.setItem('deaaz_categorias_ativas', JSON.stringify(ativas));
+          }
         }
-      } else {
-        ativas = ['tecnologia', 'casa', 'moda', 'desporto', 'beleza'];
+      } catch (e) {
+        console.warn("Aviso ao carregar categorias do Supabase:", e);
       }
 
-      if (!Array.isArray(ativas)) ativas = [];
+      if (!Array.isArray(ativas)) {
+        const rawLocal = localStorage.getItem('deaaz_categorias_ativas');
+        if (rawLocal !== null) {
+          try { ativas = JSON.parse(rawLocal); } catch(err) { ativas = []; }
+        } else {
+          ativas = ['tecnologia', 'casa', 'moda', 'desporto', 'beleza'];
+        }
+      }
 
-      const ativasNormalizadas = ativas.map(c => String(c).toLowerCase().trim());
+      const ativasNormalizadas = (Array.isArray(ativas) ? ativas : []).map(c => String(c).toLowerCase().trim());
 
       let cardsHtml = '';
 
@@ -1043,7 +1047,6 @@
       container.innerHTML = cardsHtml;
     }
 
-    /* ESCUTA ATUALIZAÇÕES DO ADMIN EM TEMPO REAL */
     window.addEventListener('storage', (e) => {
       if (e.key === 'deaaz_categorias_ativas') {
         carregarCategoriasAtivas();
