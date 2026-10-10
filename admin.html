@@ -23,7 +23,7 @@
     .container { max-width: 1320px; width: 100%; margin: 0 auto; padding: 28px 20px 60px; }
 
     .tabs-nav { display: flex; gap: 8px; border-bottom: 2px solid #cbd5e1; margin-bottom: 24px; overflow-x: auto; }
-    .tab-btn { background: transparent; border: none; padding: 14px 22px; font-weight: 600; font-size: 0.95rem; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 8px; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.15s ease; white-space: nowrap; }
+    .tab-btn { background: transparent; border: none; padding: 14px 20px; font-weight: 600; font-size: 0.95rem; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 8px; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.15s ease; white-space: nowrap; }
     .tab-btn:hover { color: #2563eb; }
     .tab-btn.active { color: #2563eb !important; border-bottom: 3px solid #2563eb !important; font-weight: 700; }
 
@@ -50,14 +50,35 @@
 
     .status-badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 0.75rem; }
     .status-expedicao { background: #fef3c7; color: #b45309; }
+    .status-finalizada { background: #ecfdf5; color: #047857; }
 
-    .form-card { max-width: 760px; margin: 0 auto; background: #ffffff; padding: 32px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .form-card { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 32px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     .form-group { margin-bottom: 16px; }
     label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; color: #334155; }
     input, select, textarea { width: 100%; padding: 11px 14px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
     input:focus, select:focus, textarea:focus { border-color: #2563eb; }
 
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+    /* Caixa de Cálculo de Preço */
+    .calc-box {
+      background: #eff6ff;
+      border: 1.5px dashed #60a5fa;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .calc-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #1d4ed8;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
     .preview-box { width: 100%; height: 180px; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; margin-top: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; color: #94a3b8; }
     .preview-box img { width: 100%; height: 100%; object-fit: cover; }
@@ -78,10 +99,21 @@
     .btn-ship { background: #f59e0b; color: white; border-color: #d97706; font-weight: 700; }
     .btn-ship:hover { background: #d97706; }
 
+    .btn-done { background: #10b981; color: white; border-color: #059669; font-weight: 700; }
+    .btn-done:hover { background: #059669; }
+
+    .btn-pdf { background: #3b82f6; color: white; border-color: #2563eb; font-weight: 700; }
+    .btn-pdf:hover { background: #1d4ed8; }
+
     .btn-delete { background: #ef4444; color: white; border-color: #dc2626; font-weight: 700; }
     .btn-delete:hover { background: #dc2626; }
 
     .empty-state { padding: 40px; text-align: center; color: #94a3b8; }
+
+    /* Estilo de Clientes na Aba Finalizadas */
+    .client-group-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 24px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+    .client-group-header { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .client-group-header h3 { font-size: 1rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
 
     .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 999; }
     .modal-content { background: #ffffff; width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; border-radius: 16px; padding: 28px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); }
@@ -89,7 +121,7 @@
     .btn-close-modal { background: transparent; border: none; font-size: 1.25rem; cursor: pointer; color: #64748b; }
 
     @media (max-width: 768px) {
-      .row-2 { grid-template-columns: 1fr; }
+      .row-2, .row-3 { grid-template-columns: 1fr; }
       .variant-card { grid-template-columns: 1fr; }
       .container { padding: 16px 12px; }
     }
@@ -117,6 +149,9 @@
       <button type="button" class="tab-btn" id="btn-tab-expedicao" onclick="alternarAba('tab-expedicao', this)">
         <i class="fa-solid fa-truck-fast"></i> Em Expedição (<span id="count-exp">0</span>)
       </button>
+      <button type="button" class="tab-btn" id="btn-tab-finalizadas" onclick="alternarAba('tab-finalizadas', this)">
+        <i class="fa-solid fa-circle-check"></i> Encomendas Finalizadas (<span id="count-fin">0</span>)
+      </button>
       <button type="button" class="tab-btn" id="btn-tab-clientes" onclick="alternarAba('tab-clientes', this)">
         <i class="fa-solid fa-user-group"></i> Clientes (<span id="count-cli">0</span>)
       </button>
@@ -138,7 +173,7 @@
           <h2>Encomendas Pendentes de Envio</h2>
           <div class="batch-actions">
             <button type="button" class="btn-sm-action btn-ship" onclick="enviarSelecionadasParaExpedicao()">
-              <i class="fa-solid fa-truck-arrow-right"></i> Mover Selecionadas para Em Expedição
+              <i class="fa-solid fa-truck-arrow-right"></i> Mover para Em Expedição
             </button>
             <button type="button" class="btn-sm-action btn-delete" onclick="eliminarSelecionadas('check-enc-item')">
               <i class="fa-solid fa-trash-can"></i> Eliminar Selecionadas
@@ -154,7 +189,7 @@
               </th>
               <th>ID / Data</th>
               <th>Cliente & NIF</th>
-              <th>Morada de Envio (Para Fornecedor)</th>
+              <th>Morada de Envio</th>
               <th>Itens Comprados</th>
               <th>Total</th>
               <th style="text-align: right;">Ações</th>
@@ -173,6 +208,9 @@
         <div class="table-header">
           <h2>Encomendas em Trânsito / Já Encomendadas</h2>
           <div class="batch-actions">
+            <button type="button" class="btn-sm-action btn-done" onclick="moverSelecionadasParaFinalizadas()">
+              <i class="fa-solid fa-check-double"></i> Mover para Finalizadas
+            </button>
             <button type="button" class="btn-sm-action btn-delete" onclick="eliminarSelecionadas('check-exp-item')">
               <i class="fa-solid fa-trash-can"></i> Eliminar Selecionadas
             </button>
@@ -201,7 +239,21 @@
       </div>
     </section>
 
-    <!-- ABA 3: DADOS DE CLIENTES -->
+    <!-- ABA 3: ENCOMENDAS FINALIZADAS (SEPARADAS POR CLIENTE COM DOWNLOAD PDF) -->
+    <section id="tab-finalizadas" class="tab-pane">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">
+          <i class="fa-solid fa-folder-closed" style="color:#10b981;"></i> Histórico de Encomendas Concluídas por Cliente
+        </h2>
+        <button type="button" class="btn-sm-action" onclick="carregarEncomendas()"><i class="fa-solid fa-rotate"></i> Recarregar</button>
+      </div>
+
+      <div id="container-finalizadas">
+        <p class="empty-state">A carregar histórico...</p>
+      </div>
+    </section>
+
+    <!-- ABA 4: DADOS DE CLIENTES -->
     <section id="tab-clientes" class="tab-pane">
       <div class="table-container">
         <div class="table-header">
@@ -225,11 +277,11 @@
       </div>
     </section>
 
-    <!-- ABA 4: INSERIR PRODUTO COM LINK DO FORNECEDOR -->
+    <!-- ABA 5: INSERIR PRODUTO COM CALCULADORA AUTOMÁTICA -->
     <section id="tab-inserir-produto" class="tab-pane">
       <div class="form-card">
         <h2 style="font-size: 1.25rem; font-weight:700; margin-bottom: 20px; display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-box-open" style="color: #2563eb;"></i> Adicionar Produto com Link do Fornecedor
+          <i class="fa-solid fa-box-open" style="color: #2563eb;"></i> Adicionar Produto ao Catálogo
         </h2>
 
         <form id="add-product-form" onsubmit="return false;">
@@ -238,10 +290,31 @@
             <input type="text" id="prod-nome" placeholder="Ex: Relógio Smartwatch Série Pro">
           </div>
 
+          <!-- BLOCO DE CÁLCULO DE PREÇO -->
+          <div class="calc-box">
+            <div class="calc-title">
+              <i class="fa-solid fa-calculator"></i> Calculadora de Margem de Lucro & IVA
+            </div>
+            <div class="row-3">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Preço de Compra / Fornecedor (€):</label>
+                <input type="number" step="0.01" id="calc-custo" placeholder="Ex: 20.00" oninput="calcularPrecoFinal()">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Margem de Lucro (%):</label>
+                <input type="number" step="0.1" id="calc-margem" placeholder="Ex: 50" oninput="calcularPrecoFinal()">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Taxa de IVA (%):</label>
+                <input type="number" step="1" id="calc-iva" value="23" oninput="calcularPrecoFinal()">
+              </div>
+            </div>
+          </div>
+
           <div class="row-2">
             <div class="form-group">
-              <label>Preço (€):</label>
-              <input type="number" step="0.01" id="prod-preco" placeholder="39.90">
+              <label><strong style="color: #2563eb;">Preço Final ao Cliente (€):</strong></label>
+              <input type="number" step="0.01" id="prod-preco" placeholder="Calculado automaticamente" style="font-weight: 800; background: #f8fafc;">
             </div>
 
             <div class="form-group">
@@ -297,7 +370,7 @@
 
           <div class="form-group" style="margin-top: 24px;">
             <label style="display:flex; justify-content:space-between; align-items:center;">
-              <span><i class="fa-solid fa-clone" style="color:#2563eb;"></i> Mais do Mesmo (Cores / Modelos adicionais):</span>
+              <span><i class="fa-solid fa-clone" style="color:#2563eb;"></i> Variantes / Cores adicionais:</span>
             </label>
             <div id="variants-container"></div>
             <button type="button" class="btn-add-variant" onclick="adicionarLinhaVariante('variants-container')">
@@ -312,7 +385,7 @@
       </div>
     </section>
 
-    <!-- ABA 5: GERIR CATÁLOGO -->
+    <!-- ABA 6: GERIR CATÁLOGO -->
     <section id="tab-catalogo" class="tab-pane">
       <div class="table-container">
         <div class="table-header">
@@ -336,14 +409,14 @@
       </div>
     </section>
 
-    <!-- ABA 6: CONTROLO DE CATEGORIAS VISÍVEIS -->
+    <!-- ABA 7: CONTROLO DE CATEGORIAS VISÍVEIS -->
     <section id="tab-categorias" class="tab-pane">
       <div class="form-card">
         <h2 style="font-size: 1.25rem; font-weight:700; margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
           <i class="fa-solid fa-sliders" style="color: #2563eb;"></i> Controlo de Categorias Visíveis na Loja
         </h2>
         <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 24px;">
-          Marca com um visto apenas as categorias que pretendes disponibilizar na página inicial. Podes começar com poucas e ir alavancando a disponibilidade conforme adicionas novos artigos.
+          Marca com um visto apenas as categorias que pretendes disponibilizar na página inicial.
         </p>
 
         <div style="display: flex; flex-direction: column; gap: 14px; background: #f8fafc; padding: 20px; border-radius: 10px; border: 1px solid #e2e8f0;">
@@ -460,6 +533,7 @@
   </div>
 
   <script>
+    /* NAVEGAÇÃO DE ABAS */
     function alternarAba(idAba, botaoClicado) {
       const paineis = document.getElementsByClassName('tab-pane');
       for (let i = 0; i < paineis.length; i++) paineis[i].classList.remove('active');
@@ -470,6 +544,21 @@
       const painelAlvo = document.getElementById(idAba);
       if (painelAlvo) painelAlvo.classList.add('active');
       if (botaoClicado) botaoClicado.classList.add('active');
+    }
+
+    /* CALCULADORA DE PREÇO FINAL (CUSTO + LUCRO + IVA) */
+    function calcularPrecoFinal() {
+      const custo = parseFloat(document.getElementById('calc-custo').value) || 0;
+      const margem = parseFloat(document.getElementById('calc-margem').value) || 0;
+      const iva = parseFloat(document.getElementById('calc-iva').value) || 0;
+
+      if (custo > 0) {
+        // Preço com Margem de Lucro
+        const precoComLucro = custo * (1 + (margem / 100));
+        // Preço Final com IVA
+        const precoFinal = precoComLucro * (1 + (iva / 100));
+        document.getElementById('prod-preco').value = precoFinal.toFixed(2);
+      }
     }
 
     function atualizarPrevisao(url, elementId) {
@@ -509,7 +598,7 @@
       return resultado;
     }
 
-    /* REST API SUPABASE */
+    /* CONFIGURAÇÃO SUPABASE */
     const API_URL = "https://omtlfwrrqketuaxufmkd.supabase.co/rest/v1";
     const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tdGxmd3JycWtldHVheHVmbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDA5OTgsImV4cCI6MjEwMTY3Njk5OH0.vTDHpe2HmFNgJ2T9diTwbGParsMpcoeqDzhoivrtELo";
 
@@ -523,13 +612,11 @@
     let listaProdutosEmMemoria = [];
     let listaEncomendasEmMemoria = [];
 
-    /* SELEÇÃO EM MASSA */
     function selecionarTodasPorClasse(classe, isChecked) {
       const checkboxes = document.querySelectorAll(`.${classe}`);
       checkboxes.forEach(cb => cb.checked = isChecked);
     }
 
-    /* ELIMINAR UMA ENCOMENDA ESPECÍFICA */
     async function eliminarEncomenda(id) {
       if (!confirm(`Tem a certeza que deseja eliminar permanentemente a encomenda #${id.toString().slice(-6)}?`)) return;
 
@@ -545,7 +632,6 @@
       }
     }
 
-    /* ELIMINAR ENCOMENDAS SELECIONADAS EM LOTE */
     async function eliminarSelecionadas(classe) {
       const selecionadas = Array.from(document.querySelectorAll(`.${classe}:checked`)).map(cb => cb.value);
       if (selecionadas.length === 0) {
@@ -569,7 +655,6 @@
       }
     }
 
-    /* ENCOMENDAR COM LINK DO FORNECEDOR */
     async function encomendarItem(idEncomenda, linkFornecedor) {
       if (linkFornecedor && linkFornecedor !== 'null' && linkFornecedor.trim() !== '') {
         window.open(linkFornecedor, '_blank');
@@ -622,10 +707,151 @@
       }
     }
 
+    /* MOVER PARA FINALIZADAS */
+    async function moverParaFinalizada(id) {
+      if (!confirm(`Deseja marcar a encomenda #${id.toString().slice(-6)} como Finalizada/Entregue?`)) return;
+      await mudarEstadoEncomenda(id, 'Finalizada');
+    }
+
+    async function moverSelecionadasParaFinalizadas() {
+      const selecionadas = Array.from(document.querySelectorAll('.check-exp-item:checked')).map(cb => cb.value);
+      if (selecionadas.length === 0) {
+        alert("Selecione pelo menos uma encomenda através da caixa de seleção.");
+        return;
+      }
+
+      if (!confirm(`Deseja mover ${selecionadas.length} encomenda(s) para "Encomendas Finalizadas"?`)) return;
+
+      try {
+        for (const id of selecionadas) {
+          await fetch(`${API_URL}/encomendas?id=eq.${id}`, {
+            method: "PATCH",
+            headers: HEADERS,
+            body: JSON.stringify({ estado: 'Finalizada' })
+          });
+        }
+        alert("✅ Encomenda(s) movida(s) para 'Finalizadas' com sucesso!");
+        carregarEncomendas();
+      } catch (e) {
+        alert("Erro ao finalizar encomendas: " + e.message);
+      }
+    }
+
+    /* DOWNLOAD / IMPRESSÃO DE PDF DA ENCOMENDA */
+    function gerarPdfEncomenda(id) {
+      const enc = listaEncomendasEmMemoria.find(e => e.id.toString() === id.toString());
+      if (!enc) {
+        alert("Encomenda não encontrada.");
+        return;
+      }
+
+      let itensTabela = '';
+      if (Array.isArray(enc.itens)) {
+        itensTabela = enc.itens.map(item => `
+          <tr>
+            <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${item.nome || 'Produto'}</td>
+            <td style="padding:10px; border-bottom:1px solid #e2e8f0; text-align:center;">${item.qtd || 1}</td>
+            <td style="padding:10px; border-bottom:1px solid #e2e8f0; text-align:right;">${parseFloat(item.preco || 0).toFixed(2)} €</td>
+            <td style="padding:10px; border-bottom:1px solid #e2e8f0; text-align:right;">${(parseFloat(item.preco || 0) * (item.qtd || 1)).toFixed(2)} €</td>
+          </tr>
+        `).join('');
+      } else {
+        itensTabela = `<tr><td colspan="4" style="padding:10px;">${enc.itens || 'Sem itens'}</td></tr>`;
+      }
+
+      const dataStr = enc.created_at ? new Date(enc.created_at).toLocaleDateString('pt-PT') : new Date().toLocaleDateString('pt-PT');
+
+      const janelaPdf = window.open('', '_blank');
+      janelaPdf.document.write(`
+        <!DOCTYPE html>
+        <html lang="pt">
+        <head>
+          <meta charset="UTF-8">
+          <title>Encomenda_${enc.id.toString().slice(-6)}_DeAaZ</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1e293b; padding: 40px; margin: 0; }
+            .header { display: flex; justify-content: space-between; border-bottom: 2px solid #2563eb; padding-bottom: 20px; margin-bottom: 30px; }
+            .logo { font-size: 28px; font-weight: 800; }
+            .logo span { color: #2563eb; }
+            .info-box { display: flex; justify-content: space-between; margin-bottom: 30px; }
+            .col { flex: 1; font-size: 14px; line-height: 1.6; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+            th { background: #f8fafc; padding: 10px; text-align: left; font-size: 13px; text-transform: uppercase; border-bottom: 2px solid #cbd5e1; }
+            .total-box { text-align: right; font-size: 18px; font-weight: 800; color: #2563eb; }
+            .footer { margin-top: 50px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+            @media print {
+              body { padding: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <div class="logo">De<span>AaZ</span></div>
+              <p style="margin:4px 0 0; font-size:12px; color:#64748b;">Marketplace & Soluções Online</p>
+            </div>
+            <div style="text-align:right;">
+              <h2 style="margin:0; font-size:18px;">GUIA / COMPROVATIVO DE ENCOMENDA</h2>
+              <p style="margin:4px 0 0; font-size:14px; font-weight:700;">#${enc.id.toString().slice(-6)}</p>
+              <p style="margin:4px 0 0; font-size:12px; color:#64748b;">Data: ${dataStr}</p>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div class="col">
+              <strong>Dados do Cliente:</strong><br>
+              ${enc.cliente_nome || 'Cliente Consumidor'}<br>
+              Email: ${enc.cliente_email || '-'}<br>
+              NIF: ${enc.cliente_nif || 'Consumidor Final'}
+            </div>
+            <div class="col" style="text-align:right;">
+              <strong>Morada de Entrega:</strong><br>
+              ${enc.morada_rua || 'Morada não especificada'}<br>
+              ${enc.morada_codigo_postal || ''} ${enc.morada_cidade || ''}<br>
+              ${enc.morada_pais || 'Portugal'}
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Descrição do Artigo</th>
+                <th style="text-align:center;">Qtd</th>
+                <th style="text-align:right;">Preço Unit.</th>
+                <th style="text-align:right;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itensTabela}
+            </tbody>
+          </table>
+
+          <div class="total-box">
+            Total Pago: ${parseFloat(enc.total || 0).toFixed(2)} €
+          </div>
+
+          <div class="footer">
+            Este documento serve como comprovativo de encomenda finalizada da plataforma DeAaZ.<br>
+            Obrigado pela sua preferência!
+          </div>
+
+          <script>
+            window.onload = function() {
+              window.print();
+            };
+          <\/script>
+        </body>
+        </html>
+      `);
+      janelaPdf.document.close();
+    }
+
     /* CARREGAR ENCOMENDAS */
     async function carregarEncomendas() {
       const tbodyPagas = document.getElementById('tbody-encomendas');
       const tbodyExpedicao = document.getElementById('tbody-expedicao');
+      const containerFinalizadas = document.getElementById('container-finalizadas');
+
       if (document.getElementById('check-todas-enc')) document.getElementById('check-todas-enc').checked = false;
       if (document.getElementById('check-todas-exp')) document.getElementById('check-todas-exp').checked = false;
 
@@ -641,18 +867,33 @@
         if (!Array.isArray(listaEncomendasEmMemoria) || listaEncomendasEmMemoria.length === 0) {
           tbodyPagas.innerHTML = `<tr><td colspan="7" class="empty-state">Sem encomendas registadas.</td></tr>`;
           tbodyExpedicao.innerHTML = `<tr><td colspan="8" class="empty-state">Sem encomendas em expedição.</td></tr>`;
+          containerFinalizadas.innerHTML = `<div class="empty-state">Sem encomendas finalizadas.</div>`;
           document.getElementById('count-enc').innerText = 0;
           document.getElementById('count-exp').innerText = 0;
+          document.getElementById('count-fin').innerText = 0;
           return;
         }
 
-        const pagas = listaEncomendasEmMemoria.filter(e => (e.estado || '').toLowerCase() === 'paga' || !(e.estado));
-        const expedicao = listaEncomendasEmMemoria.filter(e => (e.estado || '').toLowerCase() === 'em expedição');
+        const pagas = listaEncomendasEmMemoria.filter(e => {
+          const st = (e.estado || '').toLowerCase().trim();
+          return st === 'paga' || st === '';
+        });
+
+        const expedicao = listaEncomendasEmMemoria.filter(e => {
+          const st = (e.estado || '').toLowerCase().trim();
+          return st === 'em expedição' || st === 'em expedicao';
+        });
+
+        const finalizadas = listaEncomendasEmMemoria.filter(e => {
+          const st = (e.estado || '').toLowerCase().trim();
+          return st === 'finalizada' || st === 'entregue' || st === 'concluída' || st === 'concluida';
+        });
 
         document.getElementById('count-enc').innerText = pagas.length;
         document.getElementById('count-exp').innerText = expedicao.length;
+        document.getElementById('count-fin').innerText = finalizadas.length;
 
-        // Renderiza Encomendas Pagas
+        // 1. RENDERIZA PAGAS
         if (pagas.length === 0) {
           tbodyPagas.innerHTML = `<tr><td colspan="7" class="empty-state">Nenhuma encomenda pendente de envio.</td></tr>`;
         } else {
@@ -695,7 +936,7 @@
                   <button type="button" class="btn-sm-action btn-order" onclick="encomendarItem('${e.id}', '${linkFornecedor}')" title="Abrir fornecedor e despachar">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i> Encomendar
                   </button>
-                  <button type="button" class="btn-sm-action" onclick="eliminarEncomenda('${e.id}')" style="color:#ef4444; border-color:#fee2e2; margin-left: 4px;" title="Eliminar encomenda">
+                  <button type="button" class="btn-sm-action" onclick="eliminarEncomenda('${e.id}')" style="color:#ef4444; border-color:#fee2e2; margin-left: 4px;">
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
                 </td>
@@ -704,7 +945,7 @@
           }).join('');
         }
 
-        // Renderiza Encomendas Em Expedição
+        // 2. RENDERIZA EM EXPEDIÇÃO (COM BOTÃO PARA MOVER PARA FINALIZADAS)
         if (expedicao.length === 0) {
           tbodyExpedicao.innerHTML = `<tr><td colspan="8" class="empty-state">Nenhuma encomenda em trânsito no momento.</td></tr>`;
         } else {
@@ -736,13 +977,109 @@
               </td>
               <td style="font-weight:700; color:#2563eb;">${parseFloat(e.total || 0).toFixed(2)} €</td>
               <td><span class="status-badge status-expedicao"><i class="fa-solid fa-truck-fast"></i> Em Expedição</span></td>
-              <td style="text-align: right;">
-                <button type="button" class="btn-sm-action" onclick="eliminarEncomenda('${e.id}')" style="color:#ef4444; border-color:#fee2e2;" title="Eliminar encomenda concluída">
+              <td style="text-align: right; white-space: nowrap;">
+                <button type="button" class="btn-sm-action btn-done" onclick="moverParaFinalizada('${e.id}')" title="Concluir e mover para finalizadas">
+                  <i class="fa-solid fa-check"></i> Finalizar
+                </button>
+                <button type="button" class="btn-sm-action" onclick="eliminarEncomenda('${e.id}')" style="color:#ef4444; border-color:#fee2e2; margin-left:4px;">
                   <i class="fa-solid fa-trash-can"></i>
                 </button>
               </td>
             </tr>
           `).join('');
+        }
+
+        // 3. RENDERIZA FINALIZADAS (SEPARADAS POR CLIENTE COM BOTÃO PDF)
+        if (finalizadas.length === 0) {
+          containerFinalizadas.innerHTML = `<div class="empty-state">Sem encomendas finalizadas até ao momento.</div>`;
+        } else {
+          // Agrupar por Cliente (Email ou Nome)
+          const agrupadasPorCliente = {};
+          finalizadas.forEach(enc => {
+            const chaveCliente = (enc.cliente_email && enc.cliente_email.trim() !== '') 
+              ? enc.cliente_email.trim().toLowerCase() 
+              : (enc.cliente_nome || 'Consumidor Geral');
+
+            if (!agrupadasPorCliente[chaveCliente]) {
+              agrupadasPorCliente[chaveCliente] = {
+                nome: enc.cliente_nome || 'Consumidor',
+                email: enc.cliente_email || 'Email não indicado',
+                nif: enc.cliente_nif || 'Consumidor Final',
+                encomendas: []
+              };
+            }
+            agrupadasPorCliente[chaveCliente].encomendas.push(enc);
+          });
+
+          let htmlGrupos = '';
+          for (const chave in agrupadasPorCliente) {
+            const grupo = agrupadasPorCliente[chave];
+            const totalGastoCliente = grupo.encomendas.reduce((s, x) => s + parseFloat(x.total || 0), 0);
+
+            htmlGrupos += `
+              <div class="client-group-card">
+                <div class="client-group-header">
+                  <div>
+                    <h3><i class="fa-solid fa-user-check" style="color:#2563eb;"></i> ${grupo.nome}</h3>
+                    <span style="font-size:0.8rem; color:#64748b;">${grupo.email} • NIF: <strong>${grupo.nif}</strong></span>
+                  </div>
+                  <div style="font-size:0.9rem;">
+                    <span style="background:#eff6ff; color:#1d4ed8; font-weight:700; padding:4px 10px; border-radius:6px;">
+                      ${grupo.encomendas.length} encomenda(s) • Total: ${totalGastoCliente.toFixed(2)} €
+                    </span>
+                  </div>
+                </div>
+
+                <table>
+                  <thead>
+                    <tr>
+                      <th>ID / Data</th>
+                      <th>Morada de Envio</th>
+                      <th>Itens Comprados</th>
+                      <th>Total</th>
+                      <th>Estado</th>
+                      <th style="text-align: right;">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${grupo.encomendas.map(item => `
+                      <tr>
+                        <td>
+                          <strong>#${item.id.toString().slice(-6)}</strong>
+                          <div style="font-size:0.75rem; color:#64748b;">${new Date(item.created_at).toLocaleDateString('pt-PT')}</div>
+                        </td>
+                        <td>
+                          <div class="address-box" style="min-width: 200px;">
+                            ${item.morada_rua || 'Rua não indicada'}<br>
+                            ${item.morada_codigo_postal || ''} ${item.morada_cidade \vert{}\vert{} ''} (<strong>${item.morada_pais || 'PT'}</strong>)
+                          </div>
+                        </td>
+                        <td style="font-size:0.85rem;">
+                          ${Array.isArray(item.itens) ? item.itens.map(i => `• <strong>${i.nome}</strong> (x${i.qtd || 1}) - ${(parseFloat(i.preco || 0) * (i.qtd || 1)).toFixed(2)}€`).join('<br>') : (item.itens || '-')}
+                        </td>
+                        <td style="font-weight:700; color:#10b981; font-size:0.95rem;">
+                          ${parseFloat(item.total || 0).toFixed(2)} €
+                        </td>
+                        <td>
+                          <span class="status-badge status-finalizada"><i class="fa-solid fa-check"></i> Finalizada</span>
+                        </td>
+                        <td style="text-align: right; white-space: nowrap;">
+                          <button type="button" class="btn-sm-action btn-pdf" onclick="gerarPdfEncomenda('${item.id}')" title="Descarregar / Imprimir Fatura PDF">
+                            <i class="fa-solid fa-file-pdf"></i> Download PDF
+                          </button>
+                          <button type="button" class="btn-sm-action" onclick="eliminarEncomenda('${item.id}')" style="color:#ef4444; border-color:#fee2e2; margin-left:4px;">
+                            <i class="fa-solid fa-trash-can"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            `;
+          }
+
+          containerFinalizadas.innerHTML = htmlGrupos;
         }
 
       } catch (e) {
@@ -848,7 +1185,7 @@
       const btn = document.getElementById('btn-salvar');
 
       if (!nome || !precoValor || isNaN(preco) || !letra) {
-        alert("Preenche o Nome, Preço e Letra.");
+        alert("Preenche o Nome, Preço (calculado) e a Letra.");
         return;
       }
 
@@ -869,10 +1206,11 @@
         if (!resposta.ok) {
           alert("❌ Erro do Supabase: " + (resultado.message || JSON.stringify(resultado)));
         } else {
-          alert("✅ Artigo publicado com sucesso com link do fornecedor!");
+          alert("✅ Artigo publicado com sucesso com preço e margem calibrados!");
           document.getElementById('add-product-form').reset();
           document.getElementById('variants-container').innerHTML = '';
           document.getElementById('preview-box').innerHTML = `<i class="fa-regular fa-image fa-2x"></i>`;
+          document.getElementById('calc-iva').value = 23;
           carregarProdutos();
         }
       } catch (err) {
@@ -961,12 +1299,27 @@
 
     /* CONTROLO DE CATEGORIAS VISÍVEIS */
     function carregarCheckboxesCategorias() {
-      const ativas = JSON.parse(localStorage.getItem('deaaz_categorias_ativas')) || ['tecnologia', 'casa', 'moda', 'desporto', 'beleza'];
       const todas = ['tecnologia', 'casa', 'moda', 'desporto', 'beleza', 'outros'];
+      const rawLocal = localStorage.getItem('deaaz_categorias_ativas');
+      let ativas = [];
+
+      if (rawLocal !== null) {
+        try {
+          ativas = JSON.parse(rawLocal);
+        } catch (e) {
+          ativas = [];
+        }
+      } else {
+        ativas = ['tecnologia'];
+      }
+
+      const ativasNormalizadas = (Array.isArray(ativas) ? ativas : []).map(c => String(c).toLowerCase().trim());
 
       todas.forEach(cat => {
         const el = document.getElementById(`cat-check-${cat}`);
-        if (el) el.checked = ativas.includes(cat);
+        if (el) {
+          el.checked = ativasNormalizadas.includes(cat);
+        }
       });
     }
 
@@ -976,11 +1329,13 @@
 
       todas.forEach(cat => {
         const el = document.getElementById(`cat-check-${cat}`);
-        if (el && el.checked) selecionadas.push(cat);
+        if (el && el.checked) {
+          selecionadas.push(cat.toLowerCase().trim());
+        }
       });
 
       localStorage.setItem('deaaz_categorias_ativas', JSON.stringify(selecionadas));
-      alert("✅ Disponibilidade de categorias atualizada com sucesso!");
+      alert(`✅ Configuração guardada! Estão ativas ${selecionadas.length} categoria(s).`);
     }
 
     // Inicialização
