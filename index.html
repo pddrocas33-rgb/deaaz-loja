@@ -994,9 +994,13 @@
       const label = document.getElementById('label-user');
       const userLogado = localStorage.getItem('deaaz_user');
       if (userLogado) {
-        const dados = JSON.parse(userLogado);
-        const primeiroNome = dados.nome.split(' ')[0];
-        label.innerText = `Olá, ${primeiroNome} (Perfil)`;
+        try {
+          const dados = JSON.parse(userLogado);
+          const primeiroNome = (dados.nome || dados.email || 'Utilizador').split(' ')[0];
+          label.innerText = `Olá, ${primeiroNome} (Perfil)`;
+        } catch(e) {
+          label.innerText = "O Meu Perfil";
+        }
       } else {
         label.innerText = "Entrar / Registar";
       }
@@ -1007,14 +1011,29 @@
       const container = document.getElementById('categorias-container');
       if (!container) return;
 
-      const ativas = JSON.parse(localStorage.getItem('deaaz_categorias_ativas')) || ['tecnologia', 'casa', 'moda', 'desporto', 'beleza'];
+      const rawAtivas = localStorage.getItem('deaaz_categorias_ativas');
+      let ativas = [];
+
+      if (rawAtivas !== null) {
+        try {
+          ativas = JSON.parse(rawAtivas);
+        } catch (e) {
+          ativas = [];
+        }
+      } else {
+        // Padrão apenas na primeira execução antes de qualquer gravação no admin
+        ativas = ['tecnologia', 'casa', 'moda', 'desporto', 'beleza'];
+      }
+
+      const ativasNormalizadas = Array.isArray(ativas) ? ativas.map(c => String(c).toLowerCase().trim()) : [];
 
       let html = '';
-      ativas.forEach(cat => {
-        const info = CATEGORIAS_INFO[cat.toLowerCase()];
+
+      ativasNormalizadas.forEach(catKey => {
+        const info = CATEGORIAS_INFO[catKey];
         if (info) {
           html += `
-            <div class="category-card" onclick="filtrarCategoria('${cat.toLowerCase()}')">
+            <div class="category-card" onclick="filtrarCategoria('${catKey}')">
               <i class="fa-solid ${info.icone}"></i>
               <span>${info.nome}</span>
             </div>
@@ -1022,12 +1041,16 @@
         }
       });
 
-      html += `
-        <div class="category-card" onclick="filtrarCategoria('todos')">
-          <i class="fa-solid fa-border-all"></i>
-          <span>Ver Todos</span>
-        </div>
-      `;
+      if (ativasNormalizadas.length > 0) {
+        html += `
+          <div class="category-card" onclick="filtrarCategoria('todos')">
+            <i class="fa-solid fa-border-all"></i>
+            <span>Ver Todos</span>
+          </div>
+        `;
+      } else {
+        html = `<p style="grid-column: 1/-1; text-align:center; color:#94a3b8; padding:20px;">Nenhuma categoria ativa no momento.</p>`;
+      }
 
       container.innerHTML = html;
     }
