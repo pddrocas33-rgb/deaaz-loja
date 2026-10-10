@@ -205,16 +205,34 @@
     let utilizadorAtual = null;
 
     function verificarAutenticacao() {
-      const sessao = localStorage.getItem('deaaz_user');
-      if (!sessao) {
+      const sessaoRaw = localStorage.getItem('deaaz_user');
+
+      if (!sessaoRaw || sessaoRaw === 'null' || sessaoRaw === 'undefined') {
         alert("Precisas de ter sessão iniciada para aceder ao teu perfil.");
         window.location.href = "index.html";
         return;
       }
-      utilizadorAtual = JSON.parse(sessao);
-      document.getElementById('user-name-display').innerText = utilizadorAtual.nome;
-      document.getElementById('user-email-display').innerText = utilizadorAtual.email;
-      document.getElementById('user-avatar-initials').innerText = utilizadorAtual.nome.charAt(0).toUpperCase();
+
+      try {
+        utilizadorAtual = JSON.parse(sessaoRaw);
+      } catch (err) {
+        utilizadorAtual = { nome: sessaoRaw, email: sessaoRaw };
+      }
+
+      if (!utilizadorAtual || (typeof utilizadorAtual !== 'object') || (!utilizadorAtual.email && !utilizadorAtual.nome)) {
+        localStorage.removeItem('deaaz_user');
+        alert("Sessão inválida. Por favor, inicia sessão novamente.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      const nomeExibicao = utilizadorAtual.nome || utilizadorAtual.email || "Utilizador";
+      const emailExibicao = utilizadorAtual.email || "";
+
+      document.getElementById('user-name-display').innerText = nomeExibicao;
+      document.getElementById('user-email-display').innerText = emailExibicao;
+      document.getElementById('user-avatar-initials').innerText = nomeExibicao.trim().charAt(0).toUpperCase();
+
       carregarDadosCompletosCliente();
       carregarEncomendasCliente();
     }
@@ -227,27 +245,34 @@
     }
 
     async function carregarDadosCompletosCliente() {
+      if (!utilizadorAtual.email) return;
+
       try {
         const res = await fetch(`${API_URL}/clientes?email=eq.${encodeURIComponent(utilizadorAtual.email)}`, { headers: HEADERS });
         if (!res.ok) return;
         const lista = await res.json();
         if (lista.length > 0) {
           const c = lista[0];
-          document.getElementById('perfil-nome').value = c.nome || '';
-          document.getElementById('perfil-email').value = c.email || '';
+          document.getElementById('perfil-nome').value = c.nome || utilizadorAtual.nome || '';
+          document.getElementById('perfil-email').value = c.email || utilizadorAtual.email || '';
           document.getElementById('perfil-nif').value = c.nif || '';
           document.getElementById('perfil-pais').value = c.pais || 'Portugal';
           document.getElementById('perfil-morada').value = c.morada || '';
           document.getElementById('perfil-cp').value = c.codigo_postal || '';
           document.getElementById('perfil-cidade').value = c.cidade || '';
+        } else {
+          document.getElementById('perfil-nome').value = utilizadorAtual.nome || '';
+          document.getElementById('perfil-email').value = utilizadorAtual.email || '';
         }
       } catch (err) {
-        console.error("Erro ao ler perfil:", err);
+        console.error("Erro ao ler dados do perfil:", err);
       }
     }
 
     async function atualizarDadosCliente(e) {
       e.preventDefault();
+      if (!utilizadorAtual.email) return;
+
       const payload = {
         nome: document.getElementById('perfil-nome').value.trim(),
         nif: document.getElementById('perfil-nif').value.trim(),
@@ -263,11 +288,17 @@
           headers: HEADERS,
           body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error("Erro ao guardar");
+
+        if (!res.ok) {
+          const erroSupabase = await res.json();
+          throw new Error(erroSupabase.message || "Falha ao gravar no Supabase");
+        }
         
         utilizadorAtual.nome = payload.nome;
         localStorage.setItem('deaaz_user', JSON.stringify(utilizadorAtual));
         document.getElementById('user-name-display').innerText = payload.nome;
+        document.getElementById('user-avatar-initials').innerText = payload.nome.trim().charAt(0).toUpperCase();
+
         alert("✅ Os teus dados foram atualizados com sucesso!");
       } catch (err) {
         alert("Erro ao atualizar: " + err.message);
@@ -278,23 +309,33 @@
       const containerCurso = document.getElementById('lista-encomendas-curso');
       const containerTerminadas = document.getElementById('lista-encomendas-terminadas');
 
+      if (!utilizadorAtual.email) {
+        containerCurso.innerHTML = `<p class="empty-orders">Sem email associado para procurar encomendas.</p>`;
+        containerTerminadas.innerHTML = `<p class="empty-orders">Sem email associado para procurar encomendas.</p>`;
+        return;
+      }
+
       try {
         const res = await fetch(`${API_URL}/encomendas?cliente_email=eq.${encodeURIComponent(utilizadorAtual.email)}&order=created_at.desc`, { headers: HEADERS });
+        
+        if (!res.ok) throw new Error("Erro na consulta de encomendas");
         const encomendas = await res.json();
 
         if (!Array.isArray(encomendas) || encomendas.length === 0) {
           containerCurso.innerHTML = `<p class="empty-orders">Não tens nenhuma encomenda em curso.</p>`;
           containerTerminadas.innerHTML = `<p class="empty-orders">Não tens histórico de encomendas terminadas.</p>`;
+          document.getElementById('count-curso').innerText = 0;
+          document.getElementById('count-terminadas').innerText = 0;
           return;
         }
 
         const emCurso = encomendas.filter(e => {
-          const st = (e.estado || 'paga').toLowerCase();
+          const st = (e.estado || 'paga').toLowerCase().trim();
           return st === 'paga' || st === 'em expedição' || st === 'processamento';
         });
 
         const terminadas = encomendas.filter(e => {
-          const st = (e.estado || '').toLowerCase();
+          const st = (e.estado || '').toLowerCase().trim();
           return st === 'entregue' || st === 'concluída' || st === 'terminada';
         });
 
@@ -316,23 +357,28 @@
         }
 
       } catch (err) {
-        containerCurso.innerHTML = `<p class="empty-orders">Erro ao consultar encomendas.</p>`;
-        containerTerminadas.innerHTML = `<p class="empty-orders">Erro ao consultar encomendas.</p>`;
+        console.error(err);
+        containerCurso.innerHTML = `<p class="empty-orders">Erro ao consultar encomendas no servidor.</p>`;
+        containerTerminadas.innerHTML = `<p class="empty-orders">Erro ao consultar encomendas no servidor.</p>`;
       }
     }
 
     function renderCardEncomenda(e, terminada) {
-      const dataFmt = new Date(e.created_at).toLocaleDateString('pt-PT');
+      const dataFmt = e.created_at ? new Date(e.created_at).toLocaleDateString('pt-PT') : 'Data recente';
       const estadoTxt = e.estado || 'Paga';
-      const itensHtml = Array.isArray(e.itens) 
-        ? e.itens.map(i => `• <strong>${i.nome}</strong> (x${i.qtd || 1}) - ${(parseFloat(i.preco || 0) * (i.qtd || 1)).toFixed(2)}€`).join('<br>')
-        : 'Produtos da encomenda';
+      let itensHtml = 'Artigos da encomenda';
+
+      if (Array.isArray(e.itens)) {
+        itensHtml = e.itens.map(i => `• <strong>${i.nome || 'Produto'}</strong> (x${i.qtd || 1}) - ${(parseFloat(i.preco || 0) * (i.qtd || 1)).toFixed(2)}€`).join('<br>');
+      } else if (typeof e.itens === 'string') {
+        itensHtml = e.itens;
+      }
 
       return `
         <div class="order-card">
           <div class="order-header">
             <div>
-              <strong>Encomenda #${e.id.toString().slice(-6)}</strong>
+              <strong>Encomenda #${e.id ? e.id.toString().slice(-6) : '---'}</strong>
               <span style="font-size:0.8rem; color:#64748b; margin-left:8px;">📅 ${dataFmt}</span>
             </div>
             <span class="order-badge ${terminada ? 'badge-terminada' : 'badge-curso'}">${estadoTxt}</span>
@@ -341,7 +387,7 @@
             ${itensHtml}
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #e2e8f0; padding-top:8px;">
-            <span style="font-size:0.8rem; color:#64748b;">Morada: ${e.morada_cidade || ''}, ${e.morada_pais || 'PT'}</span>
+            <span style="font-size:0.8rem; color:#64748b;">Destino: ${e.morada_cidade || ''}, ${e.morada_pais || 'Portugal'}</span>
             <strong style="color:#2563eb; font-size:1.05rem;">Total: ${parseFloat(e.total || 0).toFixed(2)} €</strong>
           </div>
         </div>
@@ -353,17 +399,16 @@
       const assunto = document.getElementById('sugestao-assunto').value.trim();
       const texto = document.getElementById('sugestao-texto').value.trim();
 
-      // Guarda no histórico local do cliente para registo imediato
       const sugestoes = JSON.parse(localStorage.getItem('deaaz_sugestoes')) || [];
       sugestoes.push({
-        cliente: utilizadorAtual.email,
+        cliente: utilizadorAtual.email || 'Anónimo',
         assunto,
         texto,
         data: new Date().toISOString()
       });
       localStorage.setItem('deaaz_sugestoes', JSON.stringify(sugestoes));
 
-      alert("🎉 Muito obrigado! A tua sugestão foi enviada com sucesso para a administração da DeAaZ.");
+      alert("🎉 Muito obrigado! A tua sugestão foi enviada com sucesso para a equipa da DeAaZ.");
       document.getElementById('sugestao-assunto').value = '';
       document.getElementById('sugestao-texto').value = '';
     }
@@ -375,6 +420,7 @@
       }
     }
 
+    // Inicialização segura
     verificarAutenticacao();
   </script>
 </body>
