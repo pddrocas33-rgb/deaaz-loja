@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeAaZ - A Minha Conta & Perfil</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background-color: #f8fafc; color: #0f172a; line-height: 1.5; }
+
+    header { background: #ffffff; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 100; }
+    .header-content { max-width: 1100px; margin: 0 auto; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.6rem; font-weight: 800; color: #0f172a; text-decoration: none; }
+    .logo span { color: #2563eb; }
+
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 16px; }
+
+    .profile-header {
+      background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .user-avatar-info { display: flex; align-items: center; gap: 16px; }
+    .avatar-circle { width: 56px; height: 56px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; border: 2px solid #bfdbfe; }
+    .btn-logout { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+    .btn-logout:hover { background: #fee2e2; }
+
+    .tabs-nav { display: flex; gap: 8px; border-bottom: 2px solid #e2e8f0; margin-bottom: 24px; overflow-x: auto; }
+    .tab-btn { background: none; border: none; padding: 12px 18px; font-size: 0.95rem; font-weight: 600; color: #64748b; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: 0.2s; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+    .tab-btn.active { color: #2563eb; border-bottom-color: #2563eb; }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+    .card-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.8rem; font-weight: 600; color: #475569; text-transform: uppercase; }
+    .form-group input, .form-group textarea, .form-group select { padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; outline: none; }
+    .form-group input:focus, .form-group textarea:focus { border-color: #2563eb; }
+
+    .btn-primary { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; transition: 0.2s; }
+    .btn-primary:hover { background: #1d4ed8; }
+
+    /* ENCOMENDAS */
+    .orders-list { display: flex; flex-direction: column; gap: 14px; }
+    .order-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; background: #ffffff; }
+    .order-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .order-badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .badge-curso { background: #fef3c7; color: #b45309; }
+    .badge-terminada { background: #ecfdf5; color: #047857; }
+    .empty-orders { text-align: center; color: #94a3b8; padding: 36px; }
+
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo">De<span>AaZ</span></a>
+      <a href="index.html" style="text-decoration:none; color:#2563eb; font-weight:600; font-size:0.9rem;">
+        <i class="fa-solid fa-arrow-left"></i> Voltar à Loja
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- CABEÇALHO DO PERFIL -->
+    <div class="profile-header">
+      <div class="user-avatar-info">
+        <div class="avatar-circle" id="user-avatar-initials">U</div>
+        <div>
+          <h2 style="font-size:1.25rem; font-weight:800;" id="user-name-display">A carregar...</h2>
+          <span style="font-size:0.85rem; color:#64748b;" id="user-email-display">email@exemplo.com</span>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="terminarSessao()">
+        <i class="fa-solid fa-right-from-bracket"></i> Terminar Sessão
+      </button>
+    </div>
+
+    <!-- ABAS -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="trocarAba('meus-dados', this)">
+        <i class="fa-solid fa-id-card"></i> Os Meus Dados
+      </button>
+      <button class="tab-btn" onclick="trocarAba('encomendas-curso', this)">
+        <i class="fa-solid fa-clock-rotate-left"></i> Encomendas em Curso (<span id="count-curso">0</span>)
+      </button>
+      <button class="tab-btn" onclick="trocarAba('encomendas-terminadas', this)">
+        <i class="fa-solid fa-circle-check"></i> Encomendas Terminadas (<span id="count-terminadas">0</span>)
+      </button>
+      <button class="tab-btn" onclick="trocarAba('sugestoes', this)">
+        <i class="fa-solid fa-comment-dots"></i> Deixar Sugestão
+      </button>
+    </div>
+
+    <!-- ABA 1: OS MEUS DADOS -->
+    <div id="pane-meus-dados" class="tab-pane active">
+      <div class="card">
+        <h3 class="card-title"><i class="fa-solid fa-user-pen" style="color:#2563eb;"></i> Informações de Conta & Faturação</h3>
+        <form id="form-perfil-dados" onsubmit="atualizarDadosCliente(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nome Completo</label>
+              <input type="text" id="perfil-nome" required>
+            </div>
+            <div class="form-group">
+              <label>Email (Identificador)</label>
+              <input type="email" id="perfil-email" readonly style="background:#f1f5f9; cursor:not-allowed;">
+            </div>
+            <div class="form-group">
+              <label>NIF / Contribuinte</label>
+              <input type="text" id="perfil-nif">
+            </div>
+            <div class="form-group">
+              <label>País</label>
+              <input type="text" id="perfil-pais" value="Portugal">
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>Morada Completa</label>
+              <input type="text" id="perfil-morada" placeholder="Rua, número, andar...">
+            </div>
+            <div class="form-group">
+              <label>Código Postal</label>
+              <input type="text" id="perfil-cp">
+            </div>
+            <div class="form-group">
+              <label>Cidade / Localidade</label>
+              <input type="text" id="perfil-cidade">
+            </div>
+          </div>
+          <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Alterações
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ABA 2: ENCOMENDAS EM CURSO -->
+    <div id="pane-encomendas-curso" class="tab-pane">
+      <div class="card">
+        <h3 class="card-title"><i class="fa-solid fa-truck-fast" style="color:#f59e0b;"></i> Encomendas Ativas (Pagas / Em Expedição)</h3>
+        <div class="orders-list" id="lista-encomendas-curso">
+          <p class="empty-orders"><i class="fa-solid fa-spinner fa-spin"></i> A carregar encomendas...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 3: ENCOMENDAS TERMINADAS -->
+    <div id="pane-encomendas-terminadas" class="tab-pane">
+      <div class="card">
+        <h3 class="card-title"><i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Histórico de Encomendas Concluídas</h3>
+        <div class="orders-list" id="lista-encomendas-terminadas">
+          <p class="empty-orders"><i class="fa-solid fa-spinner fa-spin"></i> A carregar encomendas...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 4: DEIXAR SUGESTÃO -->
+    <div id="pane-sugestoes" class="tab-pane">
+      <div class="card">
+        <h3 class="card-title"><i class="fa-solid fa-lightbulb" style="color:#eab308;"></i> A Tua Opinião Conta</h3>
+        <p style="font-size:0.9rem; color:#64748b; margin-bottom:18px;">
+          Gostavas de ver novos produtos, marcas ou tens ideias para melhorar o DeAaZ? Envia-nos a tua sugestão direta.
+        </p>
+        <form onsubmit="enviarSugestao(event)">
+          <div class="form-group" style="margin-bottom:14px;">
+            <label>Assunto</label>
+            <input type="text" id="sugestao-assunto" placeholder="Ex: Novo artigo de tecnologia, sugestão de categoria..." required>
+          </div>
+          <div class="form-group" style="margin-bottom:14px;">
+            <label>A tua mensagem / sugestão</label>
+            <textarea id="sugestao-texto" rows="5" placeholder="Escreve aqui a tua sugestão em detalhe..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-paper-plane"></i> Enviar Sugestão
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const API_URL = "https://omtlfwrrqketuaxufmkd.supabase.co/rest/v1";
+    const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tdGxmd3JycWtldHVheHVmbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDA5OTgsImV4cCI6MjEwMTY3Njk5OH0.vTDHpe2HmFNgJ2T9diTwbGParsMpcoeqDzhoivrtELo";
+
+    const HEADERS = {
+      "apikey": API_KEY,
+      "Authorization": "Bearer " + API_KEY,
+      "Content-Type": "application/json",
+      "Prefer": "return=representation"
+    };
+
+    let utilizadorAtual = null;
+
+    function verificarAutenticacao() {
+      const sessao = localStorage.getItem('deaaz_user');
+      if (!sessao) {
+        alert("Precisas de ter sessão iniciada para aceder ao teu perfil.");
+        window.location.href = "index.html";
+        return;
+      }
+      utilizadorAtual = JSON.parse(sessao);
+      document.getElementById('user-name-display').innerText = utilizadorAtual.nome;
+      document.getElementById('user-email-display').innerText = utilizadorAtual.email;
+      document.getElementById('user-avatar-initials').innerText = utilizadorAtual.nome.charAt(0).toUpperCase();
+      carregarDadosCompletosCliente();
+      carregarEncomendasCliente();
+    }
+
+    function trocarAba(abaId, btn) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(`pane-${abaId}`).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    async function carregarDadosCompletosCliente() {
+      try {
+        const res = await fetch(`${API_URL}/clientes?email=eq.${encodeURIComponent(utilizadorAtual.email)}`, { headers: HEADERS });
+        if (!res.ok) return;
+        const lista = await res.json();
+        if (lista.length > 0) {
+          const c = lista[0];
+          document.getElementById('perfil-nome').value = c.nome || '';
+          document.getElementById('perfil-email').value = c.email || '';
+          document.getElementById('perfil-nif').value = c.nif || '';
+          document.getElementById('perfil-pais').value = c.pais || 'Portugal';
+          document.getElementById('perfil-morada').value = c.morada || '';
+          document.getElementById('perfil-cp').value = c.codigo_postal || '';
+          document.getElementById('perfil-cidade').value = c.cidade || '';
+        }
+      } catch (err) {
+        console.error("Erro ao ler perfil:", err);
+      }
+    }
+
+    async function atualizarDadosCliente(e) {
+      e.preventDefault();
+      const payload = {
+        nome: document.getElementById('perfil-nome').value.trim(),
+        nif: document.getElementById('perfil-nif').value.trim(),
+        pais: document.getElementById('perfil-pais').value.trim(),
+        morada: document.getElementById('perfil-morada').value.trim(),
+        codigo_postal: document.getElementById('perfil-cp').value.trim(),
+        cidade: document.getElementById('perfil-cidade').value.trim()
+      };
+
+      try {
+        const res = await fetch(`${API_URL}/clientes?email=eq.${encodeURIComponent(utilizadorAtual.email)}`, {
+          method: "PATCH",
+          headers: HEADERS,
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error("Erro ao guardar");
+        
+        utilizadorAtual.nome = payload.nome;
+        localStorage.setItem('deaaz_user', JSON.stringify(utilizadorAtual));
+        document.getElementById('user-name-display').innerText = payload.nome;
+        alert("✅ Os teus dados foram atualizados com sucesso!");
+      } catch (err) {
+        alert("Erro ao atualizar: " + err.message);
+      }
+    }
+
+    async function carregarEncomendasCliente() {
+      const containerCurso = document.getElementById('lista-encomendas-curso');
+      const containerTerminadas = document.getElementById('lista-encomendas-terminadas');
+
+      try {
+        const res = await fetch(`${API_URL}/encomendas?cliente_email=eq.${encodeURIComponent(utilizadorAtual.email)}&order=created_at.desc`, { headers: HEADERS });
+        const encomendas = await res.json();
+
+        if (!Array.isArray(encomendas) || encomendas.length === 0) {
+          containerCurso.innerHTML = `<p class="empty-orders">Não tens nenhuma encomenda em curso.</p>`;
+          containerTerminadas.innerHTML = `<p class="empty-orders">Não tens histórico de encomendas terminadas.</p>`;
+          return;
+        }
+
+        const emCurso = encomendas.filter(e => {
+          const st = (e.estado || 'paga').toLowerCase();
+          return st === 'paga' || st === 'em expedição' || st === 'processamento';
+        });
+
+        const terminadas = encomendas.filter(e => {
+          const st = (e.estado || '').toLowerCase();
+          return st === 'entregue' || st === 'concluída' || st === 'terminada';
+        });
+
+        document.getElementById('count-curso').innerText = emCurso.length;
+        document.getElementById('count-terminadas').innerText = terminadas.length;
+
+        // Renderiza Em Curso
+        if (emCurso.length === 0) {
+          containerCurso.innerHTML = `<p class="empty-orders">Não tens nenhuma encomenda em curso no momento.</p>`;
+        } else {
+          containerCurso.innerHTML = emCurso.map(e => renderCardEncomenda(e, false)).join('');
+        }
+
+        // Renderiza Terminadas
+        if (terminadas.length === 0) {
+          containerTerminadas.innerHTML = `<p class="empty-orders">Não tens encomendas terminadas.</p>`;
+        } else {
+          containerTerminadas.innerHTML = terminadas.map(e => renderCardEncomenda(e, true)).join('');
+        }
+
+      } catch (err) {
+        containerCurso.innerHTML = `<p class="empty-orders">Erro ao consultar encomendas.</p>`;
+        containerTerminadas.innerHTML = `<p class="empty-orders">Erro ao consultar encomendas.</p>`;
+      }
+    }
+
+    function renderCardEncomenda(e, terminada) {
+      const dataFmt = new Date(e.created_at).toLocaleDateString('pt-PT');
+      const estadoTxt = e.estado || 'Paga';
+      const itensHtml = Array.isArray(e.itens) 
+        ? e.itens.map(i => `• <strong>${i.nome}</strong> (x${i.qtd || 1}) - ${(parseFloat(i.preco || 0) * (i.qtd || 1)).toFixed(2)}€`).join('<br>')
+        : 'Produtos da encomenda';
+
+      return `
+        <div class="order-card">
+          <div class="order-header">
+            <div>
+              <strong>Encomenda #${e.id.toString().slice(-6)}</strong>
+              <span style="font-size:0.8rem; color:#64748b; margin-left:8px;">📅 ${dataFmt}</span>
+            </div>
+            <span class="order-badge ${terminada ? 'badge-terminada' : 'badge-curso'}">${estadoTxt}</span>
+          </div>
+          <div style="font-size:0.88rem; color:#334155; margin-bottom:10px;">
+            ${itensHtml}
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #e2e8f0; padding-top:8px;">
+            <span style="font-size:0.8rem; color:#64748b;">Morada: ${e.morada_cidade || ''}, ${e.morada_pais || 'PT'}</span>
+            <strong style="color:#2563eb; font-size:1.05rem;">Total: ${parseFloat(e.total || 0).toFixed(2)} €</strong>
+          </div>
+        </div>
+      `;
+    }
+
+    function enviarSugestao(e) {
+      e.preventDefault();
+      const assunto = document.getElementById('sugestao-assunto').value.trim();
+      const texto = document.getElementById('sugestao-texto').value.trim();
+
+      // Guarda no histórico local do cliente para registo imediato
+      const sugestoes = JSON.parse(localStorage.getItem('deaaz_sugestoes')) || [];
+      sugestoes.push({
+        cliente: utilizadorAtual.email,
+        assunto,
+        texto,
+        data: new Date().toISOString()
+      });
+      localStorage.setItem('deaaz_sugestoes', JSON.stringify(sugestoes));
+
+      alert("🎉 Muito obrigado! A tua sugestão foi enviada com sucesso para a administração da DeAaZ.");
+      document.getElementById('sugestao-assunto').value = '';
+      document.getElementById('sugestao-texto').value = '';
+    }
+
+    function terminarSessao() {
+      if (confirm("Tens a certeza que desejas terminar sessão?")) {
+        localStorage.removeItem('deaaz_user');
+        window.location.href = "index.html";
+      }
+    }
+
+    verificarAutenticacao();
+  </script>
+</body>
+</html>

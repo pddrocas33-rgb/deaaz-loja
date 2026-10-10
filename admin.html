@@ -126,6 +126,9 @@
       <button type="button" class="tab-btn" id="btn-tab-catalogo" onclick="alternarAba('tab-catalogo', this)">
         <i class="fa-solid fa-list-check"></i> Gerir Catálogo (<span id="count-prod">0</span>)
       </button>
+      <button type="button" class="tab-btn" id="btn-tab-categorias" onclick="alternarAba('tab-categorias', this)">
+        <i class="fa-solid fa-tags"></i> Categorias Visíveis
+      </button>
     </nav>
 
     <!-- ABA 1: ENCOMENDAS PAGAS -->
@@ -330,6 +333,54 @@
             <tr><td colspan="5" class="empty-state">A carregar artigos...</td></tr>
           </tbody>
         </table>
+      </div>
+    </section>
+
+    <!-- ABA 6: CONTROLO DE CATEGORIAS VISÍVEIS -->
+    <section id="tab-categorias" class="tab-pane">
+      <div class="form-card">
+        <h2 style="font-size: 1.25rem; font-weight:700; margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-sliders" style="color: #2563eb;"></i> Controlo de Categorias Visíveis na Loja
+        </h2>
+        <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 24px;">
+          Marca com um visto apenas as categorias que pretendes disponibilizar na página inicial. Podes começar com poucas e ir alavancando a disponibilidade conforme adicionas novos artigos.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; background: #f8fafc; padding: 20px; border-radius: 10px; border: 1px solid #e2e8f0;">
+          <label style="display:flex; align-items:center; gap:12px; font-size:1rem; cursor:pointer;">
+            <input type="checkbox" id="cat-check-tecnologia" value="tecnologia" style="width:20px; height:20px; cursor:pointer;">
+            <span><i class="fa-solid fa-mobile-screen-button" style="color:#2563eb; width:22px;"></i> <strong>Tecnologia</strong></span>
+          </label>
+
+          <label style="display:flex; align-items:center; gap:12px; font-size:1rem; cursor:pointer;">
+            <input type="checkbox" id="cat-check-casa" value="casa" style="width:20px; height:20px; cursor:pointer;">
+            <span><i class="fa-solid fa-house" style="color:#2563eb; width:22px;"></i> <strong>Casa & Lar</strong></span>
+          </label>
+
+          <label style="display:flex; align-items:center; gap:12px; font-size:1rem; cursor:pointer;">
+            <input type="checkbox" id="cat-check-moda" value="moda" style="width:20px; height:20px; cursor:pointer;">
+            <span><i class="fa-solid fa-shirt" style="color:#2563eb; width:22px;"></i> <strong>Moda & Calçado</strong></span>
+          </label>
+
+          <label style="display:flex; align-items:center; gap:12px; font-size:1rem; cursor:pointer;">
+            <input type="checkbox" id="cat-check-desporto" value="desporto" style="width:20px; height:20px; cursor:pointer;">
+            <span><i class="fa-solid fa-dumbbell" style="color:#2563eb; width:22px;"></i> <strong>Desporto</strong></span>
+          </label>
+
+          <label style="display:flex; align-items:center; gap:12px; font-size:1rem; cursor:pointer;">
+            <input type="checkbox" id="cat-check-beleza" value="beleza" style="width:20px; height:20px; cursor:pointer;">
+            <span><i class="fa-solid fa-spray-can-sparkles" style="color:#2563eb; width:22px;"></i> <strong>Beleza & Saúde</strong></span>
+          </label>
+
+          <label style="display:flex; align-items:center; gap:12px; font-size:1rem; cursor:pointer;">
+            <input type="checkbox" id="cat-check-outros" value="outros" style="width:20px; height:20px; cursor:pointer;">
+            <span><i class="fa-solid fa-box" style="color:#2563eb; width:22px;"></i> <strong>Outros</strong></span>
+          </label>
+        </div>
+
+        <button type="button" class="btn-submit" onclick="guardarConfigCategorias()">
+          <i class="fa-solid fa-floppy-disk"></i> Guardar Disponibilidade de Categorias
+        </button>
       </div>
     </section>
 
@@ -908,10 +959,35 @@
       carregarProdutos();
     }
 
+    /* CONTROLO DE CATEGORIAS VISÍVEIS */
+    function carregarCheckboxesCategorias() {
+      const ativas = JSON.parse(localStorage.getItem('deaaz_categorias_ativas')) || ['tecnologia', 'casa', 'moda', 'desporto', 'beleza'];
+      const todas = ['tecnologia', 'casa', 'moda', 'desporto', 'beleza', 'outros'];
+
+      todas.forEach(cat => {
+        const el = document.getElementById(`cat-check-${cat}`);
+        if (el) el.checked = ativas.includes(cat);
+      });
+    }
+
+    function guardarConfigCategorias() {
+      const todas = ['tecnologia', 'casa', 'moda', 'desporto', 'beleza', 'outros'];
+      const selecionadas = [];
+
+      todas.forEach(cat => {
+        const el = document.getElementById(`cat-check-${cat}`);
+        if (el && el.checked) selecionadas.push(cat);
+      });
+
+      localStorage.setItem('deaaz_categorias_ativas', JSON.stringify(selecionadas));
+      alert("✅ Disponibilidade de categorias atualizada com sucesso!");
+    }
+
     // Inicialização
     carregarEncomendas();
     carregarClientes();
     carregarProdutos();
+    carregarCheckboxesCategorias();
   </script>
 </body>
 </html>

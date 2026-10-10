@@ -342,7 +342,7 @@
       margin-bottom: 12px;
     }
 
-    /* AÇÕES DO PRODUTO (VER DETALHES + ADICIONAR AO CARRINHO) */
+    /* AÇÕES DO PRODUTO */
     .product-card-actions {
       display: flex;
       flex-direction: column;
@@ -618,8 +618,8 @@
 
       <!-- AÇÕES DO UTILIZADOR -->
       <div class="user-actions">
-        <!-- BOTÃO DE LOGIN / UTILIZADOR -->
-        <button class="action-btn" id="btn-auth-open" onclick="abrirModalAuth()">
+        <!-- BOTÃO DE LOGIN / PERFIL -->
+        <button class="action-btn" id="btn-auth-open" onclick="clicarAcaoUtilizador()">
           <i class="fa-solid fa-user"></i>
           <span id="label-user">Entrar / Registar</span>
         </button>
@@ -644,32 +644,12 @@
     </div>
   </section>
 
-  <!-- CATEGORIAS -->
+  <!-- CATEGORIAS DINÂMICAS -->
   <section class="section">
     <div class="section-title">
       <span>Explorar por Categoria</span>
     </div>
-    <div class="categories-grid">
-      <div class="category-card" onclick="filtrarCategoria('tecnologia')">
-        <i class="fa-solid fa-mobile-screen-button"></i>
-        <span>Tecnologia</span>
-      </div>
-      <div class="category-card" onclick="filtrarCategoria('casa')">
-        <i class="fa-solid fa-house"></i>
-        <span>Casa & Lar</span>
-      </div>
-      <div class="category-card" onclick="filtrarCategoria('moda')">
-        <i class="fa-solid fa-shirt"></i>
-        <span>Moda</span>
-      </div>
-      <div class="category-card" onclick="filtrarCategoria('desporto')">
-        <i class="fa-solid fa-dumbbell"></i>
-        <span>Desporto</span>
-      </div>
-      <div class="category-card" onclick="filtrarCategoria('beleza')">
-        <i class="fa-solid fa-spray-can-sparkles"></i>
-        <span>Beleza</span>
-      </div>
+    <div class="categories-grid" id="categorias-container">
       <div class="category-card" onclick="filtrarCategoria('todos')">
         <i class="fa-solid fa-border-all"></i>
         <span>Ver Todos</span>
@@ -816,6 +796,15 @@
 
     let catalogoGlobal = [];
 
+    const CATEGORIAS_INFO = {
+      tecnologia: { nome: 'Tecnologia', icone: 'fa-mobile-screen-button' },
+      casa: { nome: 'Casa & Lar', icone: 'fa-house' },
+      moda: { nome: 'Moda', icone: 'fa-shirt' },
+      desporto: { nome: 'Desporto', icone: 'fa-dumbbell' },
+      beleza: { nome: 'Beleza', icone: 'fa-spray-can-sparkles' },
+      outros: { nome: 'Outros', icone: 'fa-box' }
+    };
+
     /* GESTÃO DO CONTADOR DO CARRINHO */
     function atualizarContadorCarrinho() {
       try {
@@ -857,24 +846,26 @@
       localStorage.setItem('deaaz_cart', JSON.stringify(carrinho));
       atualizarContadorCarrinho();
 
-      // Feedback rápido
       const badge = document.getElementById('cart-counter');
-      badge.style.transform = 'scale(1.3)';
-      setTimeout(() => badge.style.transform = 'scale(1)', 200);
+      if (badge) {
+        badge.style.transform = 'scale(1.3)';
+        setTimeout(() => badge.style.transform = 'scale(1)', 200);
+      }
       alert(`🛒 "${prod.nome}" foi adicionado ao teu carrinho!`);
+    }
+
+    /* REDIRECIONAR PARA PERFIL OU ABRIR MODAL */
+    function clicarAcaoUtilizador() {
+      const userLogado = localStorage.getItem('deaaz_user');
+      if (userLogado) {
+        window.location.href = 'perfil.html';
+      } else {
+        abrirModalAuth();
+      }
     }
 
     /* CONTROLO DA MODAL DE AUTENTICAÇÃO */
     function abrirModalAuth() {
-      const userLogado = localStorage.getItem('deaaz_user');
-      if (userLogado) {
-        const dados = JSON.parse(userLogado);
-        if (confirm(`Sessão iniciada como ${dados.nome}.\nDeseja terminar a sessão?`)) {
-          localStorage.removeItem('deaaz_user');
-          atualizarEstadoSessao();
-        }
-        return;
-      }
       document.getElementById('modal-auth').classList.add('active');
     }
 
@@ -1005,10 +996,40 @@
       if (userLogado) {
         const dados = JSON.parse(userLogado);
         const primeiroNome = dados.nome.split(' ')[0];
-        label.innerText = `Olá, ${primeiroNome}`;
+        label.innerText = `Olá, ${primeiroNome} (Perfil)`;
       } else {
         label.innerText = "Entrar / Registar";
       }
+    }
+
+    /* CARREGAMENTO DE CATEGORIAS ATIVAS CONFIGURADAS NO ADMIN */
+    function carregarCategoriasAtivas() {
+      const container = document.getElementById('categorias-container');
+      if (!container) return;
+
+      const ativas = JSON.parse(localStorage.getItem('deaaz_categorias_ativas')) || ['tecnologia', 'casa', 'moda', 'desporto', 'beleza'];
+
+      let html = '';
+      ativas.forEach(cat => {
+        const info = CATEGORIAS_INFO[cat.toLowerCase()];
+        if (info) {
+          html += `
+            <div class="category-card" onclick="filtrarCategoria('${cat.toLowerCase()}')">
+              <i class="fa-solid ${info.icone}"></i>
+              <span>${info.nome}</span>
+            </div>
+          `;
+        }
+      });
+
+      html += `
+        <div class="category-card" onclick="filtrarCategoria('todos')">
+          <i class="fa-solid fa-border-all"></i>
+          <span>Ver Todos</span>
+        </div>
+      `;
+
+      container.innerHTML = html;
     }
 
     /* CARREGAMENTO DE PRODUTOS */
@@ -1108,6 +1129,7 @@
     // Iniciar carregamentos
     atualizarEstadoSessao();
     atualizarContadorCarrinho();
+    carregarCategoriasAtivas();
     buscarProdutosLoja();
   </script>
 </body>
